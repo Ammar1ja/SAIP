@@ -1,0 +1,71 @@
+{
+  "deployments": {
+    "production": {
+      "name": "Production",
+      "baseUrl": "https://saip-design-system.vercel.app",
+      "branch": "main",
+      "description": "Stable production deployment"
+    },
+    "staging": {
+      "name": "Staging",
+      "baseUrl": "https://saip-design-system-staging.vercel.app",
+      "branch": "development",
+      "description": "Preview of upcoming changes"
+    },
+    "preview": {
+      "name": "Preview",
+      "baseUrl": "https://saip-design-system-preview.vercel.app",
+      "branch": "feature/*",
+      "description": "Feature branch previews"
+    }
+  },
+  "versions": {
+    "v1.1.0": {
+      "deployment": "production",
+      "path": "/",
+      "stable": true,
+      "default": true
+    },
+    "v1.0.0": {
+      "deployment": "production",
+      "path": "/v1.0.0/",
+      "stable": true,
+      "legacy": true
+    },
+    "v2.0.0-beta": {
+      "deployment": "staging",
+      "path": "/",
+      "stable": false,
+      "preview": true
+    }
+  },
+  "features": {
+    "versionSwitching": {
+      "enabled": false,
+      "reason": "Deployments not configured yet"
+    },
+    "automaticDeployment": {
+      "enabled": false,
+      "reason": "CI/CD pipeline needs setup"
+    },
+    "crossVersionNavigation": {
+      "enabled": false,
+      "reason": "Multiple deployments required"
+    }
+  },
+  "future": {
+    "plannedVersions": ["v2.0.0", "v2.1.0", "v3.0.0-alpha"],
+    "roadmap": [
+      {
+        "version": "v2.0.0",
+        "features": ["New design tokens", "Enhanced accessibility", "Performance improvements"],
+        "eta": "Q2 2025"
+      },
+      {
+        "version": "v3.0.0",
+        "features": ["Complete architecture rewrite", "New component API", "Advanced theming"],
+        "eta": "Q4 2025"
+      }
+    ]
+  }
+}

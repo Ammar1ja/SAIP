@@ -1,0 +1,797 @@
+import { fetchDrupal } from '../utils';
+import { getRelated, getImageWithAlt, extractText } from '../utils';
+import {
+  DrupalIPAcademyPageNode,
+  DrupalIncludedEntity,
+  DrupalTrainingProgramNode,
+  DrupalQualificationNode,
+  DrupalEducationProjectNode,
+  DrupalStatisticsItemNode,
+  DrupalMediaTabNode,
+} from '../types';
+import { DrupalResponse } from '../api-client';
+
+// Frontend interfaces
+export interface IPAcademyData {
+  heroHeading: string;
+  heroSubheading: string;
+  heroImage?: {
+    src: string;
+    alt: string;
+  };
+  overview: {
+    statistics: {
+      statistics: StatisticsCardData[];
+      statisticsTitle: string;
+      statisticsCtaLabel: string;
+      statisticsCtaHref: string;
+    };
+  };
+  trainingPrograms: TrainingProgramData[];
+  qualifications: QualificationData[];
+  educationProjects: EducationProjectData[];
+  media: {
+    heroTitle: string;
+    heroDescription: string;
+    heroImage: string;
+    tabs: MediaTabData[];
+    content: Record<string, MediaContentData>;
+    filterFields: FilterFieldData[];
+    badgeLabel: string;
+  };
+}
+
+export interface StatisticsCardData {
+  label: string;
+  value?: number;
+  chartType: string;
+  chartData?: Array<{ value: number }>;
+  trend?: {
+    value: string;
+    direction: string;
+    description: string;
+  };
+  breakdown?: Array<{
+    label: string;
+    value: number;
+    displayValue: string;
+    color: string;
+  }>;
+}
+
+export interface TrainingProgramData {
+  id: string;
+  title: string;
+  description: string;
+  details: string;
+  forWhom: string;
+  whatYouWillLearn: string[];
+  startDate: string;
+  duration: string;
+  fees: string;
+  language: string;
+  location: string;
+  faqHref: string;
+  registerHref: string;
+  courseFormat: string;
+  courseMaterials: string;
+  programme: Array<{
+    id: string;
+    title: string;
+    subtitle: string;
+    description: string;
+  }>;
+}
+
+export interface QualificationData {
+  id: string;
+  title: string;
+  description: string;
+  details: string;
+  forWhom: string[];
+  requirements: string[];
+  studyMaterialLabel: string;
+  studyMaterialHref: string;
+  examPrograms: Array<{
+    id: string;
+    title: string;
+    description: string;
+    date: string;
+    link: string;
+  }>;
+  startDate: string;
+  duration: string;
+  fees: string;
+  language: string;
+  testType: string;
+  passingScore: string;
+  location: string;
+  faqHref: string;
+  registerHref: string;
+  chapters: Array<{
+    id: string;
+    title: string;
+    subtitle: string;
+    description: string;
+  }>;
+}
+
+export interface EducationProjectData {
+  id: string;
+  title: string;
+  description: string;
+  details: string;
+  partners: Array<{
+    id: string;
+    name: string;
+    logo?: string;
+  }>;
+  projectScopeDescription: string;
+  projectScopeSections: Array<{
+    id: string;
+    title: string;
+    content: string;
+  }>;
+  targetAudience: string[];
+  projectDetails: Array<{
+    id: string;
+    title: string;
+    content: string;
+  }>;
+}
+
+export interface MediaTabData {
+  id: string;
+  label: string;
+}
+
+export interface MediaContentData {
+  title: string;
+  description: string;
+}
+
+export interface FilterFieldData {
+  id: string;
+  label: string;
+  type: string;
+  placeholder: string;
+}
+
+// Drupal API functions
+export async function fetchIPAcademyPage(): Promise<DrupalResponse<DrupalIPAcademyPageNode>> {
+  const endpoint =
+    '/node/ip_academy_page?filter[status]=1&include=field_hero_background_image,field_statistics_items,field_training_programs,field_qualifications,field_education_projects,field_media_tabs';
+
+  const response = await fetchDrupal<DrupalIPAcademyPageNode>(endpoint);
+  console.log('Drupal raw response:', response);
+  return response;
+}
+
+// Transformation functions
+export function transformStatisticsItem(
+  item: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): StatisticsCardData {
+  const attrs = (item as any).attributes || {};
+
+  let chartData: Array<{ value: number }> = [];
+  let trend: StatisticsCardData['trend'];
+  let breakdown: StatisticsCardData['breakdown'];
+
+  if (attrs.field_chart_data) {
+    try {
+      chartData = JSON.parse(attrs.field_chart_data);
+    } catch (e) {
+      console.warn('Failed to parse chart data:', e);
+    }
+  }
+
+  if (attrs.field_trend_value && attrs.field_trend_direction && attrs.field_trend_description) {
+    trend = {
+      value: attrs.field_trend_value,
+      direction: attrs.field_trend_direction,
+      description: attrs.field_trend_description,
+    };
+  }
+
+  if (attrs.field_breakdown) {
+    try {
+      breakdown = JSON.parse(attrs.field_breakdown);
+    } catch (e) {
+      console.warn('Failed to parse breakdown data:', e);
+    }
+  }
+
+  return {
+    label: attrs.field_label || 'Untitled Statistic',
+    value: attrs.field_value,
+    chartType: attrs.field_chart_type || 'line',
+    chartData,
+    trend,
+    breakdown,
+  };
+}
+
+export function transformTrainingProgram(
+  program: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): TrainingProgramData {
+  const attrs = (program as any).attributes || {};
+
+  let whatYouWillLearn: string[] = [];
+  let programme: Array<{ id: string; title: string; subtitle: string; description: string }> = [];
+
+  if (attrs.field_what_you_will_learn) {
+    try {
+      whatYouWillLearn = JSON.parse(attrs.field_what_you_will_learn);
+    } catch (e) {
+      console.warn('Failed to parse what you will learn:', e);
+    }
+  }
+
+  if (attrs.field_programme) {
+    try {
+      programme = JSON.parse(attrs.field_programme);
+    } catch (e) {
+      console.warn('Failed to parse programme:', e);
+    }
+  }
+
+  return {
+    id: program.id,
+    title: attrs.title || 'Untitled Training Program',
+    description: attrs.field_description || '',
+    details: attrs.field_details || '',
+    forWhom: attrs.field_for_whom || '',
+    whatYouWillLearn,
+    startDate: attrs.field_start_date || '',
+    duration: attrs.field_duration || '',
+    fees: attrs.field_fees || '',
+    language: attrs.field_language || '',
+    location: attrs.field_location || '',
+    faqHref: attrs.field_faq_href || '#',
+    registerHref: attrs.field_register_href || '#',
+    courseFormat: attrs.field_course_format || '',
+    courseMaterials: attrs.field_course_materials || '',
+    programme,
+  };
+}
+
+export function transformQualification(
+  qualification: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): QualificationData {
+  const attrs = (qualification as any).attributes || {};
+
+  let forWhom: string[] = [];
+  let requirements: string[] = [];
+  let examPrograms: Array<{
+    id: string;
+    title: string;
+    description: string;
+    date: string;
+    link: string;
+  }> = [];
+  let chapters: Array<{ id: string; title: string; subtitle: string; description: string }> = [];
+
+  if (attrs.field_for_whom) {
+    try {
+      forWhom = JSON.parse(attrs.field_for_whom);
+    } catch (e) {
+      console.warn('Failed to parse for whom:', e);
+    }
+  }
+
+  if (attrs.field_requirements) {
+    try {
+      requirements = JSON.parse(attrs.field_requirements);
+    } catch (e) {
+      console.warn('Failed to parse requirements:', e);
+    }
+  }
+
+  if (attrs.field_exam_programs) {
+    try {
+      examPrograms = JSON.parse(attrs.field_exam_programs);
+    } catch (e) {
+      console.warn('Failed to parse exam programs:', e);
+    }
+  }
+
+  if (attrs.field_chapters) {
+    try {
+      chapters = JSON.parse(attrs.field_chapters);
+    } catch (e) {
+      console.warn('Failed to parse chapters:', e);
+    }
+  }
+
+  return {
+    id: qualification.id,
+    title: attrs.title || 'Untitled Qualification',
+    description: attrs.field_description || '',
+    details: attrs.field_details || '',
+    forWhom,
+    requirements,
+    studyMaterialLabel: attrs.field_study_material_label || 'Download study material',
+    studyMaterialHref: attrs.field_study_material_href || '#',
+    examPrograms,
+    startDate: attrs.field_start_date || '',
+    duration: attrs.field_duration || '',
+    fees: attrs.field_fees || '',
+    language: attrs.field_language || '',
+    testType: attrs.field_test_type || '',
+    passingScore: attrs.field_passing_score || '',
+    location: attrs.field_location || '',
+    faqHref: attrs.field_faq_href || '#',
+    registerHref: attrs.field_register_href || '#',
+    chapters,
+  };
+}
+
+export function transformEducationProject(
+  project: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): EducationProjectData {
+  const attrs = (project as any).attributes || {};
+
+  let partners: Array<{ id: string; name: string; logo?: string }> = [];
+  let projectScopeSections: Array<{ id: string; title: string; content: string }> = [];
+  let targetAudience: string[] = [];
+  let projectDetails: Array<{ id: string; title: string; content: string }> = [];
+
+  if (attrs.field_partners) {
+    try {
+      partners = JSON.parse(attrs.field_partners);
+    } catch (e) {
+      console.warn('Failed to parse partners:', e);
+    }
+  }
+
+  if (attrs.field_project_scope_sections) {
+    try {
+      projectScopeSections = JSON.parse(attrs.field_project_scope_sections);
+    } catch (e) {
+      console.warn('Failed to parse project scope sections:', e);
+    }
+  }
+
+  if (attrs.field_target_audience) {
+    try {
+      targetAudience = JSON.parse(attrs.field_target_audience);
+    } catch (e) {
+      console.warn('Failed to parse target audience:', e);
+    }
+  }
+
+  if (attrs.field_project_details) {
+    try {
+      projectDetails = JSON.parse(attrs.field_project_details);
+    } catch (e) {
+      console.warn('Failed to parse project details:', e);
+    }
+  }
+
+  return {
+    id: project.id,
+    title: attrs.title || 'Untitled Education Project',
+    description: attrs.field_description || '',
+    details: attrs.field_details || '',
+    partners,
+    projectScopeDescription: attrs.field_project_scope_description || '',
+    projectScopeSections,
+    targetAudience,
+    projectDetails,
+  };
+}
+
+export function transformMediaTab(
+  tab: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): MediaTabData {
+  const attrs = (tab as any).attributes || {};
+
+  return {
+    id: attrs.field_tab_id || 'tab',
+    label: attrs.title || 'Untitled Tab',
+  };
+}
+
+export function transformIPAcademyPage(
+  node: DrupalIPAcademyPageNode,
+  included: DrupalIncludedEntity[] = [],
+): IPAcademyData {
+  const attrs = node.attributes;
+  console.log('🔄 Transforming IP Academy page data...');
+  console.log('Node attributes:', attrs);
+  console.log('Included entities count:', included.length);
+
+  // Get hero image
+  const heroImage = attrs.field_hero_background_image
+    ? (() => {
+        const imageRel = getRelated(
+          node.relationships || {},
+          'field_hero_background_image',
+          included,
+        );
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Get statistics items
+  const statisticsData = node.relationships?.field_statistics_items
+    ? getRelated(node.relationships, 'field_statistics_items', included) || []
+    : [];
+  console.log('Statistics data:', statisticsData);
+  const statistics = Array.isArray(statisticsData)
+    ? statisticsData.map((item: DrupalIncludedEntity) => transformStatisticsItem(item, included))
+    : [];
+  console.log('Transformed statistics:', statistics);
+
+  // Get training programs
+  const trainingProgramsData = node.relationships?.field_training_programs
+    ? getRelated(node.relationships, 'field_training_programs', included) || []
+    : [];
+  console.log('Training programs data:', trainingProgramsData);
+  const trainingPrograms = Array.isArray(trainingProgramsData)
+    ? trainingProgramsData.map((program: DrupalIncludedEntity) =>
+        transformTrainingProgram(program, included),
+      )
+    : [];
+  console.log('Transformed training programs:', trainingPrograms);
+
+  // Get qualifications
+  const qualificationsData = node.relationships?.field_qualifications
+    ? getRelated(node.relationships, 'field_qualifications', included) || []
+    : [];
+  console.log('Qualifications data:', qualificationsData);
+  const qualifications = Array.isArray(qualificationsData)
+    ? qualificationsData.map((qualification: DrupalIncludedEntity) =>
+        transformQualification(qualification, included),
+      )
+    : [];
+  console.log('Transformed qualifications:', qualifications);
+
+  // Get education projects
+  const educationProjectsData = node.relationships?.field_education_projects
+    ? getRelated(node.relationships, 'field_education_projects', included) || []
+    : [];
+  console.log('Education projects data:', educationProjectsData);
+  const educationProjects = Array.isArray(educationProjectsData)
+    ? educationProjectsData.map((project: DrupalIncludedEntity) =>
+        transformEducationProject(project, included),
+      )
+    : [];
+  console.log('Transformed education projects:', educationProjects);
+
+  // Get media tabs
+  const mediaTabsData = node.relationships?.field_media_tabs
+    ? getRelated(node.relationships, 'field_media_tabs', included) || []
+    : [];
+  const mediaTabs = Array.isArray(mediaTabsData)
+    ? mediaTabsData.map((tab: DrupalIncludedEntity) => transformMediaTab(tab, included))
+    : [];
+
+  const result = {
+    heroHeading: attrs.field_hero_heading || 'IP Academy overview',
+    heroSubheading:
+      attrs.field_hero_subheading ||
+      'Through the training plan, the Academy provides a diversified suite of specialized and qualitative programs.',
+    heroImage: heroImage ? { src: heroImage.src, alt: heroImage.alt } : undefined,
+    overview: {
+      statistics: {
+        statistics,
+        statisticsTitle: attrs.field_statistics_title || 'Statistics',
+        statisticsCtaLabel: attrs.field_statistics_cta_label || 'View more statistics',
+        statisticsCtaHref: attrs.field_statistics_cta_href || '/resources/statistics',
+      },
+    },
+    trainingPrograms,
+    qualifications,
+    educationProjects,
+    media: {
+      heroTitle: 'Media for IP Academy',
+      heroDescription: 'Here you can find news related to IP Academy.',
+      heroImage: '/images/ip-academy/hero.jpg',
+      tabs:
+        mediaTabs.length > 0
+          ? mediaTabs
+          : [
+              { id: 'news', label: 'News' },
+              { id: 'videos', label: 'Videos' },
+              { id: 'articles', label: 'Articles' },
+            ],
+      content: {
+        news: {
+          title: 'News',
+          description:
+            'Get the latest information about news related to IP academy in Saudi Arabia.',
+        },
+        videos: {
+          title: 'Videos',
+          description:
+            'Explore the latest updates on the IP in Saudi Arabia through our video collection about IP Academy.',
+        },
+        articles: {
+          title: 'Articles',
+          description:
+            'Discover the latest articles from SAIP. Explore expert insights, key developments, and detailed analyses to stay ahead in the world of intellectual property.',
+        },
+      },
+      filterFields: [{ id: 'search', label: 'Search', type: 'search', placeholder: 'Search' }],
+      badgeLabel: 'IP Academy',
+    },
+  };
+
+  console.log('✅ Final transformed result:', result);
+  return result;
+}
+
+export function getIPAcademyFallbackData(): IPAcademyData {
+  return {
+    heroHeading: 'IP Academy overview',
+    heroSubheading:
+      'Through the training plan, the Academy provides a diversified suite of specialized and qualitative programs which are likely to contribute to developing the relevant staff, and support the IP initiatives in the KSA and MENA.',
+    heroImage: {
+      src: '/images/ip-academy/hero.jpg',
+      alt: 'IP Academy overview',
+    },
+    overview: {
+      statistics: {
+        statistics: [
+          {
+            label: 'Number of courses SAIP has delivered',
+            value: 200,
+            chartType: 'line',
+            chartData: [{ value: 100 }, { value: 120 }, { value: 150 }, { value: 200 }],
+            trend: { value: '100%', direction: 'up', description: 'vs last month' },
+          },
+          {
+            label: 'Number of learners SAIP has taught',
+            value: 8000,
+            chartType: 'line',
+            chartData: [{ value: 4000 }, { value: 5000 }, { value: 7000 }, { value: 8000 }],
+            trend: { value: '100%', direction: 'up', description: 'vs last month' },
+          },
+          {
+            label: 'Number of dedicated courses SAIP has created for companies',
+            value: 40,
+            chartType: 'line',
+            chartData: [{ value: 10 }, { value: 20 }, { value: 30 }, { value: 40 }],
+            trend: { value: '100%', direction: 'up', description: 'vs last month' },
+          },
+          {
+            label: 'Number of institutions SAIP partner with',
+            value: 100,
+            chartType: 'line',
+            chartData: [{ value: 20 }, { value: 40 }, { value: 70 }, { value: 100 }],
+            trend: { value: '100%', direction: 'up', description: 'vs last month' },
+          },
+        ],
+        statisticsTitle: 'Statistics',
+        statisticsCtaLabel: 'View more statistics',
+        statisticsCtaHref: '/resources/statistics',
+      },
+    },
+    trainingPrograms: [
+      {
+        id: '1',
+        title: 'Using data as an IP asset',
+        description:
+          "In today's digital economy, data is a crucial asset that can significantly enhance a company's competitive edge.",
+        details:
+          'This course is best suited for graduates, subject matter experts who are new to government advisory, policy analysts, and whole teams who wish to establish a shared view of quality advice.',
+        forWhom:
+          'This course is best suited for graduates, subject matter experts who are new to government advisory, policy analysts, and whole teams who wish to establish a shared view of quality advice.',
+        whatYouWillLearn: [
+          'Automate routine tasks',
+          'Unleash creativity and problem-solving with AI',
+          'Develop prompts for GPT-4, ChatGPT, and LLMs',
+          'Integrate AI into your daily workflows',
+          'Deepen AI knowledge',
+        ],
+        startDate: '10.12.2024',
+        duration: '3 hours',
+        fees: 'Free',
+        language: 'English',
+        location: 'SAIP office',
+        faqHref: '#',
+        registerHref: '#',
+        courseFormat:
+          'This one-day course is designed with a self-paced approach to accommodate your schedule.',
+        courseMaterials:
+          'This course includes 12 months of access to our self-paced online platform, featuring: 8 video lessons, downloadable materials, sample exams, quizzes, and more.',
+        programme: [
+          {
+            id: 'course1',
+            title: 'Course 1',
+            subtitle: 'Introduction to data as an IP',
+            description: '',
+          },
+          {
+            id: 'course2',
+            title: 'Course 2',
+            subtitle: 'Legal frameworks and data protection',
+            description: '',
+          },
+          {
+            id: 'course3',
+            title: 'Course 3',
+            subtitle: 'Data valuation techniques',
+            description: '',
+          },
+          {
+            id: 'course4',
+            title: 'Course 4',
+            subtitle: 'Strategic data management',
+            description: '',
+          },
+          {
+            id: 'course5',
+            title: 'Course 5',
+            subtitle: 'Wrap-up and closing remarks',
+            description: '',
+          },
+        ],
+      },
+    ],
+    qualifications: [
+      {
+        id: '1',
+        title: 'Professional examination for IP agents',
+        description:
+          'The professional test for agents is one of the requirements for obtaining a license to practice activities providing services related to intellectual property.',
+        details:
+          'The test aims to build national professional cadres specialized in the field, and includes a number of knowledge, skills, practices and real-life examples that enable them to perform professionally and expertly in providing intellectual property services on behalf of others before the SAIP.',
+        forWhom: [
+          'Those wishing to obtain qualification to practice IP service provision activities before the SAIP',
+          'Lawyers and specialists in professional offices and companies working in the field of law and providing legal and administrative consultations.',
+        ],
+        requirements: [
+          'The Professional Examination for IP agents is part of the requirements for Saudi IP agents to obtain a practicing license from the SAIP.',
+        ],
+        studyMaterialLabel: 'Download study material',
+        studyMaterialHref: '#',
+        examPrograms: [
+          {
+            id: 'prep1',
+            title: 'IP agent exam preparation program',
+            description:
+              'Get ready for the IP agent exam with our focused preparation program. Access key materials, practice exams, and support to ensure your success.',
+            date: '18.01.2025',
+            link: '#',
+          },
+        ],
+        startDate: '01.01.2025 | 08.03.2025',
+        duration: '120 minutes',
+        fees: '1000 SAR',
+        language: 'Arabic',
+        testType: 'Multiple choice, 100 questions',
+        passingScore: '70%',
+        location: 'Test Center',
+        faqHref: '#',
+        registerHref: '#',
+        chapters: [
+          {
+            id: 'chapter1',
+            title: 'Chapter 1',
+            subtitle: 'General introduction to IP',
+            description:
+              'This chapter provides a concise guide to the fundamentals of intellectual property (IP), its importance, and the different types of IP rights.',
+          },
+          {
+            id: 'chapter2',
+            title: 'Chapter 2',
+            subtitle: 'Regulation, licensing and IP business',
+            description:
+              'Overview of IP regulation, licensing models, and the business aspects of managing IP assets.',
+          },
+        ],
+      },
+    ],
+    educationProjects: [
+      {
+        id: '1',
+        title: 'Integrating IP into general education studies project',
+        description:
+          'During the project, topics related to IP were incorporated into general education materials after being processed in an educational manner.',
+        details:
+          'Supporting initiatives were implemented in collaboration with the Ministry of Education to build the capacities of teachers and curriculum developers using the latest methods for teaching IP.',
+        partners: [
+          {
+            id: 'ministry-education',
+            name: 'Ministry of Education',
+            logo: '/images/partners/ministry-education.png',
+          },
+          {
+            id: 'saip',
+            name: 'Saudi Authority for Intellectual Property',
+            logo: '/images/partners/saip.png',
+          },
+        ],
+        projectScopeDescription:
+          'This course includes 12 months of access to our self-paced online platform, featuring:',
+        projectScopeSections: [
+          {
+            id: 'ip-overview',
+            title: 'IP overview',
+            content:
+              'Concept of IP, Importance of IP protection, Penalties for IP infringement, IP protection authorities international treaties & agreements',
+          },
+          {
+            id: 'patent',
+            title: 'Patent',
+            content:
+              'Patent concept and objectives, Patent registration and rights, Protection of plant varieties and agricultural products, Protection of industrial designs and models',
+          },
+        ],
+        targetAudience: ['Teachers', 'General education students'],
+        projectDetails: [
+          {
+            id: 'secondary-stage',
+            title: 'Secondary stage',
+            content:
+              'Subjects: Islamic studies (Hadith - Fiqh - Inheritance), Critical thinking, English language, Digital citizenship, Life skills',
+          },
+          {
+            id: 'intermediate-stage',
+            title: 'Intermediate stage',
+            content: 'Subjects: Social studies, Critical thinking, Arabic studies, Art',
+          },
+        ],
+      },
+    ],
+    media: {
+      heroTitle: 'Media for IP Academy',
+      heroDescription: 'Here you can find news related to IP Academy.',
+      heroImage: '/images/ip-academy/hero.jpg',
+      tabs: [
+        { id: 'news', label: 'News' },
+        { id: 'videos', label: 'Videos' },
+        { id: 'articles', label: 'Articles' },
+      ],
+      content: {
+        news: {
+          title: 'News',
+          description:
+            'Get the latest information about news related to IP academy in Saudi Arabia.',
+        },
+        videos: {
+          title: 'Videos',
+          description:
+            'Explore the latest updates on the IP in Saudi Arabia through our video collection about IP Academy.',
+        },
+        articles: {
+          title: 'Articles',
+          description:
+            'Discover the latest articles from SAIP. Explore expert insights, key developments, and detailed analyses to stay ahead in the world of intellectual property.',
+        },
+      },
+      filterFields: [{ id: 'search', label: 'Search', type: 'search', placeholder: 'Search' }],
+      badgeLabel: 'IP Academy',
+    },
+  };
+}
+
+export async function getIPAcademyPageData(): Promise<IPAcademyData> {
+  try {
+    const response = await fetchIPAcademyPage();
+    const nodes = response.data;
+    const included = response.included || [];
+
+    if (nodes.length === 0) {
+      console.log('🔴 IP ACADEMY: Using fallback data ❌');
+      return getIPAcademyFallbackData();
+    }
+
+    const node = nodes[0];
+    const data = transformIPAcademyPage(node, included);
+    console.log('🟢 IP ACADEMY: Using Drupal data ✅');
+    return data;
+  } catch (error) {
+    console.log('🔴 IP ACADEMY: Using fallback data ❌');
+    return getIPAcademyFallbackData();
+  }
+}

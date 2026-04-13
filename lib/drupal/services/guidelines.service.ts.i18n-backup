@@ -1,0 +1,249 @@
+/**
+ * Guidelines Service
+ * Handles data fetching and transformation for Guidelines page
+ * Reuses GuideItemNode from patents/trademarks services
+ */
+
+import { fetchDrupal, getRelated, getImageWithAlt, extractText } from '../utils';
+import { DrupalNode, DrupalIncludedEntity, DrupalGuideItemNode } from '../types';
+import { DrupalResponse } from '../api-client';
+
+// Frontend data interfaces
+export interface GuidelinesData {
+  heroHeading: string;
+  heroSubheading: string;
+  heroImage?: {
+    src: string;
+    alt: string;
+  };
+  guidelines: GuidelineItemData[];
+  categoryOptions: Array<{ label: string; value: string }>;
+}
+
+export interface GuidelineItemData {
+  title: string;
+  description: string;
+  labels: string[];
+  category: string;
+  publicationDate: string;
+  primaryButtonLabel: string;
+  primaryButtonHref: string;
+  secondaryButtonLabel: string;
+  secondaryButtonHref: string;
+  titleBg?: 'default' | 'green';
+  [key: string]: unknown;
+}
+
+// Drupal API functions
+export async function fetchGuidelinesPage(): Promise<DrupalResponse<DrupalNode>> {
+  const includeFields = [
+    'field_hero_background_image',
+    'field_hero_background_image.field_media_image',
+    'field_guidelines_items',
+    'field_guidelines_items.field_category',
+  ];
+
+  const endpoint = `/node/guidelines_page?filter[status]=1&include=${includeFields.join(',')}`;
+  const response = await fetchDrupal<DrupalNode>(endpoint);
+  return response;
+}
+
+// Fetch individual guideline items
+export async function fetchGuidelines(): Promise<DrupalResponse<DrupalGuideItemNode>> {
+  const includeFields = ['field_category'];
+
+  const endpoint = `/node/guide_item?filter[status]=1&include=${includeFields.join(',')}`;
+  const response = await fetchDrupal<DrupalGuideItemNode>(endpoint);
+  return response;
+}
+
+// Transformation functions
+export function transformGuidelineItem(
+  item: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): GuidelineItemData {
+  const attrs = (item as any).attributes || {};
+  const relationships = (item as any).relationships || {};
+
+  // Get category from relationship
+  const categoryTerm = relationships.field_category
+    ? (() => {
+        const term = getRelated(relationships, 'field_category', included);
+        return term && !Array.isArray(term) ? term : null;
+      })()
+    : null;
+  const categoryName = (categoryTerm?.attributes?.name as string) || 'General';
+
+  return {
+    title: attrs.title || 'Untitled Guide',
+    description: attrs.field_description || '',
+    labels: attrs.field_labels ? JSON.parse(attrs.field_labels) : [categoryName || 'General'],
+    category: categoryName || 'Uncategorized',
+    publicationDate: attrs.field_publication_date || '',
+    primaryButtonLabel: attrs.field_primary_button_label || 'Download file',
+    primaryButtonHref: attrs.field_primary_button_href || '#',
+    secondaryButtonLabel: attrs.field_secondary_button_label || 'View file',
+    secondaryButtonHref: attrs.field_secondary_button_href || '#',
+    titleBg: (attrs.field_title_bg as 'default' | 'green') || undefined,
+  };
+}
+
+export function transformGuidelinesPage(
+  node: DrupalNode,
+  included: DrupalIncludedEntity[] = [],
+): GuidelinesData {
+  const attrs = node.attributes;
+
+  // Get hero image
+  const heroImage = attrs.field_hero_background_image
+    ? (() => {
+        const imageRel = getRelated(
+          node.relationships || {},
+          'field_hero_background_image',
+          included,
+        );
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Get guidelines items
+  const guidelinesData = node.relationships?.field_guidelines_items
+    ? getRelated(node.relationships, 'field_guidelines_items', included) || []
+    : [];
+  const guidelines = Array.isArray(guidelinesData)
+    ? guidelinesData.map((item: DrupalIncludedEntity) => transformGuidelineItem(item, included))
+    : [];
+
+  // Extract unique categories
+  const categories = [...new Set(guidelines.map((g) => g.category))].filter(Boolean);
+  const categoryOptions = [
+    { label: 'All', value: 'all' },
+    ...categories.map((cat) => ({ label: cat, value: cat.toLowerCase() })),
+  ];
+
+  return {
+    heroHeading: attrs.field_hero_heading || 'Guidelines',
+    heroSubheading:
+      extractText(attrs.field_hero_subheading) ||
+      'Explore comprehensive guidelines for intellectual property protection and management.',
+    heroImage: heroImage ? { src: heroImage.src, alt: heroImage.alt } : undefined,
+    guidelines,
+    categoryOptions,
+  };
+}
+
+export function getGuidelinesFallbackData(): GuidelinesData {
+  return {
+    heroHeading: 'Guidelines',
+    heroSubheading:
+      'Explore comprehensive guidelines for intellectual property protection and management.',
+    heroImage: {
+      src: '/images/about/hero.jpg',
+      alt: 'Guidelines',
+    },
+    guidelines: [
+      {
+        title: 'Saudi design classification 1',
+        description: 'Locarno Classification Guide (14th Edition)',
+        labels: ['Designs'],
+        category: 'Designs',
+        publicationDate: '04.08.2024',
+        primaryButtonLabel: 'Download file',
+        primaryButtonHref: '/',
+        secondaryButtonLabel: 'View file',
+        secondaryButtonHref: '/',
+      },
+      {
+        title: 'Software copyright protection guide 1',
+        description: 'Guidelines for Protecting Copyright in Software',
+        labels: ['Copyrights'],
+        category: 'Copyrights',
+        publicationDate: '04.08.2024',
+        primaryButtonLabel: 'Download file',
+        primaryButtonHref: '/',
+        secondaryButtonLabel: 'View file',
+        secondaryButtonHref: '/',
+      },
+      {
+        title: 'Guide to patent application content 1',
+        description: 'The content of the patent application necessary for filing',
+        labels: ['Patents'],
+        category: 'Patents',
+        publicationDate: '04.08.2024',
+        primaryButtonLabel: 'Download file',
+        primaryButtonHref: '/',
+        secondaryButtonLabel: 'View file',
+        secondaryButtonHref: '/',
+      },
+    ],
+    categoryOptions: [
+      { label: 'All', value: 'all' },
+      { label: 'General', value: 'general' },
+      { label: 'Trademarks', value: 'trademarks' },
+      { label: 'Patents', value: 'patents' },
+      { label: 'Copyrights', value: 'copyrights' },
+      { label: 'Designs', value: 'designs' },
+    ],
+  };
+}
+
+export async function getGuidelinesPageData(): Promise<GuidelinesData> {
+  try {
+    // Try to fetch guidelines page first
+    const pageResponse = await fetchGuidelinesPage();
+    const pageNodes = pageResponse.data;
+    const pageIncluded = pageResponse.included || [];
+
+    if (pageNodes.length === 0) {
+      console.log('🔴 GUIDELINES: No page content found, trying individual items');
+      // Try fetching individual guideline items
+      try {
+        const itemsResponse = await fetchGuidelines();
+        const items = itemsResponse.data;
+        const itemsIncluded = itemsResponse.included || [];
+
+        if (items.length === 0) {
+          console.log('🔴 GUIDELINES: No items found, using fallback data');
+          return getGuidelinesFallbackData();
+        }
+
+        // Transform items to guidelines data
+        const guidelines = items.map((item: DrupalGuideItemNode) =>
+          transformGuidelineItem(item, itemsIncluded),
+        );
+        const categories = [...new Set(guidelines.map((g) => g.category))].filter(Boolean);
+        const categoryOptions = [
+          { label: 'All', value: 'all' },
+          ...categories.map((cat) => ({ label: cat, value: cat.toLowerCase() })),
+        ];
+
+        console.log('✅ GUIDELINES: Using Drupal data from individual items');
+        return {
+          heroHeading: 'Guidelines',
+          heroSubheading:
+            'Explore comprehensive guidelines for intellectual property protection and management.',
+          heroImage: {
+            src: '/images/about/hero.jpg',
+            alt: 'Guidelines',
+          },
+          guidelines,
+          categoryOptions,
+        };
+      } catch (itemsError) {
+        console.log('🔴 GUIDELINES: Error fetching items, using fallback data');
+        return getGuidelinesFallbackData();
+      }
+    }
+
+    const node = pageNodes[0];
+    const data = transformGuidelinesPage(node, pageIncluded);
+
+    console.log('✅ GUIDELINES: Using Drupal data from page');
+    return data;
+  } catch (error) {
+    console.log('🔴 GUIDELINES: Error fetching data, using fallback data');
+    return getGuidelinesFallbackData();
+  }
+}

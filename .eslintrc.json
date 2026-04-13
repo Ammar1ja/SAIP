@@ -1,0 +1,6 @@
+{
+  "globals": {
+    "window": "readonly",
+    "__dirname": "readonly"
+  }
+}

@@ -1,0 +1,240 @@
+/**
+ * Service Directory Service
+ * Handles data fetching and transformation for service directory page
+ */
+
+import { fetchDrupal, getRelated, getImageUrl, extractText, extractHtml } from '../utils';
+import { DrupalNode, DrupalIncludedEntity, DrupalTaxonomyEntity } from '../types';
+
+// Frontend data interfaces
+export interface ServiceItemData {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  category: string;
+  serviceType: string;
+  targetGroup: string;
+  labels: string[];
+  [key: string]: unknown;
+}
+
+export interface ServiceDirectoryData {
+  // Hero section
+  heroHeading: string;
+  heroSubheading: string;
+  heroImage?: {
+    url: string;
+    alt: string;
+  };
+
+  // Services list
+  services: ServiceItemData[];
+
+  // Filter options
+  categories: string[];
+  serviceTypes: string[];
+  targetGroups: string[];
+}
+
+/**
+ * Fetch service directory page data from Drupal
+ */
+export async function fetchServiceDirectoryPage(): Promise<{
+  nodes: DrupalNode[];
+  included: DrupalIncludedEntity[];
+}> {
+  const includeFields = [
+    'field_hero_background_image',
+    'field_hero_background_image.field_media_image',
+    'field_services_data',
+    'field_services_data.field_category',
+    'field_services_data.field_type',
+    'field_services_data.field_target_group',
+    'field_services_data.field_label',
+  ];
+
+  // Use the correct content type that exists in Drupal
+  const endpoint = `/node/service_directory_page?filter[status]=1&include=${includeFields.join(',')}`;
+  const response = await fetchDrupal(endpoint);
+
+  if (response.data && response.data.length > 0) {
+    return { nodes: response.data, included: response.included || [] };
+  }
+
+  throw new Error('No Service Directory page content found');
+}
+
+/**
+ * Transform Drupal service item data to frontend format
+ */
+export function transformServiceDirectoryItem(
+  service: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): ServiceItemData {
+  const attrs = (service as any).attributes || {};
+  const relationships = (service as any).relationships || {};
+
+  // Get taxonomy terms
+  const categoryTerms = relationships.field_category
+    ? getRelated(relationships, 'field_category', included) || []
+    : [];
+  const serviceTypeTerms = relationships.field_type
+    ? getRelated(relationships, 'field_type', included) || []
+    : [];
+  const targetGroupTerms = relationships.field_target_group
+    ? getRelated(relationships, 'field_target_group', included) || []
+    : [];
+  const labelTerms = relationships.field_label
+    ? getRelated(relationships, 'field_label', included) || []
+    : [];
+
+  const category =
+    Array.isArray(categoryTerms) && categoryTerms.length > 0
+      ? (categoryTerms[0] as DrupalTaxonomyEntity).attributes?.name || 'Unknown'
+      : 'Unknown';
+
+  const serviceType =
+    Array.isArray(serviceTypeTerms) && serviceTypeTerms.length > 0
+      ? (serviceTypeTerms[0] as DrupalTaxonomyEntity).attributes?.name || 'Unknown'
+      : 'Unknown';
+
+  const targetGroup =
+    Array.isArray(targetGroupTerms) && targetGroupTerms.length > 0
+      ? (targetGroupTerms[0] as DrupalTaxonomyEntity).attributes?.name || 'Unknown'
+      : !Array.isArray(targetGroupTerms) && targetGroupTerms
+        ? (targetGroupTerms as DrupalTaxonomyEntity).attributes?.name || 'Unknown'
+        : 'Unknown';
+
+  const labels = Array.isArray(labelTerms)
+    ? labelTerms.map((term: any) => term.attributes?.name || '').filter(Boolean)
+    : !Array.isArray(labelTerms) && labelTerms
+      ? [(labelTerms as DrupalTaxonomyEntity).attributes?.name || ''].filter(Boolean)
+      : [];
+
+  return {
+    id: service.id,
+    title: attrs.title || 'Untitled Service',
+    description: extractHtml(attrs.field_description) || '',
+    href: attrs.field_external_link?.uri || '#',
+    category,
+    serviceType,
+    targetGroup,
+    labels,
+  };
+}
+
+/**
+ * Transform Drupal service directory page data to frontend format
+ */
+export function transformServiceDirectoryPage(
+  node: DrupalNode,
+  included: DrupalIncludedEntity[] = [],
+): ServiceDirectoryData {
+  const attrs = node.attributes;
+
+  // Get hero image
+  const heroImageUrl = attrs.field_hero_background_image
+    ? getImageUrl(attrs.field_hero_background_image as any, included)
+    : '';
+
+  // Get services
+  const servicesData = node.relationships?.field_services_data
+    ? getRelated(node.relationships, 'field_services_data', included) || []
+    : [];
+  const services = Array.isArray(servicesData)
+    ? servicesData.map((service: DrupalIncludedEntity) =>
+        transformServiceDirectoryItem(service, included),
+      )
+    : [];
+
+  // Extract unique filter options
+  const categories = [...new Set(services.map((service) => service.category))].filter(Boolean);
+  const serviceTypes = [...new Set(services.map((service) => service.serviceType))].filter(Boolean);
+  const targetGroups = [...new Set(services.map((service) => service.targetGroup))].filter(Boolean);
+
+  return {
+    heroHeading: attrs.field_hero_heading || 'SAIP service directory',
+    heroSubheading:
+      extractText(attrs.field_hero_subheading) ||
+      'Here you can find all of the services provided by SAIP.',
+    heroImage:
+      heroImageUrl && heroImageUrl !== ''
+        ? { url: heroImageUrl, alt: 'Service Directory' }
+        : undefined,
+    services,
+    categories,
+    serviceTypes,
+    targetGroups,
+  };
+}
+
+/**
+ * Get fallback data for service directory page
+ */
+export function getServiceDirectoryFallbackData(): ServiceDirectoryData {
+  return {
+    heroHeading: 'SAIP service directory',
+    heroSubheading: 'Here you can find all of the services provided by SAIP.',
+    heroImage: {
+      url: '/images/about/hero.jpg',
+      alt: 'Service Directory',
+    },
+    services: [
+      {
+        id: 'fallback-1',
+        title: 'Patent application',
+        description: 'A service that allows the user to file a patent application.',
+        href: '/services/patent-application',
+        category: 'Protection',
+        serviceType: 'Application',
+        targetGroup: 'Individuals',
+        labels: ['Protection', 'Service category'],
+      },
+      {
+        id: 'fallback-2',
+        title: 'Trademark registration',
+        description: 'A service that allows the user to apply for trademark registration.',
+        href: '/services/trademark-registration',
+        category: 'Trademarks',
+        serviceType: 'Registration',
+        targetGroup: 'Businesses',
+        labels: ['Protection', 'Service category'],
+      },
+      {
+        id: 'fallback-3',
+        title: 'Design registration',
+        description:
+          'A service for registering industrial designs to protect the visual design of objects.',
+        href: '/services/design-registration',
+        category: 'Designs',
+        serviceType: 'Registration',
+        targetGroup: 'Individuals',
+        labels: ['Protection', 'Designs'],
+      },
+    ],
+    categories: ['Protection', 'Trademarks', 'Designs'],
+    serviceTypes: ['Application', 'Registration'],
+    targetGroups: ['Individuals', 'Businesses'],
+  };
+}
+
+/**
+ * Main function to get service directory page data
+ */
+export async function getServiceDirectoryPageData(): Promise<ServiceDirectoryData> {
+  try {
+    const { nodes, included } = await fetchServiceDirectoryPage();
+
+    if (nodes.length === 0) {
+      return getServiceDirectoryFallbackData();
+    }
+
+    const node = nodes[0];
+    const data = transformServiceDirectoryPage(node, included);
+
+    return data;
+  } catch (error) {
+    return getServiceDirectoryFallbackData();
+  }
+}

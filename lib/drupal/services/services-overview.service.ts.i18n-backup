@@ -1,0 +1,464 @@
+import { fetchDrupal, getRelated, getImageUrl, extractText } from '../utils';
+import {
+  DrupalNode,
+  DrupalServicesOverviewPageNode,
+  DrupalServiceItem,
+  DrupalVerticalTabItem,
+  DrupalIncludedEntity,
+  DrupalServicesProtectionSectionNode,
+  DrupalServicesEnablementSectionNode,
+  DrupalServicesEnforcementSectionNode,
+  DrupalVerticalTabItemNode,
+} from '../types';
+
+// Frontend interfaces
+export interface ServiceData {
+  id: string;
+  title: string;
+  description: string;
+  icon?: {
+    url: string;
+    alt: string;
+  };
+}
+
+export interface VerticalTabData {
+  id: string;
+  title: string;
+  description: string;
+  image?: {
+    url: string;
+    alt: string;
+  };
+}
+
+export interface ServicesOverviewData {
+  heroHeading: string;
+  heroSubheading: string;
+  heroImage?: {
+    url: string;
+    alt: string;
+  };
+  servicesData: ServiceData[];
+  verticalTabsData: VerticalTabData[];
+  protectionSection: {
+    heading: string;
+    description: string;
+    image?: {
+      url: string;
+      alt: string;
+    };
+    verticalTabs: VerticalTabData[];
+  };
+  enablementSection: {
+    heading: string;
+    description: string;
+    image?: {
+      url: string;
+      alt: string;
+    };
+    verticalTabs: VerticalTabData[];
+  };
+  enforcementSection: {
+    heading: string;
+    description: string;
+    image?: {
+      url: string;
+      alt: string;
+    };
+    verticalTabs: VerticalTabData[];
+  };
+}
+
+/**
+ * Fetch services overview page data from Drupal
+ */
+export async function fetchServicesOverviewPage(): Promise<DrupalNode[]> {
+  const includeFields = [
+    'field_hero_background_image',
+    'field_hero_background_image.field_media_image',
+    'field_services_data',
+    'field_services_data.field_icon',
+    'field_services_data.field_icon.field_media_image',
+    'field_vertical_tabs_data',
+    'field_vertical_tabs_data.field_image',
+    'field_vertical_tabs_data.field_image.field_media_image',
+    'field_protection_section',
+    'field_protection_section.field_image',
+    'field_protection_section.field_image.field_media_image',
+    'field_protection_section.field_vertical_tabs',
+    'field_protection_section.field_vertical_tabs.field_image',
+    'field_protection_section.field_vertical_tabs.field_image.field_media_image',
+    'field_enablement_section',
+    'field_enablement_section.field_image',
+    'field_enablement_section.field_image.field_media_image',
+    'field_enablement_section.field_vertical_tabs',
+    'field_enablement_section.field_vertical_tabs.field_image',
+    'field_enablement_section.field_vertical_tabs.field_image.field_media_image',
+    'field_enforcement_section',
+    'field_enforcement_section.field_image',
+    'field_enforcement_section.field_image.field_media_image',
+    'field_enforcement_section.field_vertical_tabs',
+    'field_enforcement_section.field_vertical_tabs.field_image',
+    'field_enforcement_section.field_vertical_tabs.field_image.field_media_image',
+  ];
+
+  const includeString = includeFields.join(',');
+  const endpoint = `/node/services_overview_page?filter[status]=1&include=${includeString}`;
+
+  const response = await fetchDrupal(endpoint);
+  return response.data;
+}
+
+/**
+ * Transform Drupal service item data to frontend format
+ */
+export function transformServiceItem(
+  service: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): ServiceData {
+  const attrs = (service as any).attributes || {};
+  const relationships = (service as any).relationships || {};
+
+  // Get icon
+  const iconRelationship = relationships.field_icon
+    ? getRelated(relationships, 'field_icon', included)
+    : null;
+  const iconUrl =
+    iconRelationship && !Array.isArray(iconRelationship)
+      ? getImageUrl(iconRelationship, included)
+      : '';
+
+  return {
+    id: service.id,
+    title: attrs.title || 'Untitled Service',
+    description: extractText(attrs.field_description) || '',
+    icon:
+      iconUrl && iconUrl !== ''
+        ? { url: iconUrl, alt: extractText(attrs.field_alt_text) || '' }
+        : undefined,
+  };
+}
+
+/**
+ * Transform Drupal vertical tab item data to frontend format
+ */
+export function transformVerticalTabItem(
+  tab: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): VerticalTabData {
+  const attrs = (tab as any).attributes || {};
+  const relationships = (tab as any).relationships || {};
+
+  // Get image
+  const imageRelationship = relationships.field_image
+    ? getRelated(relationships, 'field_image', included)
+    : null;
+  const imageUrl =
+    imageRelationship && !Array.isArray(imageRelationship)
+      ? getImageUrl(imageRelationship, included)
+      : '';
+
+  return {
+    id: tab.id,
+    title: attrs.title || 'Untitled Tab',
+    description: extractText(attrs.field_description) || '',
+    image: imageUrl && imageUrl !== '' ? { url: imageUrl, alt: 'Vertical tab image' } : undefined,
+  };
+}
+
+/**
+ * Transform Drupal section data to frontend format
+ */
+export function transformSection(
+  section: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): {
+  heading: string;
+  description: string;
+  image?: { url: string; alt: string };
+  verticalTabs: VerticalTabData[];
+} {
+  const attrs = (section as any).attributes || {};
+  const relationships = (section as any).relationships || {};
+
+  // Get section image
+  const imageRelationship = relationships.field_image
+    ? getRelated(relationships, 'field_image', included)
+    : null;
+  const imageUrl =
+    imageRelationship && !Array.isArray(imageRelationship)
+      ? getImageUrl(imageRelationship, included)
+      : '';
+
+  // Get vertical tabs
+  const verticalTabsData = relationships.field_vertical_tabs
+    ? getRelated(relationships, 'field_vertical_tabs', included) || []
+    : [];
+  const verticalTabs = Array.isArray(verticalTabsData)
+    ? verticalTabsData.map((tab: DrupalIncludedEntity) =>
+        transformVerticalTabItem(tab as DrupalVerticalTabItemNode, included),
+      )
+    : [];
+
+  return {
+    heading: attrs.field_heading || attrs.title || 'Section',
+    description: extractText(attrs.field_description) || '',
+    image: imageUrl && imageUrl !== '' ? { url: imageUrl, alt: 'Section image' } : undefined,
+    verticalTabs,
+  };
+}
+
+/**
+ * Transform Drupal services overview page data to frontend format
+ */
+export function transformServicesOverviewPage(
+  node: DrupalServicesOverviewPageNode,
+  included: DrupalIncludedEntity[] = [],
+): ServicesOverviewData {
+  const attrs = node.attributes;
+
+  // Get hero image
+  const heroImageUrl =
+    attrs.field_hero_background_image &&
+    typeof attrs.field_hero_background_image === 'object' &&
+    'data' in attrs.field_hero_background_image
+      ? getImageUrl(attrs.field_hero_background_image as any, included)
+      : '';
+
+  // Get services data - są w relationships, nie w attributes!
+  const servicesData = node.relationships?.field_services_data
+    ? getRelated(node.relationships, 'field_services_data', included) || []
+    : [];
+  const services = Array.isArray(servicesData)
+    ? servicesData.map((service: DrupalIncludedEntity) =>
+        transformServiceItem(service as DrupalServiceItem, included),
+      )
+    : [];
+
+  // Get vertical tabs data - są w relationships, nie w attributes!
+  const verticalTabsData = node.relationships?.field_vertical_tabs_data
+    ? getRelated(node.relationships, 'field_vertical_tabs_data', included) || []
+    : [];
+  const verticalTabs = Array.isArray(verticalTabsData)
+    ? verticalTabsData.map((tab: DrupalIncludedEntity) =>
+        transformVerticalTabItem(tab as DrupalVerticalTabItem, included),
+      )
+    : [];
+
+  // Get sections data
+  const protectionSectionData = node.relationships?.field_protection_section
+    ? getRelated(node.relationships, 'field_protection_section', included)
+    : null;
+  const enablementSectionData = node.relationships?.field_enablement_section
+    ? getRelated(node.relationships, 'field_enablement_section', included)
+    : null;
+  const enforcementSectionData = node.relationships?.field_enforcement_section
+    ? getRelated(node.relationships, 'field_enforcement_section', included)
+    : null;
+
+  // Ensure sections are single entities, not arrays
+  const protectionSection =
+    protectionSectionData && !Array.isArray(protectionSectionData) ? protectionSectionData : null;
+  const enablementSection =
+    enablementSectionData && !Array.isArray(enablementSectionData) ? enablementSectionData : null;
+  const enforcementSection =
+    enforcementSectionData && !Array.isArray(enforcementSectionData)
+      ? enforcementSectionData
+      : null;
+
+  return {
+    heroHeading: attrs.field_hero_heading || 'Services overview',
+    heroSubheading:
+      attrs.field_hero_subheading ||
+      "Find the right service for your needs. Explore all available services and resources in one place. Whether you're looking for specific IP categories or broader support, this page guides you to the right solutions for your goals.",
+    heroImage:
+      heroImageUrl && heroImageUrl !== ''
+        ? { url: heroImageUrl, alt: 'Services overview' }
+        : undefined,
+    servicesData: services,
+    verticalTabsData: verticalTabs,
+    protectionSection: protectionSection
+      ? transformSection(protectionSection, included)
+      : {
+          heading: 'IP protection & management',
+          description:
+            'The six main IP services are: Patents, Trademarks, Copyrights, Integrated Circuits, Designs and Plants.',
+          verticalTabs: [],
+        },
+    enablementSection: enablementSection
+      ? transformSection(enablementSection, included)
+      : {
+          heading: 'IP Enablement',
+          description:
+            'Support and services beyond the main intellectual property categories for anyone seeking comprehensive IP solutions.',
+          verticalTabs: [],
+        },
+    enforcementSection: enforcementSection
+      ? transformSection(enforcementSection, included)
+      : {
+          heading: 'IP enforcement & dispute',
+          description:
+            'IP enforcement is essential for protecting innovations and ensuring fair use through the processes for handling disputes.',
+          verticalTabs: [],
+        },
+  };
+}
+
+/**
+ * Get services overview page data with fallback
+ */
+export async function getServicesOverviewPageData(): Promise<ServicesOverviewData> {
+  try {
+    const nodes = await fetchServicesOverviewPage();
+
+    if (nodes.length === 0) {
+      return getFallbackData();
+    }
+
+    const node = nodes[0] as DrupalServicesOverviewPageNode;
+    const response = await fetchDrupal(
+      `/node/services_overview_page/${node.id}?include=${[
+        'field_hero_background_image',
+        'field_hero_background_image.field_media_image',
+        'field_services_data',
+        'field_services_data.field_icon',
+        'field_services_data.field_icon.field_media_image',
+        'field_vertical_tabs_data',
+        'field_vertical_tabs_data.field_image',
+        'field_vertical_tabs_data.field_image.field_media_image',
+        'field_protection_section',
+        'field_protection_section.field_image',
+        'field_protection_section.field_image.field_media_image',
+        'field_protection_section.field_vertical_tabs',
+        'field_protection_section.field_vertical_tabs.field_image',
+        'field_protection_section.field_vertical_tabs.field_image.field_media_image',
+        'field_enablement_section',
+        'field_enablement_section.field_image',
+        'field_enablement_section.field_image.field_media_image',
+        'field_enablement_section.field_vertical_tabs',
+        'field_enablement_section.field_vertical_tabs.field_image',
+        'field_enablement_section.field_vertical_tabs.field_image.field_media_image',
+        'field_enforcement_section',
+        'field_enforcement_section.field_image',
+        'field_enforcement_section.field_image.field_media_image',
+        'field_enforcement_section.field_vertical_tabs',
+        'field_enforcement_section.field_vertical_tabs.field_image',
+        'field_enforcement_section.field_vertical_tabs.field_image.field_media_image',
+      ].join(',')}`,
+    );
+
+    const transformedData = transformServicesOverviewPage(node, response.included);
+    return transformedData;
+  } catch (error) {
+    return getFallbackData();
+  }
+}
+
+/**
+ * Fallback data for services overview page
+ */
+export function getFallbackData(): ServicesOverviewData {
+  return {
+    heroHeading: 'Services overview',
+    heroSubheading:
+      "Find the right service for your needs. Explore all available services and resources in one place. Whether you're looking for specific IP categories or broader support, this page guides you to the right solutions for your goals.",
+    heroImage: {
+      url: '/images/about/hero.jpg',
+      alt: 'Services Overview',
+    },
+    servicesData: [
+      {
+        id: 'fallback-1',
+        title: 'IP Protection & Management',
+        description:
+          "If you're looking for more information about specific IP, check the six categories below IP Protection & Management.",
+        icon: {
+          url: '/icons/services/add-note.svg',
+          alt: 'Add Note Icon',
+        },
+      },
+      {
+        id: 'fallback-2',
+        title: 'IP Enablement',
+        description:
+          'If you need support with your IPs, you can find specialized assistance under IP Enablement.',
+        icon: {
+          url: '/icons/services/circle-info.svg',
+          alt: 'Circle Info Icon',
+        },
+      },
+      {
+        id: 'fallback-3',
+        title: 'IP Enforcement & Dispute',
+        description: 'Description',
+        icon: {
+          url: '/icons/services/circle-plus.svg',
+          alt: 'Circle Plus Icon',
+        },
+      },
+    ],
+    verticalTabsData: [
+      {
+        id: 'fallback-tab-1',
+        title: 'IP Services Information',
+        description:
+          "If you're looking for information about a specific IP service but aren't sure which category it falls under, the Digital guide is the perfect place to start.",
+        image: {
+          url: '/images/national-ip-strategy/photo-container.jpg',
+          alt: 'IP Services Information illustration',
+        },
+      },
+      {
+        id: 'fallback-tab-2',
+        title: 'Trademark Information',
+        description:
+          'In IP protection & management you can find key IP categories, including Trademarks, with in-depth information and related services.',
+        image: {
+          url: '/images/national-ip-strategy/photo-container.jpg',
+          alt: 'Trademark Information illustration',
+        },
+      },
+      {
+        id: 'fallback-tab-3',
+        title: 'IPs Support',
+        description:
+          "In IP enablement you can explore options like IP clinics, where you'll receive expert help for managing your intellectual property. This service, along with others provides comprehensive solutions tailored to your needs.",
+        image: {
+          url: '/images/national-ip-strategy/photo-container.jpg',
+          alt: 'IPs Support illustration',
+        },
+      },
+    ],
+    protectionSection: {
+      heading: 'IP protection & management',
+      description:
+        'The six main IP services are: Patents, Trademarks, Copyrights, Integrated Circuits, Designs and Plants.',
+      image: {
+        url: '/images/services/service-directory.jpg',
+        alt: 'IP protection & management',
+      },
+      verticalTabs: [],
+    },
+    enablementSection: {
+      heading: 'IP Enablement',
+      description:
+        'Support and services beyond the main intellectual property categories for anyone seeking comprehensive IP solutions.',
+      image: {
+        url: '/images/services/ip-enablement.jpg',
+        alt: 'IP Enablement',
+      },
+      verticalTabs: [],
+    },
+    enforcementSection: {
+      heading: 'IP enforcement & dispute',
+      description:
+        'IP enforcement is essential for protecting innovations and ensuring fair use through the processes for handling disputes.',
+      image: {
+        url: '/images/services/enforcement.jpg',
+        alt: 'IP enforcement & dispute',
+      },
+      verticalTabs: [],
+    },
+  };
+}

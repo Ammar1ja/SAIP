@@ -1,0 +1,71 @@
+.chart :global(.react-flow__controls) {
+  right: 16px;
+  left: auto;
+  bottom: 16px;
+}
+
+.minimapPanel {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  z-index: 4;
+}
+
+.minimap {
+  padding: 8px;
+  width: 200px;
+  height: 120px;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow:
+    0px 4px 8px -2px rgba(16, 24, 40, 0.1),
+    0px 2px 4px -2px rgba(16, 24, 40, 0.06);
+}
+
+.minimapSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background: #f9fafb;
+  border: 1px solid #d2d6db;
+  border-radius: 16px;
+}
+
+.minimapEdges line {
+  stroke: #111827;
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.minimapNodes rect {
+  fill: #ffffff;
+  stroke: #111827;
+  stroke-width: 0.8;
+}
+
+.minimapViewport {
+  stroke: #1b8354;
+  stroke-width: 3.5;
+  stroke-dasharray: 6 4;
+  fill: rgba(27, 131, 84, 0.1);
+}
+
+@media (max-width: 1023px) {
+  .chart :global(.react-flow__controls) {
+    display: none;
+  }
+
+  .minimapPanel {
+    right: 12px;
+    bottom: 12px;
+    top: auto;
+  }
+
+  .minimap {
+    width: 160px;
+    height: 96px;
+  }
+}

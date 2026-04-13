@@ -1,0 +1,457 @@
+import { fetchDrupal } from '../utils';
+import { getRelated, getImageWithAlt, extractText } from '../utils';
+import {
+  DrupalIPLicensingPageNode,
+  DrupalIncludedEntity,
+  DrupalRequirementItemNode,
+  DrupalMediaTabNode,
+} from '../types';
+import { DrupalResponse } from '../api-client';
+
+// Frontend interfaces
+export interface IPLicensingData {
+  heroHeading: string;
+  heroSubheading: string;
+  heroImage?: {
+    src: string;
+    alt: string;
+  };
+  overview: {
+    guideData: GuideData;
+    requirements: RequirementItemData[];
+    exemptions: string[];
+    quickLinks: QuickLinkData[];
+  };
+  services: {
+    title: string;
+    services: ServiceItemData[];
+    serviceTypeOptions: ServiceOptionData[];
+    targetGroupOptions: ServiceOptionData[];
+  };
+  media: {
+    heroTitle: string;
+    heroDescription: string;
+    heroImage: string;
+    tabs: MediaTabData[];
+    content: Record<string, MediaContentData>;
+    filterFields: FilterFieldData[];
+    badgeLabel: string;
+  };
+}
+
+export interface GuideData {
+  title: string;
+  description: string;
+  image: {
+    src: string;
+    alt: string;
+  };
+  viewFileLabel: string;
+  viewFileHref: string;
+  downloadFileLabel: string;
+  downloadFileHref: string;
+}
+
+export interface RequirementItemData {
+  number: number;
+  text: string;
+}
+
+export interface QuickLinkData {
+  label: string;
+  href: string;
+}
+
+export interface ServiceItemData {
+  title: string;
+  labels: string[];
+  description: string;
+  href: string;
+  primaryButtonLabel?: string;
+}
+
+export interface ServiceOptionData {
+  value: string;
+  label: string;
+}
+
+export interface MediaTabData {
+  id: string;
+  label: string;
+}
+
+export interface MediaContentData {
+  title: string;
+  description: string;
+}
+
+export interface FilterFieldData {
+  id: string;
+  label: string;
+  type: string;
+  placeholder: string;
+}
+
+// Drupal API functions
+export async function fetchIPLicensingPage(): Promise<DrupalResponse<DrupalIPLicensingPageNode>> {
+  const endpoint =
+    '/node/ip_licensing_page?filter[status]=1&include=field_hero_background_image,field_guide_image,field_requirements_items,field_services_items,field_media_tabs';
+  const response = await fetchDrupal<DrupalIPLicensingPageNode>(endpoint);
+  return response;
+}
+
+// Transformation functions
+export function transformRequirementItem(
+  item: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): RequirementItemData {
+  const attrs = (item as any).attributes || {};
+
+  return {
+    number: attrs.field_number || 0,
+    text: attrs.field_text || '',
+  };
+}
+
+export function transformMediaTab(
+  tab: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): MediaTabData {
+  const attrs = (tab as any).attributes || {};
+
+  return {
+    id: attrs.field_tab_id || 'tab',
+    label: attrs.title || 'Untitled Tab',
+  };
+}
+
+export function transformIPLicensingPage(
+  node: DrupalIPLicensingPageNode,
+  included: DrupalIncludedEntity[] = [],
+): IPLicensingData {
+  const attrs = node.attributes;
+
+  // Get hero image
+  const heroImage = attrs.field_hero_background_image
+    ? (() => {
+        const imageRel = getRelated(
+          node.relationships || {},
+          'field_hero_background_image',
+          included,
+        );
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Get guide image
+  const guideImage = attrs.field_guide_image
+    ? (() => {
+        const imageRel = getRelated(node.relationships || {}, 'field_guide_image', included);
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Get requirements items
+  const requirementsData = node.relationships?.field_requirements_items
+    ? getRelated(node.relationships, 'field_requirements_items', included) || []
+    : [];
+  const requirements = Array.isArray(requirementsData)
+    ? requirementsData.map((item: DrupalIncludedEntity) => transformRequirementItem(item, included))
+    : [];
+
+  // Get media tabs
+  const mediaTabsData = node.relationships?.field_media_tabs
+    ? getRelated(node.relationships, 'field_media_tabs', included) || []
+    : [];
+  const mediaTabs = Array.isArray(mediaTabsData)
+    ? mediaTabsData.map((tab: DrupalIncludedEntity) => transformMediaTab(tab, included))
+    : [];
+
+  // Get services items
+  const servicesData = node.relationships?.field_services_items
+    ? getRelated(node.relationships, 'field_services_items', included) || []
+    : [];
+  const services = Array.isArray(servicesData)
+    ? servicesData.map((item: DrupalIncludedEntity) => {
+        const attrs = (item as any).attributes || {};
+        return {
+          title: attrs.title || 'Untitled Service',
+          labels: ['Protection'],
+          description: extractText(attrs.field_description) || '',
+          href: attrs.field_href || '#',
+          primaryButtonLabel: attrs.field_primary_button_label || 'View details',
+        };
+      })
+    : [];
+
+  // Parse quick links
+  let quickLinks: QuickLinkData[] = [];
+  if (attrs.field_quick_links) {
+    try {
+      quickLinks = JSON.parse(attrs.field_quick_links);
+    } catch (e) {
+      console.warn('Failed to parse quick links:', e);
+    }
+  }
+
+  // Parse exemptions
+  let exemptions: string[] = [];
+  if (attrs.field_exemptions) {
+    try {
+      exemptions = JSON.parse(attrs.field_exemptions);
+    } catch (e) {
+      console.warn('Failed to parse exemptions:', e);
+    }
+  }
+
+  return {
+    heroHeading: attrs.field_hero_heading || 'IP licensing overview',
+    heroSubheading:
+      attrs.field_hero_subheading ||
+      'Information about becoming a certified IP Agent for representing clients in IP matters.',
+    heroImage: heroImage ? { src: heroImage.src, alt: heroImage.alt } : undefined,
+    overview: {
+      guideData: {
+        title: attrs.field_guide_title || 'IP licensing guide',
+        description:
+          attrs.field_guide_description ||
+          'Experts provide essential guidance on how to protect ideas and innovations through the correct registration of intellectual property rights.',
+        image: guideImage
+          ? { src: guideImage.src, alt: guideImage.alt }
+          : { src: '/images/placeholder-document.png', alt: 'Document placeholder' },
+        viewFileLabel: attrs.field_guide_view_file_label || 'View file',
+        viewFileHref: attrs.field_guide_view_file_href || '#',
+        downloadFileLabel: attrs.field_guide_download_file_label || 'Download file',
+        downloadFileHref: attrs.field_guide_download_file_href || '#',
+      },
+      requirements,
+      exemptions,
+      quickLinks,
+    },
+    services: {
+      title: attrs.field_services_title || 'IP licensing services',
+      services,
+      serviceTypeOptions: [
+        { value: 'all', label: 'All' },
+        { value: 'guidance', label: 'Guidance' },
+        { value: 'protection', label: 'Protection' },
+        { value: 'management', label: 'Management' },
+        { value: 'enforcement', label: 'Enforcement' },
+      ],
+      targetGroupOptions: [
+        { value: 'all', label: 'All' },
+        { value: 'individuals', label: 'Individuals' },
+        { value: 'enterprises', label: 'Enterprises' },
+      ],
+    },
+    media: {
+      heroTitle: 'Media for IP licensing',
+      heroDescription: 'Here you can find news related to IP Licensing.',
+      heroImage: '/images/ip-licensing/hero.jpg',
+      tabs:
+        mediaTabs.length > 0
+          ? mediaTabs
+          : [
+              { id: 'news', label: 'News' },
+              { id: 'videos', label: 'Videos' },
+              { id: 'articles', label: 'Articles' },
+            ],
+      content: {
+        news: {
+          title: 'News',
+          description:
+            'Get the latest information on IP Licensing in Saudi Arabia thanks to news from SAIP.',
+        },
+        videos: {
+          title: 'Videos',
+          description:
+            'Explore the latest updates on the IP in Saudi Arabia through our video collection about IP Licensing.',
+        },
+        articles: {
+          title: 'Articles',
+          description:
+            'Discover the latest articles from SAIP. Explore expert insights, key developments, and detailed analyses to stay ahead in the world of intellectual property.',
+        },
+      },
+      filterFields: [
+        { id: 'search', label: 'Search', type: 'search', placeholder: 'Search' },
+        { id: 'date', label: 'Date', type: 'date', placeholder: 'Select date' },
+      ],
+      badgeLabel: 'IP Licensing',
+    },
+  };
+}
+
+export function getIPLicensingFallbackData(): IPLicensingData {
+  return {
+    heroHeading: 'IP licensing overview',
+    heroSubheading:
+      'Information about becoming a certified IP Agent for representing clients in IP matters and joining a professional network dedicated to protecting IP rights in Saudi Arabia.',
+    heroImage: {
+      src: '/images/ip-licensing/hero.jpg',
+      alt: 'IP Licensing overview',
+    },
+    overview: {
+      guideData: {
+        title: 'IP licensing guide',
+        description:
+          'Experts provide essential guidance on how to protect ideas and innovations through the correct registration of intellectual property rights and offer advice on intellectual property strategies.',
+        image: {
+          src: '/images/placeholder-document.png',
+          alt: 'Document placeholder',
+        },
+        viewFileLabel: 'View file',
+        viewFileHref: '#',
+        downloadFileLabel: 'Download file',
+        downloadFileHref: '#',
+      },
+      requirements: [
+        { number: 1, text: 'You are a Saudi national.' },
+        { number: 2, text: 'You have full legal capacity.' },
+        { number: 3, text: 'You are Saudi Arabia resident.' },
+        { number: 4, text: 'You are not an employee of any government agency.' },
+        {
+          number: 5,
+          text: 'You have no convictions for crimes involving honor or breach of trust, unless rehabilitated.',
+        },
+        {
+          number: 6,
+          text: "You have at least a bachelor's degree in law, science, engineering, or another approved major from a recognized Saudi University or equivalent under Saudi Arabia regulations.",
+        },
+        { number: 7, text: 'You possess a professional verification certificate issued by SAIP.' },
+        { number: 8, text: 'You have paid the prescribed licensing fee.' },
+      ],
+      exemptions: [
+        'You are a licensed lawyer with at least two years of professional experience in intellectual property since obtaining your law practice license.',
+        'You are an evaluator of protection applications with at least two years of relevant work experience.',
+        'You hold a postgraduate degree in intellectual property with at least one year of experience in the field.',
+      ],
+      quickLinks: [
+        { label: 'IP agents', href: '/ip-agents' },
+        {
+          label: 'Supervisory unit for non-profit sector organizations',
+          href: '/supervisory-unit',
+        },
+      ],
+    },
+    services: {
+      title: 'IP licensing services',
+      services: [
+        {
+          title: 'IP Agent License Registration',
+          labels: ['Protection'],
+          description:
+            'Become a certified IP Agent and represent clients in Intellectual Property matters. Join a network of professionals dedicated to protecting Intellectual Property.',
+          href: '/services/ip-licensing/registration',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'IP Agent License Modification',
+          labels: ['Protection'],
+          description: 'Make changes to your IP agent license application.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'IP Agent License Renewal',
+          labels: ['Protection'],
+          description:
+            'Is your IP Agent License expiring or has it already expired? Fill out an application to renew your license.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'IP Agent License Suspension',
+          labels: ['Enforcement'],
+          description: 'Information and procedures regarding the suspension of IP Agent Licenses.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'IP Agent License Reinstatement',
+          labels: ['Enforcement'],
+          description: 'Reinstate your suspended IP Agent License by following the required steps.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+      ],
+      serviceTypeOptions: [
+        { value: 'all', label: 'All' },
+        { value: 'guidance', label: 'Guidance' },
+        { value: 'protection', label: 'Protection' },
+        { value: 'management', label: 'Management' },
+        { value: 'enforcement', label: 'Enforcement' },
+      ],
+      targetGroupOptions: [
+        { value: 'all', label: 'All' },
+        { value: 'individuals', label: 'Individuals' },
+        { value: 'enterprises', label: 'Enterprises' },
+      ],
+    },
+    media: {
+      heroTitle: 'Media for IP licensing',
+      heroDescription: 'Here you can find news related to IP Licensing.',
+      heroImage: '/images/ip-licensing/hero.jpg',
+      tabs: [
+        { id: 'news', label: 'News' },
+        { id: 'videos', label: 'Videos' },
+        { id: 'articles', label: 'Articles' },
+      ],
+      content: {
+        news: {
+          title: 'News',
+          description:
+            'Get the latest information on IP Licensing in Saudi Arabia thanks to news from SAIP.',
+        },
+        videos: {
+          title: 'Videos',
+          description:
+            'Explore the latest updates on the IP in Saudi Arabia through our video collection about IP Licensing.',
+        },
+        articles: {
+          title: 'Articles',
+          description:
+            'Discover the latest articles from SAIP. Explore expert insights, key developments, and detailed analyses to stay ahead in the world of intellectual property.',
+        },
+      },
+      filterFields: [
+        { id: 'search', label: 'Search', type: 'search', placeholder: 'Search' },
+        { id: 'date', label: 'Date', type: 'date', placeholder: 'Select date' },
+      ],
+      badgeLabel: 'IP Licensing',
+    },
+  };
+}
+
+export async function getIPLicensingPageData(): Promise<IPLicensingData> {
+  try {
+    const response = await fetchIPLicensingPage();
+    const nodes = response.data;
+    const included = response.included || [];
+
+    if (nodes.length === 0) {
+      console.log('🔴 IP LICENSING: Using fallback data ❌');
+      return getIPLicensingFallbackData();
+    }
+
+    const node = nodes[0];
+    const data = transformIPLicensingPage(node, included);
+
+    console.log('🟢 IP LICENSING: Using Drupal data ✅');
+    console.log('Hero Image:', data.heroImage);
+    console.log('Guide Image:', data.overview.guideData.image);
+    console.log('Requirements:', data.overview.requirements);
+    console.log('Quick Links:', data.overview.quickLinks);
+    console.log('Services:', data.services.services);
+    console.log('Media Tabs:', data.media.tabs);
+    console.log('Media Content:', JSON.stringify(data.media.content, null, 2));
+    return data;
+  } catch (error) {
+    console.log('🔴 IP LICENSING: Using fallback data ❌', error);
+    return getIPLicensingFallbackData();
+  }
+}

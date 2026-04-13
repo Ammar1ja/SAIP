@@ -1,0 +1,907 @@
+import { fetchDrupal } from '../utils';
+import { getRelated, getImageWithAlt, extractText } from '../utils';
+import {
+  DrupalIPCategoryPageNode,
+  DrupalIncludedEntity,
+  DrupalGuideItemNode,
+  DrupalPublicationItemNode,
+  DrupalStatisticsItemNode,
+  DrupalJourneySectionNode,
+  DrupalMediaTabNode,
+} from '../types';
+import { DrupalResponse } from '../api-client';
+
+// Frontend interfaces (reusing from patents with minor differences)
+export interface TrademarksData {
+  heroHeading: string;
+  heroSubheading: string;
+  heroImage?: {
+    src: string;
+    alt: string;
+  };
+  overview: {
+    header: {
+      title: string;
+      description: string;
+      videoSrc?: string;
+      videoPoster?: {
+        src: string;
+        alt: string;
+      };
+    };
+    guide: {
+      guideTitle: string;
+      guideCards: GuideCardData[];
+    };
+    publications: {
+      publications: PublicationCardData[];
+      publicationsTitle: string;
+      publicationsDescription: string;
+      publicationsCtaLabel: string;
+      publicationsCtaHref: string;
+    };
+    statistics: {
+      statistics: StatisticsCardData[];
+      statisticsTitle: string;
+      statisticsCtaLabel: string;
+      statisticsCtaHref: string;
+    };
+  };
+  journey: {
+    sectionIds: string[];
+    sections: Record<string, JourneySectionData>;
+    tocItems: TOCItemData[];
+    tocAriaLabel: string;
+  };
+  services: {
+    title: string;
+    services: ServiceItemData[];
+    serviceTypeOptions: ServiceOptionData[];
+    targetGroupOptions: ServiceOptionData[];
+  };
+  media: {
+    heroTitle: string;
+    heroDescription: string;
+    heroImage: string;
+    tabs: MediaTabData[];
+    content: Record<string, MediaContentData>;
+    filterFields: FilterFieldData[];
+    badgeLabel: string;
+  };
+}
+
+export interface GuideCardData {
+  title: string;
+  description: string;
+  labels: string[];
+  publicationDate: string;
+  primaryButtonLabel: string;
+  primaryButtonHref: string;
+  secondaryButtonLabel: string;
+  secondaryButtonHref: string;
+  titleBg: 'default' | 'green';
+}
+
+export interface PublicationCardData {
+  title: string;
+  description: string;
+  labels: string[];
+  publicationNumber?: string;
+  durationDate?: string;
+  primaryButtonLabel: string;
+  primaryButtonHref: string;
+  secondaryButtonLabel: string;
+  secondaryButtonHref: string;
+  titleBg: 'default' | 'green';
+}
+
+export interface StatisticsCardData {
+  label: string;
+  value?: number;
+  chartType: 'line' | 'pie' | 'bar';
+  chartData?: Array<{ value: number }>;
+  trend?: {
+    value: string;
+    direction: 'up' | 'down';
+    description?: string;
+  };
+  breakdown?: Array<{
+    label: string;
+    value: number;
+    displayValue: string;
+    color: string;
+  }>;
+}
+
+export interface JourneySectionData {
+  title: string;
+  description: string;
+  buttonLabel?: string;
+  buttonHref?: string;
+  items?: Array<{
+    title: string;
+    description: string;
+  }>;
+}
+
+export interface TOCItemData {
+  id: string;
+  label: string;
+  subItems?: TOCItemData[];
+}
+
+export interface ServiceItemData {
+  title: string;
+  labels: string[];
+  description: string;
+  href: string;
+  primaryButtonLabel?: string;
+}
+
+export interface ServiceOptionData {
+  value: string;
+  label: string;
+}
+
+export interface MediaTabData {
+  id: string;
+  label: string;
+}
+
+export interface MediaContentData {
+  title: string;
+  description: string;
+}
+
+export interface FilterFieldData {
+  id: string;
+  label: string;
+  type: string;
+  placeholder: string;
+}
+
+// Drupal API functions
+export async function fetchTrademarksPage(): Promise<DrupalResponse<DrupalIPCategoryPageNode>> {
+  const includeFields =
+    'field_hero_background_image,field_overview_video_poster,field_guide_items,field_publications_items,field_statistics_items,field_journey_sections,field_services_items,field_media_tabs';
+
+  // Try new content type first
+  try {
+    const endpoint = `/node/trademarks_page?filter[status]=1&include=${includeFields}`;
+    const response = await fetchDrupal<DrupalIPCategoryPageNode>(endpoint);
+    return response;
+  } catch (error) {
+    // Fallback to old content type
+    const endpoint = `/node/ip_category_page?filter[status]=1&include=${includeFields}`;
+    const response = await fetchDrupal<DrupalIPCategoryPageNode>(endpoint);
+    return response;
+  }
+}
+
+const getDescription = (desc: any): string => {
+  if (typeof desc === 'string') return desc;
+  if (desc && typeof desc === 'object' && desc.value) {
+    const htmlContent = desc.processed || desc.value;
+    return htmlContent
+      .replace(/<[^>]*>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .trim();
+  }
+  return '';
+};
+
+// Transformation functions (reusing from patents)
+export function transformGuideItem(
+  item: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): GuideCardData {
+  const attrs = (item as any).attributes || {};
+
+  const formatDate = (dateStr: string): string => {
+    if (!dateStr) return '';
+    try {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
+    } catch (e) {
+      return dateStr;
+    }
+  };
+
+  return {
+    title: attrs.title || 'Untitled Guide',
+    description: getDescription(attrs.field_description),
+    labels: ['Trademarks'],
+    publicationDate: formatDate(attrs.field_publication_date),
+    primaryButtonLabel: attrs.field_primary_button_label || 'Download file',
+    primaryButtonHref: attrs.field_primary_button_href || '#',
+    secondaryButtonLabel: attrs.field_secondary_button_label || 'View file',
+    secondaryButtonHref: attrs.field_secondary_button_href || '#',
+    titleBg: (attrs.field_title_bg as 'default' | 'green') || 'green',
+  };
+}
+
+export function transformPublicationItem(
+  item: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): PublicationCardData {
+  const attrs = (item as any).attributes || {};
+
+  return {
+    title: attrs.title || 'Untitled Publication',
+    description: getDescription(attrs.field_description),
+    labels: ['Trademarks'],
+    publicationNumber: attrs.field_publication_number,
+    durationDate: attrs.field_duration_date,
+    primaryButtonLabel: attrs.field_primary_button_label || 'Download file',
+    primaryButtonHref: attrs.field_primary_button_href || '#',
+    secondaryButtonLabel: attrs.field_secondary_button_label || 'View file',
+    secondaryButtonHref: attrs.field_secondary_button_href || '#',
+    titleBg: (attrs.field_title_bg as 'default' | 'green') || 'green',
+  };
+}
+
+export function transformStatisticsItem(
+  item: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): StatisticsCardData {
+  const attrs = (item as any).attributes || {};
+
+  let chartData: Array<{ value: number }> = [];
+  let trend: StatisticsCardData['trend'];
+  let breakdown: StatisticsCardData['breakdown'];
+
+  if (attrs.field_chart_data) {
+    try {
+      if (typeof attrs.field_chart_data === 'string') {
+        const parsed = JSON.parse(attrs.field_chart_data);
+        if (parsed.series && Array.isArray(parsed.series)) {
+          chartData = parsed.series.map((s: any) => ({ value: s.value }));
+        } else if (Array.isArray(parsed)) {
+          chartData = parsed;
+        }
+      } else if (attrs.field_chart_data.series && Array.isArray(attrs.field_chart_data.series)) {
+        chartData = attrs.field_chart_data.series.map((s: any) => ({ value: s.value }));
+      } else if (Array.isArray(attrs.field_chart_data)) {
+        chartData = attrs.field_chart_data;
+      }
+    } catch (e) {
+      console.warn('Failed to parse chart data:', e);
+    }
+  }
+
+  if (attrs.field_trend_value && attrs.field_trend_direction) {
+    trend = {
+      value: attrs.field_trend_value,
+      direction: attrs.field_trend_direction as 'up' | 'down',
+      description: attrs.field_trend_description,
+    };
+  }
+
+  if (attrs.field_breakdown) {
+    try {
+      let parsedBreakdown;
+      if (typeof attrs.field_breakdown === 'string') {
+        parsedBreakdown = JSON.parse(attrs.field_breakdown);
+      } else {
+        parsedBreakdown = attrs.field_breakdown;
+      }
+
+      if (parsedBreakdown.by_region && Array.isArray(parsedBreakdown.by_region)) {
+        const total = parsedBreakdown.by_region.reduce(
+          (sum: number, region: any) => sum + region.value,
+          0,
+        );
+        breakdown = parsedBreakdown.by_region.map((region: any) => ({
+          label: region.region,
+          value: total > 0 ? (region.value / total) * 100 : 0,
+          displayValue: `${region.value}`,
+          color: '#388A5A',
+        }));
+      } else if (Array.isArray(parsedBreakdown)) {
+        breakdown = parsedBreakdown;
+      }
+    } catch (e) {
+      console.warn('Failed to parse breakdown data:', e);
+    }
+  }
+
+  return {
+    label: attrs.field_label || 'Untitled Statistic',
+    value: attrs.field_value,
+    chartType: (attrs.field_chart_type as 'line' | 'pie' | 'bar') || 'line',
+    chartData,
+    trend,
+    breakdown,
+  };
+}
+
+export function transformJourneySection(
+  section: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): JourneySectionData {
+  const attrs = (section as any).attributes || {};
+
+  let items: Array<{ title: string; description: string }> = [];
+  if (attrs.field_items) {
+    try {
+      items = JSON.parse(attrs.field_items);
+    } catch (e) {
+      console.warn('Failed to parse journey items:', e);
+    }
+  }
+
+  return {
+    title: attrs.title || 'Untitled Section',
+    description: getDescription(attrs.field_description),
+    buttonLabel: attrs.field_button_label,
+    buttonHref: attrs.field_button_href,
+    items,
+  };
+}
+
+export function transformMediaTab(
+  tab: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): MediaTabData {
+  const attrs = (tab as any).attributes || {};
+
+  const cleanTabId = (id: string): string => {
+    if (!id) return 'tab';
+    return id.replace(/['"]/g, '').toLowerCase();
+  };
+
+  return {
+    id: cleanTabId(attrs.field_tab_id),
+    label: attrs.title || 'Untitled Tab',
+  };
+}
+
+export function transformTrademarksPage(
+  node: DrupalIPCategoryPageNode,
+  included: DrupalIncludedEntity[] = [],
+): TrademarksData {
+  const attrs = node.attributes;
+
+  // Get hero image
+  const heroImage = attrs.field_hero_background_image
+    ? (() => {
+        const imageRel = getRelated(
+          node.relationships || {},
+          'field_hero_background_image',
+          included,
+        );
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Get overview video poster
+  const videoPoster = attrs.field_overview_video_poster
+    ? (() => {
+        const imageRel = getRelated(
+          node.relationships || {},
+          'field_overview_video_poster',
+          included,
+        );
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Get guide items
+  const guideItemsData = node.relationships?.field_guide_items
+    ? getRelated(node.relationships, 'field_guide_items', included) || []
+    : [];
+  const guideItems = Array.isArray(guideItemsData)
+    ? guideItemsData.map((item: DrupalIncludedEntity) => transformGuideItem(item, included))
+    : [];
+
+  // Get publication items
+  const publicationItemsData = node.relationships?.field_publications_items
+    ? getRelated(node.relationships, 'field_publications_items', included) || []
+    : [];
+  const publicationItems = Array.isArray(publicationItemsData)
+    ? publicationItemsData.map((item: DrupalIncludedEntity) =>
+        transformPublicationItem(item, included),
+      )
+    : [];
+
+  // Get statistics items
+  const statisticsItemsData = node.relationships?.field_statistics_items
+    ? getRelated(node.relationships, 'field_statistics_items', included) || []
+    : [];
+  const statisticsItems = Array.isArray(statisticsItemsData)
+    ? statisticsItemsData.map((item: DrupalIncludedEntity) =>
+        transformStatisticsItem(item, included),
+      )
+    : [];
+
+  // Get journey sections
+  const journeySectionsData = node.relationships?.field_journey_sections
+    ? getRelated(node.relationships, 'field_journey_sections', included) || []
+    : [];
+  const journeySections = Array.isArray(journeySectionsData)
+    ? journeySectionsData.reduce(
+        (acc: Record<string, JourneySectionData>, section: DrupalIncludedEntity) => {
+          const transformed = transformJourneySection(section, included);
+          const sectionId = (section as any).attributes?.field_section_id || 'section';
+          acc[sectionId] = transformed;
+          return acc;
+        },
+        {},
+      )
+    : {};
+
+  // Get media tabs
+  const mediaTabsData = node.relationships?.field_media_tabs
+    ? getRelated(node.relationships, 'field_media_tabs', included) || []
+    : [];
+  const mediaTabs = Array.isArray(mediaTabsData)
+    ? mediaTabsData.map((tab: DrupalIncludedEntity) => transformMediaTab(tab, included))
+    : [];
+
+  // Get services items
+  const servicesItemsData = node.relationships?.field_services_items
+    ? getRelated(node.relationships, 'field_services_items', included) || []
+    : [];
+  const servicesItems = Array.isArray(servicesItemsData)
+    ? servicesItemsData.map((item: DrupalIncludedEntity) => {
+        const attrs = (item as any).attributes || {};
+        return {
+          title: attrs.title || 'Untitled Service',
+          labels: ['Protection'],
+          description: getDescription(attrs.field_description),
+          href: attrs.field_href || '#',
+          primaryButtonLabel: attrs.field_primary_button_label || 'View details',
+        };
+      })
+    : [];
+
+  return {
+    heroHeading: attrs.field_hero_heading || 'Trademarks overview',
+    heroSubheading:
+      attrs.field_hero_subheading ||
+      'Find out what a trademark is, how to register it, and what services are available for trademark owners.',
+    heroImage: heroImage ? { src: heroImage.src, alt: heroImage.alt } : undefined,
+    overview: {
+      header: {
+        title: attrs.field_overview_header_title || 'Information library',
+        description:
+          attrs.field_overview_header_description ||
+          'Watch the video and learn the key steps involved in trademarks.',
+        videoSrc: attrs.field_overview_video_src,
+        videoPoster: videoPoster ? { src: videoPoster.src, alt: videoPoster.alt } : undefined,
+      },
+      guide: {
+        guideTitle: attrs.field_guide_title || 'Trademark guides',
+        guideCards: guideItems,
+      },
+      publications: {
+        publications: publicationItems,
+        publicationsTitle: attrs.field_publications_title || 'IP Gazette',
+        publicationsDescription:
+          attrs.field_publications_description ||
+          'Official publication of trademark information and updates.',
+        publicationsCtaLabel: attrs.field_publications_cta_label || 'View all gazettes',
+        publicationsCtaHref: attrs.field_publications_cta_href || '/resources/gazettes',
+      },
+      statistics: {
+        statistics: statisticsItems,
+        statisticsTitle: attrs.field_statistics_title || 'Statistics',
+        statisticsCtaLabel: attrs.field_statistics_cta_label || 'View more statistics',
+        statisticsCtaHref: attrs.field_statistics_cta_href || '/resources/statistics',
+      },
+    },
+    journey: {
+      sectionIds: Object.keys(journeySections),
+      sections: journeySections,
+      tocItems: Object.keys(journeySections).map((sectionId) => {
+        const section = journeySections[sectionId];
+        return {
+          id: sectionId,
+          label: section.title,
+          subItems:
+            section.items?.map((item, index) => ({
+              id: `${sectionId}-${index}`,
+              label: item.title,
+            })) || [],
+        };
+      }),
+      tocAriaLabel: 'Trademarks journey navigation',
+    },
+    services: {
+      title: attrs.field_services_title || 'Trademarks services',
+      services: servicesItems,
+      serviceTypeOptions: [
+        { value: 'all', label: 'All' },
+        { value: 'registration', label: 'Registration' },
+        { value: 'management', label: 'Management' },
+        { value: 'enforcement', label: 'Enforcement' },
+      ],
+      targetGroupOptions: [
+        { value: 'all', label: 'All' },
+        { value: 'individuals', label: 'Individuals' },
+        { value: 'enterprises', label: 'Enterprises' },
+      ],
+    },
+    media: {
+      heroTitle: 'Media for trademarks',
+      heroDescription:
+        'Here you can find news, videos, articles and events on various categories of IP.',
+      heroImage: '/images/trademarks/hero.jpg',
+      tabs:
+        mediaTabs.length > 0
+          ? mediaTabs
+          : [
+              { id: 'news', label: 'News' },
+              { id: 'videos', label: 'Videos' },
+              { id: 'articles', label: 'Articles' },
+            ],
+      content: {
+        news: {
+          title: 'News',
+          description:
+            'Get the latest information on trademarks in Saudi Arabia thanks to news from SAIP.',
+        },
+        videos: {
+          title: 'Videos',
+          description:
+            'Explore the latest updates on the IP in Saudi Arabia through our video collection about trademarks.',
+        },
+        articles: {
+          title: 'Articles',
+          description:
+            'Discover the latest articles from SAIP. Explore expert insights, key developments, and detailed analyses to stay ahead in the world of intellectual property.',
+        },
+      },
+      filterFields: [
+        { id: 'search', label: 'Search', type: 'search', placeholder: 'Search' },
+        { id: 'date', label: 'Date', type: 'date', placeholder: 'dd.mm.rrrr' },
+      ],
+      badgeLabel: 'Trademarks',
+    },
+  };
+}
+
+export function getTrademarksFallbackData(): TrademarksData {
+  return {
+    heroHeading: 'Trademarks overview',
+    heroSubheading:
+      'Find out what a trademark is, how to register it, and what services are available for trademark owners.',
+    heroImage: {
+      src: '/images/trademarks/hero.jpg',
+      alt: 'Trademarks overview',
+    },
+    overview: {
+      header: {
+        title: 'Information library',
+        description: 'Watch the video and learn the key steps involved in trademarks.',
+        videoSrc: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        videoPoster: {
+          src: '/images/trademarks/overview.jpg',
+          alt: 'Trademarks overview video',
+        },
+      },
+      guide: {
+        guideTitle: 'Trademark guides',
+        guideCards: [
+          {
+            title: 'Saudi Design Classification',
+            description: 'Locarno Classification Guide (14th Edition)',
+            labels: ['Trademarks'],
+            publicationDate: '04.08.2024',
+            primaryButtonLabel: 'Download file',
+            primaryButtonHref: '/files/saudi-design-classification.pdf',
+            secondaryButtonLabel: 'View file',
+            secondaryButtonHref: '/files/saudi-design-classification.pdf',
+            titleBg: 'green',
+          },
+          {
+            title: 'Software Copyright Protection Guide',
+            description: 'Guidelines for Protecting Copyright in Software',
+            labels: ['Trademarks'],
+            publicationDate: '04.08.2024',
+            primaryButtonLabel: 'Download file',
+            primaryButtonHref: '/files/software-copyright-guide.pdf',
+            secondaryButtonLabel: 'View file',
+            secondaryButtonHref: '/files/software-copyright-guide.pdf',
+            titleBg: 'green',
+          },
+          {
+            title: 'Guide to patent application content',
+            description: 'The content of the patent application necessary for filing',
+            labels: ['Trademarks'],
+            publicationDate: '04.08.2024',
+            primaryButtonLabel: 'Download file',
+            primaryButtonHref: '/files/guide-to-patent-application-content.pdf',
+            secondaryButtonLabel: 'View file',
+            secondaryButtonHref: '/files/guide-to-patent-application-content.pdf',
+            titleBg: 'green',
+          },
+        ],
+      },
+      publications: {
+        publications: [],
+        publicationsTitle: 'IP Gazette',
+        publicationsDescription: 'Official publication of trademark information and updates.',
+        publicationsCtaLabel: 'View all gazettes',
+        publicationsCtaHref: '/resources/gazettes',
+      },
+      statistics: {
+        statistics: [
+          {
+            label: 'Number of trademark applications in 2023',
+            value: 4076,
+            chartType: 'line',
+            chartData: [
+              { value: 1000 },
+              { value: 1500 },
+              { value: 2000 },
+              { value: 2500 },
+              { value: 3000 },
+              { value: 3500 },
+              { value: 4076 },
+            ],
+            trend: { value: '100%', direction: 'up', description: 'vs last month' },
+          },
+          {
+            label: 'Number of registered trademarks in 2023',
+            value: 4011,
+            chartType: 'line',
+            chartData: [
+              { value: 900 },
+              { value: 1200 },
+              { value: 1800 },
+              { value: 2200 },
+              { value: 2700 },
+              { value: 3200 },
+              { value: 4011 },
+            ],
+            trend: { value: '100%', direction: 'up', description: 'vs last month' },
+          },
+          {
+            label: `Applicant's type`,
+            chartType: 'pie',
+            breakdown: [
+              { label: 'Entities', value: 20.97, displayValue: '20,97%', color: '#388A5A' },
+              { label: 'Individuals', value: 79.03, displayValue: '79,03%', color: '#1C6846' },
+            ],
+          },
+        ],
+        statisticsTitle: 'Statistics',
+        statisticsCtaLabel: 'View more statistics',
+        statisticsCtaHref: '/resources/statistics',
+      },
+    },
+    journey: {
+      sectionIds: [
+        'guidance',
+        'trademark-checklist',
+        'ip-clinics',
+        'ip-search-engine',
+        'not-registrable',
+        'protection',
+        'management',
+        'enforcement',
+      ],
+      sections: {
+        guidance: {
+          title: 'Guidance',
+          description:
+            'Turning Brands into Assets: The journey begins with understanding your trademark and its potential.',
+        },
+        'trademark-checklist': {
+          title: 'Trademark checklist',
+          description:
+            'Evaluate whether your brand or mark meets the necessary criteria to qualify for trademark registration.',
+          buttonLabel: 'Go to trademark checklist',
+          buttonHref: '#',
+        },
+        'ip-clinics': {
+          title: 'IP Clinics',
+          description:
+            'Apply for one of the IP Clinics services that provide beneficiaries with guidance and assistance.',
+          buttonLabel: 'Go to IP Clinics',
+          buttonHref: '#',
+        },
+        'ip-search-engine': {
+          title: 'IP Search Engine',
+          description: 'Search for registered trademarks.',
+          buttonLabel: 'Go to search engine',
+          buttonHref: '#',
+        },
+        'not-registrable': {
+          title: 'Non-registrable trademarks',
+          description:
+            'Certain types of trademarks cannot be registered. See the categories below.',
+        },
+        protection: {
+          title: 'Protection',
+          description: 'How to protect your trademark.',
+        },
+        management: {
+          title: 'Management',
+          description: 'Trademark management and renewals.',
+        },
+        enforcement: {
+          title: 'Enforcement',
+          description: 'How to enforce your trademark rights.',
+        },
+      },
+      tocItems: [
+        {
+          id: 'guidance',
+          label: 'Guidance',
+          subItems: [
+            { id: 'trademark-checklist', label: 'Trademark checklist' },
+            { id: 'ip-clinics', label: 'IP Clinics' },
+            { id: 'ip-search-engine', label: 'IP Search Engine' },
+            {
+              id: 'not-registrable',
+              label: 'Non-registrable trademarks',
+              subItems: [
+                { id: 'generic-terms', label: 'Generic or descriptive terms' },
+                { id: 'public-symbols', label: 'Public symbols and emblems' },
+                { id: 'misleading-marks', label: 'Misleading or deceptive marks' },
+                { id: 'immoral-marks', label: 'Immoral or offensive marks' },
+                { id: 'personal-identifiers', label: 'Personal and geographic identifiers' },
+                { id: 'similarity', label: 'Similarity to existing or well-known trademarks' },
+                { id: 'contrary-policy', label: 'Trademarks contrary to public policy' },
+              ],
+            },
+          ],
+        },
+        { id: 'protection', label: 'Protection' },
+        { id: 'management', label: 'Management' },
+        { id: 'enforcement', label: 'Enforcement' },
+      ],
+      tocAriaLabel: 'Trademarks journey navigation',
+    },
+    services: {
+      title: 'Trademarks services',
+      services: [
+        {
+          title: 'Trademark registration',
+          labels: ['Protection'],
+          description: 'A service that allows the user to apply for trademark registration.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'Trademark associated with sound Registration',
+          labels: ['Protection'],
+          description: 'A service that allows the user to record a voice mark.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'Collective mark registration',
+          labels: ['Protection'],
+          description:
+            'Registration of collective marks that are used to distinguish the goods or services of members of organizations.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'Application for registration of control marks',
+          labels: ['Protection'],
+          description: 'A mark intended to indicate the conduct of control or examination.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'Trademark for non-commercial purpose Registration',
+          labels: ['Protection'],
+          description:
+            'It is a mark registered for non-commercial purposes, such as logos used by professional organizations.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'Trademark renewal',
+          labels: ['Protection'],
+          description:
+            'A service that enables the applicant to renew trademark protection for a period of ten years.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'Transfer the trademark ownership',
+          labels: ['Protection'],
+          description:
+            'A service that allows the user to transfer the ownership of the trademark from the owner to another person.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'Amend the address of the trademark owner',
+          labels: ['Protection'],
+          description:
+            'A service that allows the trademark owner to modify the address of the trademark owner.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: "Amend the owner's name trademark data",
+          labels: ['Protection'],
+          description: "A service that allows the trademark owner to modify the owner's name",
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+      ],
+      serviceTypeOptions: [
+        { value: 'all', label: 'All' },
+        { value: 'registration', label: 'Registration' },
+        { value: 'management', label: 'Management' },
+        { value: 'enforcement', label: 'Enforcement' },
+      ],
+      targetGroupOptions: [
+        { value: 'all', label: 'All' },
+        { value: 'individuals', label: 'Individuals' },
+        { value: 'enterprises', label: 'Enterprises' },
+      ],
+    },
+    media: {
+      heroTitle: 'Media for trademarks',
+      heroDescription:
+        'Here you can find news, videos, articles and events on various categories of IP.',
+      heroImage: '/images/trademarks/hero.jpg',
+      tabs: [
+        { id: 'news', label: 'News' },
+        { id: 'videos', label: 'Videos' },
+        { id: 'articles', label: 'Articles' },
+      ],
+      content: {
+        news: {
+          title: 'News',
+          description:
+            'Get the latest information on trademarks in Saudi Arabia thanks to news from SAIP.',
+        },
+        videos: {
+          title: 'Videos',
+          description:
+            'Explore the latest updates on the IP in Saudi Arabia through our video collection about trademarks.',
+        },
+        articles: {
+          title: 'Articles',
+          description:
+            'Discover the latest articles from SAIP. Explore expert insights, key developments, and detailed analyses to stay ahead in the world of intellectual property.',
+        },
+      },
+      filterFields: [
+        { id: 'search', label: 'Search', type: 'search', placeholder: 'Search' },
+        { id: 'date', label: 'Date', type: 'date', placeholder: 'dd.mm.rrrr' },
+      ],
+      badgeLabel: 'Trademarks',
+    },
+  };
+}
+
+export async function getTrademarksPageData(): Promise<TrademarksData> {
+  try {
+    const response = await fetchTrademarksPage();
+    const nodes = response.data;
+    const included = response.included || [];
+
+    if (nodes.length === 0) {
+      return getTrademarksFallbackData();
+    }
+
+    const node = nodes[0];
+    const data = transformTrademarksPage(node, included);
+
+    return data;
+  } catch (error) {
+    return getTrademarksFallbackData();
+  }
+}

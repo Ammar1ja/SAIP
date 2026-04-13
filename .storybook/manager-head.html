@@ -1,0 +1,59 @@
+<style>
+  /* SAIP Design System Custom Styling for Storybook 9 */
+  :root {
+    --saip-primary: #1e40af;
+    --saip-secondary: #3b82f6;
+    --saip-text: #374151;
+    --saip-font: 'IBM Plex Sans Arabic', 'IBM Plex Sans', sans-serif;
+  }
+
+  /* Brand title styling */
+  [title='Storybook'] {
+    font-family: var(--saip-font) !important;
+    color: var(--saip-primary) !important;
+    font-weight: 600;
+  }
+
+  /* Sidebar improvements */
+  .sidebar-item[data-item-id*='root'] {
+    font-weight: 500;
+    color: var(--saip-text);
+  }
+
+  /* Custom scrollbar */
+  .sidebar-container ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .sidebar-container ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+
+  .sidebar-container ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+
+  .sidebar-container ::-webkit-scrollbar-thumb:hover {
+    background: var(--saip-secondary);
+  }
+
+  /* Header styling */
+  .sb-bar {
+    background: #f9fafb !important;
+    border-bottom: 1px solid #e5e7eb;
+  }
+</style>
+
+<meta
+  name="description"
+  content="SAIP Design System - Saudi Authority for Intellectual Property Design Components"
+/>
+<meta name="version" content="1.1.0" />
+<link
+  rel="preload"
+  href="/fonts/IBMPlexSansArabic-Bold.ttf"
+  as="font"
+  type="font/ttf"
+  crossorigin
+/>

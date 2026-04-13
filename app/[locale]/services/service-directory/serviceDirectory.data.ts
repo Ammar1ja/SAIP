@@ -1,0 +1,98 @@
+export const serviceDirectoryData = [
+  {
+    title: 'Patent application',
+    labels: ['Protection', 'Service category'],
+    description: 'A service that allows the user to file a patent application.',
+    href: '/services/patent-application',
+    category: 'Protection',
+    serviceType: 'Application',
+    targetGroup: 'Individuals',
+  },
+  {
+    title: 'Patent Cooperation Treaty (PCT)',
+    labels: ['Protection', 'Patents'],
+    description:
+      'The Patent Cooperation Treaty (PCT), established in Washington in 1970 and effective since 1974, is a key international agreement in the patent system.',
+    href: '/services/pct',
+    category: 'Protection',
+    serviceType: 'Treaty',
+    targetGroup: 'Organizations',
+  },
+  {
+    title: 'Fast track examination of patent applications (PPH) Patent Prosecution Highway',
+    labels: ['Protection', 'Patents'],
+    description:
+      'Under the PPH agreement, patent offices participating in the Program have agreed that when an applicant receives a positive decision from one office, they can request fast track examination in another.',
+    href: '/services/pph',
+    category: 'Protection',
+    serviceType: 'Examination',
+    targetGroup: 'Individuals',
+  },
+  {
+    title: 'Trademark registration',
+    labels: ['Protection', 'Service category'],
+    description: 'A service that allows the user to apply for trademark registration.',
+    href: '/services/trademark-registration',
+    category: 'Trademarks',
+    serviceType: 'Registration',
+    targetGroup: 'Businesses',
+  },
+  {
+    title: 'Trademark for non-commercial purpose registration',
+    labels: ['Protection', 'Patents'],
+    description:
+      'It is a mark registered for non-commercial purposes, such as logos used by professional organizations to distinguish their correspondence.',
+    href: '/services/trademark-non-commercial',
+    category: 'Trademarks',
+    serviceType: 'Registration',
+    targetGroup: 'Organizations',
+  },
+  {
+    title: 'Collective mark registration',
+    labels: ['Protection', 'Patents'],
+    description:
+      'Registration of collective marks that are used to distinguish the goods or services of members of organizations belonging to a specific entity with legal personality.',
+    href: '/services/collective-mark',
+    category: 'Trademarks',
+    serviceType: 'Registration',
+    targetGroup: 'Organizations',
+  },
+  {
+    title: 'Design registration',
+    labels: ['Protection', 'Designs'],
+    description:
+      'A service for registering industrial designs to protect the visual design of objects.',
+    href: '/services/design-registration',
+    category: 'Designs',
+    serviceType: 'Registration',
+    targetGroup: 'Individuals',
+  },
+  {
+    title: 'Copyright registration',
+    labels: ['Protection', 'Copyrights'],
+    description: 'A service for registering copyrights to protect original works of authorship.',
+    href: '/services/copyright-registration',
+    category: 'Copyrights',
+    serviceType: 'Registration',
+    targetGroup: 'Individuals',
+  },
+  {
+    title: 'Plant variety protection',
+    labels: ['Protection', 'Plant Varieties'],
+    description:
+      'A service for protecting new varieties of plants by granting exclusive rights to breeders.',
+    href: '/services/plant-variety',
+    category: 'Plant Varieties',
+    serviceType: 'Protection',
+    targetGroup: 'Businesses',
+  },
+  {
+    title: 'Layout designs of integrated circuits',
+    labels: ['Protection', 'Integrated Circuits'],
+    description: 'A service for registering the layout designs of integrated circuits.',
+    href: '/services/layout-designs',
+    category: 'Integrated Circuits',
+    serviceType: 'Registration',
+    targetGroup: 'Organizations',
+  },
+];

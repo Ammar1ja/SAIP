@@ -1,0 +1,53 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "baseUrl": ".",
+    "allowSyntheticDefaultImports": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "types": ["vitest/globals"]
+  },
+  "include": [
+    "components",
+    "app",
+    "pages",
+    "lib",
+    "types",
+    ".storybook/**/*",
+    "next-env.d.ts",
+    "next-sitemap.config.js",
+    "postcss.config.js",
+    "vitest.config.ts",
+    "stories",
+    ".next/types/**/*.ts",
+    "next.config.ts",
+    "vitest.setup.ts",
+    "scripts/**/*",
+    "context/**/*",
+    "hooks/**/*",
+    "i18n/**/*",
+    "i18n.ts",
+    "middleware.ts",
+    "messages.d.ts",
+    "styles/**/*"
+  ],
+  "exclude": ["node_modules", ".next"]
+}

@@ -1,0 +1,390 @@
+/**
+ * IP Clinics Service
+ * Handles data fetching and transformation for IP Clinics page
+ */
+
+import { fetchDrupal, getRelated, getImageWithAlt, extractText } from '../utils';
+import { DrupalNode, DrupalIncludedEntity, DrupalStatisticsItemNode } from '../types';
+import { DrupalResponse } from '../api-client';
+import { StatisticsCardData } from './common-types';
+
+// Frontend data interfaces
+export interface IPClinicsData {
+  heroHeading: string;
+  heroSubheading: string;
+  heroImage?: {
+    src: string;
+    alt: string;
+  };
+  overview: {
+    title: string;
+    description: string;
+    videoCard: {
+      title: string;
+      description: string;
+      videoSrc: string;
+      videoPoster: string;
+    };
+    servicesTitle: string;
+    servicesDescription: string;
+    serviceTabs: Array<{
+      id: string;
+      label: string;
+    }>;
+    serviceTabsData: Array<{
+      id: string;
+      title: string;
+      description: string;
+      image: {
+        src: string;
+        alt: string;
+      };
+      buttonLabel: string;
+      buttonHref: string;
+      buttonLabel2: string;
+      buttonHref2: string;
+    }>;
+    statistics: StatisticsCardData[];
+  };
+  services: ServiceItemData[];
+}
+
+export interface ServiceItemData {
+  title: string;
+  labels: string[];
+  description: string;
+  href: string;
+}
+
+// Drupal API functions
+export async function fetchIPClinicsPage(): Promise<DrupalResponse<DrupalNode>> {
+  const includeFields = [
+    'field_hero_background_image',
+    'field_hero_background_image.field_media_image',
+    'field_overview_video_poster',
+    'field_overview_video_poster.field_media_image',
+    'field_service_tabs',
+    'field_service_tabs.field_image',
+    'field_service_tabs.field_image.field_media_image',
+    'field_statistics_items',
+    'field_services_items',
+  ];
+
+  const endpoint = `/node/ip_clinics_page?filter[status]=1&include=${includeFields.join(',')}`;
+  const response = await fetchDrupal<DrupalNode>(endpoint);
+  return response;
+}
+
+// Transformation functions
+export function transformStatisticsItem(
+  item: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): StatisticsCardData {
+  const attrs = (item as any).attributes || {};
+
+  let chartData: Array<{ value: number }> = [];
+  let trend: StatisticsCardData['trend'];
+  let breakdown: StatisticsCardData['breakdown'];
+
+  if (attrs.field_chart_data) {
+    try {
+      chartData = JSON.parse(attrs.field_chart_data);
+    } catch (e) {
+      console.warn('Failed to parse chart data:', e);
+    }
+  }
+
+  if (attrs.field_trend_value && attrs.field_trend_direction && attrs.field_trend_description) {
+    trend = {
+      value: attrs.field_trend_value,
+      direction: attrs.field_trend_direction,
+      description: attrs.field_trend_description,
+    };
+  }
+
+  if (attrs.field_breakdown) {
+    try {
+      breakdown = JSON.parse(attrs.field_breakdown);
+    } catch (e) {
+      console.warn('Failed to parse breakdown data:', e);
+    }
+  }
+
+  return {
+    label: attrs.field_label || 'Untitled Statistic',
+    value: attrs.field_value,
+    chartType: attrs.field_chart_type || 'line',
+    chartData,
+    trend,
+    breakdown,
+  };
+}
+
+export function transformIPClinicsPage(
+  node: DrupalNode,
+  included: DrupalIncludedEntity[] = [],
+): IPClinicsData {
+  const attrs = node.attributes;
+
+  // Get hero image
+  const heroImage = attrs.field_hero_background_image
+    ? (() => {
+        const imageRel = getRelated(
+          node.relationships || {},
+          'field_hero_background_image',
+          included,
+        );
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Get overview video poster
+  const videoPoster = attrs.field_overview_video_poster
+    ? (() => {
+        const imageRel = getRelated(
+          node.relationships || {},
+          'field_overview_video_poster',
+          included,
+        );
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Get service tabs
+  const serviceTabsData = node.relationships?.field_service_tabs
+    ? getRelated(node.relationships, 'field_service_tabs', included) || []
+    : [];
+  const serviceTabs = Array.isArray(serviceTabsData)
+    ? serviceTabsData.map((tab: DrupalIncludedEntity) => {
+        const attrs = (tab as any).attributes || {};
+        return {
+          id: attrs.field_tab_id || 'tab',
+          label: attrs.title || 'Untitled Tab',
+        };
+      })
+    : [];
+
+  const serviceTabsDataTransformed = Array.isArray(serviceTabsData)
+    ? serviceTabsData.map((tab: DrupalIncludedEntity) => {
+        const attrs = (tab as any).attributes || {};
+        const tabImage = (() => {
+          const imageRel = getRelated((tab as any).relationships || {}, 'field_image', included);
+          return imageRel && !Array.isArray(imageRel)
+            ? getImageWithAlt(imageRel, included)
+            : undefined;
+        })();
+
+        return {
+          id: attrs.field_tab_id || 'tab',
+          title: attrs.title || 'Untitled',
+          description: extractText(attrs.field_description) || '',
+          image: {
+            src: tabImage?.src || '/images/placeholder.jpg',
+            alt: tabImage?.alt || 'Service image',
+          },
+          buttonLabel: attrs.field_button_label || 'Download file',
+          buttonHref: attrs.field_button_href || '#',
+          buttonLabel2: attrs.field_button_label_2 || 'View file',
+          buttonHref2: attrs.field_button_href_2 || '#',
+        };
+      })
+    : [];
+
+  // Get statistics items
+  const statisticsData = node.relationships?.field_statistics_items
+    ? getRelated(node.relationships, 'field_statistics_items', included) || []
+    : [];
+  const statistics = Array.isArray(statisticsData)
+    ? statisticsData.map((item: DrupalIncludedEntity) => transformStatisticsItem(item, included))
+    : [];
+
+  // Get services items
+  const servicesData = node.relationships?.field_services_items
+    ? getRelated(node.relationships, 'field_services_items', included) || []
+    : [];
+  const services = Array.isArray(servicesData)
+    ? servicesData.map((item: DrupalIncludedEntity) => {
+        const attrs = (item as any).attributes || {};
+        return {
+          title: attrs.title || 'Untitled Service',
+          labels: attrs.field_labels ? JSON.parse(attrs.field_labels) : ['Guidance'],
+          description: extractText(attrs.field_description) || '',
+          href: attrs.field_href || '#',
+        };
+      })
+    : [];
+
+  return {
+    heroHeading: attrs.field_hero_heading || 'IP Clinics overview',
+    heroSubheading:
+      extractText(attrs.field_hero_subheading) ||
+      'Consulting clinics provide guidance and advice to companies, small and medium enterprises, entrepreneurs and individuals.',
+    heroImage: heroImage ? { src: heroImage.src, alt: heroImage.alt } : undefined,
+    overview: {
+      title: attrs.field_overview_title || 'IP Clinics overview',
+      description:
+        extractText(attrs.field_overview_description) ||
+        'Consulting clinics provide guidance and advice.',
+      videoCard: {
+        title: attrs.field_video_card_title || 'Information library',
+        description:
+          attrs.field_video_card_description || 'Watch the video and learn more about IP Clinics.',
+        videoSrc: attrs.field_video_src || '',
+        videoPoster: videoPoster?.src || '',
+      },
+      servicesTitle: attrs.field_services_title || 'Services of the IP Clinics',
+      servicesDescription:
+        extractText(attrs.field_services_description) ||
+        'Intellectual Property Clinics provide specialized services.',
+      serviceTabs,
+      serviceTabsData: serviceTabsDataTransformed,
+      statistics,
+    },
+    services,
+  };
+}
+
+export function getIPClinicsFallbackData(): IPClinicsData {
+  return {
+    heroHeading: 'IP Clinics overview',
+    heroSubheading:
+      'Consulting clinics provide guidance and advice to companies, small and medium enterprises, entrepreneurs and individuals desiring to establish innovation-based projects.',
+    heroImage: {
+      src: '/images/ip-clinics/hero.jpg',
+      alt: 'IP Clinics overview',
+    },
+    overview: {
+      title: 'IP Clinics overview',
+      description:
+        'Consulting clinics provide guidance and advice to companies, small and medium enterprises, entrepreneurs and individuals desiring to establish innovation-based projects with the aim to contribute to the IP rights registration, use and utilization.',
+      videoCard: {
+        title: 'Information library',
+        description: 'Watch the video and learn more about IP Clinics.',
+        videoSrc: '',
+        videoPoster: '',
+      },
+      servicesTitle: 'Services of the IP Clinics',
+      servicesDescription:
+        'Intellectual Property Clinics (IP Clinics) are part of IP enablement programs, providing specialized services across three main tracks:',
+      serviceTabs: [
+        { id: 'guidance', label: 'Guidance and Advisory Track' },
+        { id: 'technical', label: 'Technical Services Track' },
+        {
+          id: 'ip-support-course',
+          label: 'The course of the support program for IP-based enterprises',
+        },
+      ],
+      serviceTabsData: [
+        {
+          id: 'guidance',
+          title: 'Guidance and Advisory Track',
+          description:
+            'Experts provide essential guidance on how to protect ideas and innovations through the correct registration of IP rights and offer advice on IP strategies.',
+          image: {
+            src: '/images/services/ip-clinics/guidance.jpg',
+            alt: 'Guidance and Advisory Track',
+          },
+          buttonLabel: 'Download file',
+          buttonHref: '/ip-clinics/download-guidance',
+          buttonLabel2: 'View file',
+          buttonHref2: '/ip-clinics/view-guidance',
+        },
+        {
+          id: 'technical',
+          title: 'Technical Services Track',
+          description:
+            'This track includes specialized technical services such as analyzing and evaluating ideas, which helps in determining how to transform these ideas into marketable products.',
+          image: {
+            src: '/images/services/ip-clinics/technical.jpg',
+            alt: 'Technical Services Track',
+          },
+          buttonLabel: 'Download file',
+          buttonHref: '/ip-clinics/download-technical',
+          buttonLabel2: 'View file',
+          buttonHref2: '/ip-clinics/view-technical',
+        },
+        {
+          id: 'ip-support-course',
+          title: 'The course of the support program for IP-based enterprises',
+          description:
+            'This track supports businesses that rely on intellectual property for growth and development by offering technical, financial, and advisory support to accelerate the innovation process and achieve commercial success.',
+          image: {
+            src: '/images/services/ip-clinics/ip-support-course.jpg',
+            alt: 'The course of the support program for IP-based enterprises',
+          },
+          buttonLabel: 'Download file',
+          buttonHref: '/ip-clinics/download-ip-support-course',
+          buttonLabel2: 'View file',
+          buttonHref2: '/ip-clinics/view-ip-support-course',
+        },
+      ],
+      statistics: [
+        {
+          label: 'Number of Beneficiaries',
+          value: 1193,
+          chartType: 'line',
+          chartData: [
+            { value: 100 },
+            { value: 250 },
+            { value: 400 },
+            { value: 550 },
+            { value: 700 },
+            { value: 850 },
+            { value: 1193 },
+          ],
+          trend: { value: '100%', direction: 'up', description: 'vs last month' },
+        },
+        {
+          label: 'Number of counseling sessions',
+          value: 758,
+          chartType: 'line',
+          chartData: [
+            { value: 75 },
+            { value: 150 },
+            { value: 225 },
+            { value: 325 },
+            { value: 450 },
+            { value: 575 },
+            { value: 758 },
+          ],
+          trend: { value: '100%', direction: 'up', description: 'vs last month' },
+        },
+      ],
+    },
+    services: [
+      {
+        title: 'Services of the IP consultancy clinics',
+        labels: ['Guidance'],
+        description:
+          'IP advisory clinics are one of the services offered by SAIP. It aims to provide guidance services in intellectual property fields through advice provided by experts in this field to both individuals and institutions.',
+        href: '#',
+      },
+    ],
+  };
+}
+
+export async function getIPClinicsPageData(): Promise<IPClinicsData> {
+  try {
+    const response = await fetchIPClinicsPage();
+    const nodes = response.data;
+    const included = response.included || [];
+
+    if (nodes.length === 0) {
+      console.log('🔴 IP CLINICS: No content found, using fallback data');
+      return getIPClinicsFallbackData();
+    }
+
+    const node = nodes[0];
+    const data = transformIPClinicsPage(node, included);
+
+    console.log('✅ IP CLINICS: Using Drupal data');
+    return data;
+  } catch (error) {
+    console.log('🔴 IP CLINICS: Error fetching data, using fallback data');
+    return getIPClinicsFallbackData();
+  }
+}

@@ -1,0 +1,298 @@
+@import 'tailwindcss';
+@import 'react-multi-date-picker/styles/colors/green.css';
+
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  src: url('/fonts/IBMPlexSansArabic-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  src: url('/fonts/IBMPlexSansArabic-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  src: url('/fonts/IBMPlexSansArabic-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  src: url('/fonts/IBMPlexSansArabic-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@config '../tailwind.config.js';
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+}
+
+@layer utilities {
+  /* Mobile / tablet: hug start/end per direction (used by Section + RTL). */
+  .responsive-align-left {
+    margin-inline-start: 0;
+    margin-inline-end: auto;
+  }
+
+  .responsive-align-right {
+    margin-inline-start: auto;
+    margin-inline-end: 0;
+  }
+
+  /* lg+: center constrained sections — avoids a permanent white gutter on the physical right in LTR
+     between ~1024px and the old 1537px breakpoint. */
+  @media (min-width: 1024px) {
+    .responsive-align-left,
+    .responsive-align-right {
+      margin-inline-start: auto !important;
+      margin-inline-end: auto !important;
+    }
+  }
+
+  @media (min-width: 1537px) {
+    .responsive-align-left,
+    .responsive-align-right {
+      max-width: 1280px;
+    }
+  }
+}
+
+/* High Contrast Mode - Simple invert filter on html element */
+html.high-contrast {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Re-invert media to preserve original colors */
+html.high-contrast img,
+html.high-contrast video,
+html.high-contrast picture,
+html.high-contrast canvas,
+html.high-contrast iframe,
+html.high-contrast svg {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Focus states for accessibility (will appear yellow after inversion) */
+html.high-contrast *:focus {
+  outline: 3px solid blue !important;
+  outline-offset: 2px;
+}
+
+/* Mobile bottom nav spacer — prevents content from being hidden behind fixed bottom nav */
+@media (max-width: 1023px) {
+  body {
+    padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Large font size mode */
+.large-font {
+  font-size: 112.5%; /* 18px base instead of 16px */
+}
+
+.large-font body {
+  font-size: 1rem;
+}
+
+.large-font h1 {
+  font-size: 2.5rem;
+}
+
+.large-font h2 {
+  font-size: 2rem;
+}
+
+.large-font h3 {
+  font-size: 1.75rem;
+}
+
+.large-font h4 {
+  font-size: 1.5rem;
+}
+
+.large-font p,
+.large-font span,
+.large-font a,
+.large-font li {
+  font-size: 1.125rem;
+}
+
+/* React Multi Date Picker Custom Styles */
+.rmdp-wrapper {
+  border-radius: 8px;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.rmdp-calendar {
+  padding: 12px;
+}
+
+.rmdp-day {
+  width: 36px;
+  height: 36px;
+}
+
+.rmdp-day span {
+  font-size: 14px;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.rmdp-header-values {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.rmdp-week-day {
+  color: #667085;
+  font-weight: 500;
+}
+
+.rmdp-day.rmdp-today span {
+  background-color: transparent !important;
+  border: 2px solid #1b8354 !important;
+  color: #1b8354 !important;
+}
+
+.rmdp-day.rmdp-selected span:not(.highlight) {
+  background-color: #1b8354 !important;
+  color: #ffffff !important;
+}
+
+.rmdp-prime .rmdp-day.rmdp-selected span,
+.rmdp-prime .rmdp-day.rmdp-selected span:not(.highlight),
+.rmdp-prime .rmdp-day.rmdp-range.start span,
+.rmdp-prime .rmdp-day.rmdp-range.end span {
+  background-color: #1b8354 !important;
+  color: #ffffff !important;
+}
+
+.rmdp-prime .rmdp-day.rmdp-range {
+  background-color: #e7f5ee !important;
+}
+
+.rmdp-day:not(.rmdp-disabled):not(.rmdp-day-hidden) span:hover {
+  background-color: #e7f5ee !important;
+  color: #1b8354 !important;
+}
+
+.rmdp-range {
+  background-color: #e7f5ee !important;
+}
+
+.rmdp-range.start,
+.rmdp-range.end {
+  background-color: #1b8354 !important;
+}
+
+.rmdp-range.start span,
+.rmdp-range.end span {
+  color: #ffffff !important;
+}
+
+.rmdp-day.rmdp-range span,
+.rmdp-prime .rmdp-day.rmdp-range span {
+  background-color: #e7f5ee !important;
+  border-radius: 0 !important;
+  color: #1f2a37;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.rmdp-day.rmdp-range.start span,
+.rmdp-day.rmdp-range.end span,
+.rmdp-prime .rmdp-day.rmdp-range.start span,
+.rmdp-prime .rmdp-day.rmdp-range.end span {
+  background-color: #1b8354 !important;
+  border-radius: 9999px !important;
+  color: #ffffff !important;
+}
+
+.rmdp-day.rmdp-range-hover span,
+.rmdp-prime .rmdp-day.rmdp-range-hover span {
+  background-color: #e7f5ee !important;
+  border-radius: 0 !important;
+  color: #1f2a37;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.rmdp-day.rmdp-range-hover.start span,
+.rmdp-day.rmdp-range-hover.end span,
+.rmdp-prime .rmdp-day.rmdp-range-hover.start span,
+.rmdp-prime .rmdp-day.rmdp-range-hover.end span {
+  background-color: #1b8354 !important;
+  border-radius: 9999px !important;
+  color: #ffffff !important;
+}
+
+.rmdp-prime .rmdp-day span {
+  color: #667085;
+}
+
+.rmdp-prime .rmdp-day.rmdp-selected span,
+.rmdp-prime .rmdp-day.rmdp-selected span:not(.highlight),
+.rmdp-prime .rmdp-day.rmdp-range.start span,
+.rmdp-prime .rmdp-day.rmdp-range.end span {
+  color: #ffffff !important;
+}
+
+.rmdp-day.rmdp-range span,
+.rmdp-prime .rmdp-day.rmdp-range span {
+  color: #1f2a37;
+}
+
+/* RTL Calendar Styles for Hijri */
+.rmdp-rtl {
+  direction: rtl;
+}
+
+.rmdp-rtl .rmdp-arrow {
+  transform: rotate(180deg);
+}
+
+.rmdp-rtl .rmdp-header-values {
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+}
+
+.rmdp-rtl .rmdp-week-day,
+.rmdp-rtl .rmdp-day span {
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+}
+
+/* Prime theme adjustments */
+.rmdp-prime .rmdp-arrow-container {
+  border-radius: 4px;
+}
+
+.rmdp-prime .rmdp-arrow-container:hover {
+  background-color: #f3f4f6;
+}

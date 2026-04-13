@@ -1,0 +1,1 @@
+export { TiscResponsibilities } from './TiscResponsibilities';

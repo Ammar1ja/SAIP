@@ -1,0 +1,179 @@
+/**
+ * FAQ Service
+ * Handles data fetching and transformation for FAQ page
+ */
+
+import { fetchDrupal, extractText } from '../utils';
+import { DrupalNode, DrupalIncludedEntity } from '../types';
+import { DrupalResponse } from '../api-client';
+
+// Frontend data interfaces
+export interface FaqCategoryData {
+  id: string;
+  label: string;
+  questions: FaqQuestionData[];
+}
+
+export interface FaqQuestionData {
+  id: string;
+  title: string;
+  description: string;
+}
+
+export interface FaqPageData {
+  heroHeading: string;
+  heroSubheading: string;
+  categories: FaqCategoryData[];
+}
+
+// Drupal API functions
+export async function fetchFaqCategories(): Promise<DrupalResponse<DrupalNode>> {
+  const endpoint = `/node/faq_category?filter[status]=1&sort=weight`;
+  const response = await fetchDrupal<DrupalNode>(endpoint);
+  return response;
+}
+
+export async function fetchFaqQuestions(): Promise<DrupalResponse<DrupalNode>> {
+  const endpoint = `/node/faq_item?filter[status]=1&sort=weight`;
+  const response = await fetchDrupal<DrupalNode>(endpoint);
+  return response;
+}
+
+// Transformation functions
+export function transformFaqData(categories: DrupalNode[], questions: DrupalNode[]): FaqPageData {
+  // Group questions by category
+  const categoriesMap = new Map<string, FaqCategoryData>();
+
+  // Initialize categories
+  categories.forEach((cat) => {
+    const attrs = cat.attributes;
+    categoriesMap.set(cat.id, {
+      id: attrs.field_category_id || cat.id,
+      label: attrs.title || 'Untitled Category',
+      questions: [],
+    });
+  });
+
+  // Add questions to categories
+  questions.forEach((question) => {
+    const attrs = question.attributes;
+    const categoryData = question.relationships?.field_category?.data;
+    const categoryId = categoryData && !Array.isArray(categoryData) ? categoryData.id : null;
+
+    if (categoryId && categoriesMap.has(categoryId)) {
+      const category = categoriesMap.get(categoryId)!;
+      category.questions.push({
+        id: attrs.field_question_id || question.id,
+        title: attrs.title || attrs.field_question || 'Untitled Question',
+        description: extractText(attrs.field_answer) || extractText(attrs.body) || '',
+      });
+    }
+  });
+
+  return {
+    heroHeading: 'FAQs',
+    heroSubheading: 'Find answers to frequently asked questions',
+    categories: Array.from(categoriesMap.values()),
+  };
+}
+
+export function getFaqFallbackData(): FaqPageData {
+  return {
+    heroHeading: 'FAQs',
+    heroSubheading: 'Find answers to frequently asked questions',
+    categories: [
+      {
+        id: 'general',
+        label: 'General questions',
+        questions: [
+          {
+            id: 'q1',
+            title: 'What does the term "intellectual property" mean?',
+            description:
+              'Intellectual property (IP) refers to creations of the mind, such as inventions, literary and artistic works, and symbols, names and images used in commerce.',
+          },
+          {
+            id: 'q2',
+            title: 'What is the role of the SAIP?',
+            description:
+              'The Saudi Authority for Intellectual Property (SAIP) is a body specialized in regulating the fields of intellectual property, protecting the rights of owners in various fields, and raising awareness about the importance of this domain.',
+          },
+        ],
+      },
+      {
+        id: 'patents',
+        label: 'Patents',
+        questions: [
+          {
+            id: 'q10',
+            title: 'How long does a patent last?',
+            description:
+              'A patent typically lasts for 20 years from the filing date, provided renewal fees are paid.',
+          },
+        ],
+      },
+      {
+        id: 'trademarks',
+        label: 'Trademarks',
+        questions: [
+          {
+            id: 'q11',
+            title: 'What is a trademark?',
+            description:
+              'A trademark includes names, words, symbols, numbers, images, patterns, colors, or combinations of these, used to distinguish goods or services.',
+          },
+        ],
+      },
+      {
+        id: 'copyrights',
+        label: 'Copyrights',
+        questions: [],
+      },
+      {
+        id: 'designs',
+        label: 'Designs',
+        questions: [],
+      },
+      {
+        id: 'topographic',
+        label: 'Topographic Design of Integrated Circuits',
+        questions: [],
+      },
+      {
+        id: 'plant-varieties',
+        label: 'Plant varieties',
+        questions: [],
+      },
+      {
+        id: 'licenses',
+        label: 'Licenses',
+        questions: [],
+      },
+    ],
+  };
+}
+
+export async function getFaqPageData(): Promise<FaqPageData> {
+  try {
+    const [categoriesResponse, questionsResponse] = await Promise.all([
+      fetchFaqCategories(),
+      fetchFaqQuestions(),
+    ]);
+
+    const categories = categoriesResponse.data;
+    const questions = questionsResponse.data;
+
+    if (categories.length === 0) {
+      console.log('🔴 FAQ: No categories found, using fallback data');
+      return getFaqFallbackData();
+    }
+
+    const data = transformFaqData(categories, questions);
+
+    console.log('✅ FAQ: Using Drupal data');
+    return data;
+  } catch (error) {
+    console.log('🔴 FAQ: Error fetching data, using fallback data');
+    return getFaqFallbackData();
+  }
+}

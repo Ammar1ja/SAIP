@@ -1,0 +1,199 @@
+/**
+ * Publications Service
+ * Handles data fetching and transformation for Publications page
+ * Reuses PublicationItemNode from patents/trademarks services
+ */
+
+import { fetchDrupal, getRelated, getImageWithAlt, extractText } from '../utils';
+import { DrupalNode, DrupalIncludedEntity, DrupalPublicationItemNode } from '../types';
+import { DrupalResponse } from '../api-client';
+
+// Frontend data interfaces
+export interface PublicationsData {
+  heroHeading: string;
+  heroSubheading: string;
+  heroImage?: {
+    src: string;
+    alt: string;
+  };
+  publications: PublicationItemData[];
+}
+
+export interface PublicationItemData {
+  title: string;
+  publicationNumber?: string;
+  durationDate?: string;
+  primaryButtonLabel: string;
+  primaryButtonHref: string;
+  secondaryButtonLabel: string;
+  secondaryButtonHref: string;
+  [key: string]: unknown; // Added to satisfy FilterableItem interface
+}
+
+// Drupal API functions
+export async function fetchPublicationsPage(): Promise<DrupalResponse<DrupalNode>> {
+  const includeFields = [
+    'field_hero_background_image',
+    'field_hero_background_image.field_media_image',
+    'field_publications_items',
+  ];
+
+  const endpoint = `/node/publications_page?filter[status]=1&include=${includeFields.join(',')}`;
+  const response = await fetchDrupal<DrupalNode>(endpoint);
+  return response;
+}
+
+// Fetch individual publication items
+export async function fetchPublications(): Promise<DrupalResponse<DrupalPublicationItemNode>> {
+  const endpoint = `/node/publication_item?filter[status]=1`;
+  const response = await fetchDrupal<DrupalPublicationItemNode>(endpoint);
+  return response;
+}
+
+// Transformation functions
+export function transformPublicationItem(
+  item: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): PublicationItemData {
+  const attrs = (item as any).attributes || {};
+
+  return {
+    title: attrs.title || 'Untitled Publication',
+    publicationNumber: attrs.field_publication_number || '',
+    durationDate: attrs.field_duration_date || '',
+    primaryButtonLabel: attrs.field_primary_button_label || 'Download file',
+    primaryButtonHref: attrs.field_primary_button_href || '/',
+    secondaryButtonLabel: attrs.field_secondary_button_label || 'View file',
+    secondaryButtonHref: attrs.field_secondary_button_href || '/',
+  };
+}
+
+export function transformPublicationsPage(
+  node: DrupalNode,
+  included: DrupalIncludedEntity[] = [],
+): PublicationsData {
+  const attrs = node.attributes;
+
+  // Get hero image
+  const heroImage = attrs.field_hero_background_image
+    ? (() => {
+        const imageRel = getRelated(
+          node.relationships || {},
+          'field_hero_background_image',
+          included,
+        );
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Get publications items
+  const publicationsData = node.relationships?.field_publications_items
+    ? getRelated(node.relationships, 'field_publications_items', included) || []
+    : [];
+  const publications = Array.isArray(publicationsData)
+    ? publicationsData.map((item: DrupalIncludedEntity) => transformPublicationItem(item, included))
+    : [];
+
+  return {
+    heroHeading: attrs.field_hero_heading || 'Publications',
+    heroSubheading:
+      extractText(attrs.field_hero_subheading) ||
+      'Access the latest patent publications and gazette updates.',
+    heroImage: heroImage ? { src: heroImage.src, alt: heroImage.alt } : undefined,
+    publications,
+  };
+}
+
+export function getPublicationsFallbackData(): PublicationsData {
+  return {
+    heroHeading: 'Publications',
+    heroSubheading: 'Access the latest patent publications and gazette updates.',
+    heroImage: {
+      src: '/images/about/hero.jpg',
+      alt: 'Publications',
+    },
+    publications: [
+      {
+        title: 'Patent publication 6261',
+        publicationNumber: '6261',
+        durationDate: '11.09 - 11.11.2024',
+        primaryButtonLabel: 'Download file',
+        primaryButtonHref: '/',
+        secondaryButtonLabel: 'View file',
+        secondaryButtonHref: '/',
+      },
+      {
+        title: 'Patent publication 6262',
+        publicationNumber: '6262',
+        durationDate: '12.01 - 12.03.2024',
+        primaryButtonLabel: 'Download file',
+        primaryButtonHref: '/',
+        secondaryButtonLabel: 'View file',
+        secondaryButtonHref: '/',
+      },
+      {
+        title: 'Patent publication 6263',
+        publicationNumber: '6263',
+        durationDate: '01.15 - 01.17.2025',
+        primaryButtonLabel: 'Download file',
+        primaryButtonHref: '/',
+        secondaryButtonLabel: 'View file',
+        secondaryButtonHref: '/',
+      },
+    ],
+  };
+}
+
+export async function getPublicationsPageData(): Promise<PublicationsData> {
+  try {
+    // Try to fetch publications page first
+    const pageResponse = await fetchPublicationsPage();
+    const pageNodes = pageResponse.data;
+    const pageIncluded = pageResponse.included || [];
+
+    if (pageNodes.length === 0) {
+      console.log('🔴 PUBLICATIONS: No page content found, trying individual items');
+      // Try fetching individual publication items
+      try {
+        const itemsResponse = await fetchPublications();
+        const items = itemsResponse.data;
+        const itemsIncluded = itemsResponse.included || [];
+
+        if (items.length === 0) {
+          console.log('🔴 PUBLICATIONS: No items found, using fallback data');
+          return getPublicationsFallbackData();
+        }
+
+        // Transform items to publications data
+        const publications = items.map((item: DrupalPublicationItemNode) =>
+          transformPublicationItem(item, itemsIncluded),
+        );
+
+        console.log('✅ PUBLICATIONS: Using Drupal data from individual items');
+        return {
+          heroHeading: 'Publications',
+          heroSubheading: 'Access the latest patent publications and gazette updates.',
+          heroImage: {
+            src: '/images/about/hero.jpg',
+            alt: 'Publications',
+          },
+          publications,
+        };
+      } catch (itemsError) {
+        console.log('🔴 PUBLICATIONS: Error fetching items, using fallback data');
+        return getPublicationsFallbackData();
+      }
+    }
+
+    const node = pageNodes[0];
+    const data = transformPublicationsPage(node, pageIncluded);
+
+    console.log('✅ PUBLICATIONS: Using Drupal data from page');
+    return data;
+  } catch (error) {
+    console.log('🔴 PUBLICATIONS: Error fetching data, using fallback data');
+    return getPublicationsFallbackData();
+  }
+}

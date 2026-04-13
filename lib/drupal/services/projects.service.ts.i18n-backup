@@ -1,0 +1,350 @@
+/**
+ * Projects Service
+ * Handles data fetching and transformation for projects page
+ */
+
+import { fetchDrupal, getRelated, getImageWithAlt, extractText } from '../utils';
+import { DrupalNode, DrupalIncludedEntity, DrupalProjectsPageNode, DrupalProject } from '../types';
+
+// Frontend data interfaces
+export interface ProjectData {
+  id: string;
+  title: string;
+  reference: string;
+  tenderStage: string;
+  mainActivity: string;
+  tenderType: string;
+  tenderFees: string;
+  publicationDate: string;
+  announcementVendor: string;
+  bidSubmissionDeadline: string;
+  description?: string;
+  image?: {
+    url: string;
+    alt: string;
+  };
+}
+
+export interface ProjectsPageData {
+  // Hero section
+  title: string;
+  description: string;
+  heroImage?: {
+    url: string;
+    alt: string;
+  };
+
+  // Etimad section
+  etimadUrl: string;
+  etimadText: string;
+
+  // Projects list
+  projects: ProjectData[];
+}
+
+/**
+ * Fetch projects page data from Drupal
+ */
+export async function fetchProjectsPage(): Promise<{
+  nodes: DrupalNode[];
+  included: DrupalIncludedEntity[];
+}> {
+  const includeFields = [
+    'field_hero_background_image',
+    'field_hero_background_image.field_media_image',
+    'field_projects',
+    'field_projects.field_image',
+    'field_projects.field_image.field_media_image',
+    'field_projects.field_tender_stage',
+    'field_projects.field_activity',
+    'field_projects.field_tender_type',
+  ];
+
+  // Use the correct content type that exists in Drupal
+  const endpoint = `/node/projects_page?filter[status]=1&include=${includeFields.join(',')}`;
+  const response = await fetchDrupal(endpoint);
+
+  if (response.data && response.data.length > 0) {
+    return { nodes: response.data, included: response.included || [] };
+  }
+
+  throw new Error('No Projects page content found');
+}
+
+/**
+ * Fetch individual projects from Drupal
+ */
+export async function fetchProjects(): Promise<{
+  nodes: DrupalNode[];
+  included: DrupalIncludedEntity[];
+}> {
+  const includeFields = [
+    'field_image',
+    'field_image.field_media_image',
+    'field_tender_stage',
+    'field_activity',
+    'field_tender_type',
+  ];
+
+  const possibleContentTypes = ['project', 'tender'];
+
+  for (const contentType of possibleContentTypes) {
+    try {
+      const endpoint = `/node/${contentType}?filter[status]=1&include=${includeFields.join(',')}`;
+      const response = await fetchDrupal(endpoint);
+
+      console.log(`🔍 PROJECTS: Trying ${contentType} - got ${response.data?.length || 0} nodes`);
+
+      if (response.data && response.data.length > 0) {
+        console.log(`✅ PROJECTS: Found content in ${contentType}`);
+        return { nodes: response.data, included: response.included || [] };
+      }
+    } catch (error) {
+      console.log(`❌ PROJECTS: Failed ${contentType} - ${(error as Error).message}`);
+      continue;
+    }
+  }
+
+  throw new Error('No Projects content found');
+}
+
+/**
+ * Transform Drupal project data to frontend format
+ */
+export function transformProject(
+  project: DrupalProject,
+  included: DrupalIncludedEntity[] = [],
+): ProjectData {
+  // Get attributes from Drupal node structure
+  const attrs = (project as any).attributes || {};
+
+  // Get relationships from Drupal node structure
+  const relationships = (project as any).relationships || {};
+
+  // Get taxonomy terms from relationships
+  const tenderStageTerms = relationships.field_tender_stage
+    ? getRelated(relationships, 'field_tender_stage', included) || []
+    : [];
+  const activityTerms = relationships.field_activity
+    ? getRelated(relationships, 'field_activity', included) || []
+    : [];
+  const tenderTypeTerms = relationships.field_tender_type
+    ? getRelated(relationships, 'field_tender_type', included) || []
+    : [];
+
+  const tenderStageTerm = Array.isArray(tenderStageTerms) ? tenderStageTerms[0] : tenderStageTerms;
+  const activityTerm = Array.isArray(activityTerms) ? activityTerms[0] : activityTerms;
+  const tenderTypeTerm = Array.isArray(tenderTypeTerms) ? tenderTypeTerms[0] : tenderTypeTerms;
+
+  // Format dates for display
+  const formatDate = (dateString: string) => {
+    if (!dateString) return '';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch {
+      return dateString;
+    }
+  };
+
+  return {
+    id: project.id,
+    title: attrs.title || 'Untitled Project',
+    reference: attrs.field_reference || '',
+    tenderStage: (tenderStageTerm?.attributes?.name as string) || 'Unknown',
+    mainActivity: (activityTerm?.attributes?.name as string) || 'Unknown',
+    tenderType: (tenderTypeTerm?.attributes?.name as string) || 'Unknown',
+    tenderFees: attrs.field_tender_fees || 'Results have not been announced yet',
+    publicationDate: formatDate(attrs.field_publication_date),
+    announcementVendor: attrs.field_announcement_vendor || 'Results have not been announced yet',
+    bidSubmissionDeadline: formatDate(attrs.field_bid_submission_deadline),
+    description: extractText(attrs.field_description),
+    image: project.image,
+  };
+}
+
+/**
+ * Transform Drupal projects page data to frontend format
+ */
+export function transformProjectsPage(
+  node: DrupalProjectsPageNode,
+  included: DrupalIncludedEntity[],
+): ProjectsPageData {
+  const attrs = node.attributes;
+
+  // Get hero image
+  const heroImage = attrs.field_hero_background_image
+    ? (() => {
+        const imageRel = getRelated(
+          node.relationships || {},
+          'field_hero_background_image',
+          included,
+        );
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Get projects
+  const projectsData = node.relationships?.field_projects
+    ? getRelated(node.relationships, 'field_projects', included) || []
+    : [];
+  const projects = Array.isArray(projectsData)
+    ? projectsData.map((project: DrupalIncludedEntity) =>
+        transformProject(project as any, included),
+      )
+    : [];
+
+  return {
+    title: attrs.title,
+    description: extractText(attrs.body) || 'Learn more about our projects and initiatives',
+    heroImage: heroImage ? { url: heroImage.src, alt: heroImage.alt } : undefined,
+    etimadUrl: 'https://etimad.sa',
+    etimadText: 'Go to Etimad platform',
+    projects,
+  };
+}
+
+/**
+ * Get fallback data for projects page
+ */
+export function getProjectsFallbackData(): ProjectsPageData {
+  return {
+    title: 'SAIP Projects',
+    description: 'Learn more about our projects and initiatives',
+    heroImage: {
+      url: '/images/projects/hero.jpg',
+      alt: 'Projects',
+    },
+    etimadUrl: 'https://etimad.sa',
+    etimadText: 'Go to Etimad platform',
+    projects: [
+      {
+        id: '1',
+        title: 'IP Academy Training 2024',
+        reference: '220939662341',
+        tenderStage: 'Open',
+        mainActivity: 'Training',
+        tenderType: 'Electronic reverse bidding',
+        tenderFees: 'Results have not been announced yet',
+        publicationDate: '10.10.2024',
+        announcementVendor: 'Results have not been announced yet',
+        bidSubmissionDeadline: '10:09 AM 15.10.24',
+      },
+      {
+        id: '2',
+        title: 'Patent Management System',
+        reference: '220939662342',
+        tenderStage: 'Closed',
+        mainActivity: 'IT services',
+        tenderType: 'Direct purchase',
+        tenderFees: 'SAR 500',
+        publicationDate: '01.09.2024',
+        announcementVendor: 'Vendor A',
+        bidSubmissionDeadline: '12:00 PM 05.09.24',
+      },
+      {
+        id: '3',
+        title: 'Trademark Awareness Campaign',
+        reference: '220939662343',
+        tenderStage: 'Awarded',
+        mainActivity: 'Marketing',
+        tenderType: 'Public tender',
+        tenderFees: 'SAR 1000',
+        publicationDate: '15.08.2024',
+        announcementVendor: 'Vendor B',
+        bidSubmissionDeadline: '03:00 PM 20.08.24',
+      },
+      {
+        id: '4',
+        title: 'Copyrights Digitalization',
+        reference: '220939662344',
+        tenderStage: 'Open',
+        mainActivity: 'Consulting services',
+        tenderType: 'Electronic reverse bidding',
+        tenderFees: 'Results have not been announced yet',
+        publicationDate: '10.10.2024',
+        announcementVendor: 'Results have not been announced yet',
+        bidSubmissionDeadline: '10:09 AM 15.10.24',
+      },
+      {
+        id: '5',
+        title: 'IP Enforcement Platform',
+        reference: '220939662345',
+        tenderStage: 'Closed',
+        mainActivity: 'IT services',
+        tenderType: 'Direct purchase',
+        tenderFees: 'SAR 800',
+        publicationDate: '20.07.2024',
+        announcementVendor: 'Vendor C',
+        bidSubmissionDeadline: '11:00 AM 25.07.24',
+      },
+      {
+        id: '6',
+        title: 'Designs Registration Portal',
+        reference: '220939662346',
+        tenderStage: 'Awarded',
+        mainActivity: 'Web development',
+        tenderType: 'Public tender',
+        tenderFees: 'SAR 1200',
+        publicationDate: '05.06.2024',
+        announcementVendor: 'Vendor D',
+        bidSubmissionDeadline: '09:00 AM 10.06.24',
+      },
+    ],
+  };
+}
+
+/**
+ * Main function to get projects page data
+ */
+export async function getProjectsPageData(): Promise<ProjectsPageData> {
+  try {
+    const { nodes, included } = await fetchProjectsPage();
+
+    if (nodes.length === 0) {
+      console.log('🔴 PROJECTS PAGE: No content found, using fallback data');
+      return getProjectsFallbackData();
+    }
+
+    const node = nodes[0] as DrupalProjectsPageNode;
+    const data = transformProjectsPage(node, included);
+
+    console.log('✅ PROJECTS PAGE: Using Drupal data');
+    return data;
+  } catch (error) {
+    console.log('🔴 PROJECTS PAGE: Error fetching data, using fallback data');
+    return getProjectsFallbackData();
+  }
+}
+
+/**
+ * Get individual projects data
+ */
+export async function getProjectsData(): Promise<ProjectData[]> {
+  try {
+    const { nodes, included } = await fetchProjects();
+
+    if (nodes.length === 0) {
+      console.log('🔴 PROJECTS: No content found, using fallback data');
+      return getProjectsFallbackData().projects;
+    }
+
+    const projects = nodes.map((node: DrupalNode) =>
+      transformProject(node as unknown as DrupalProject, included),
+    );
+
+    console.log('✅ PROJECTS: Using Drupal data');
+    return projects;
+  } catch (error) {
+    console.log('🔴 PROJECTS: Error fetching data, using fallback data');
+    return getProjectsFallbackData().projects;
+  }
+}

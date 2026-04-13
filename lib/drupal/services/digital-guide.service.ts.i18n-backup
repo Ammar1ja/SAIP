@@ -1,0 +1,170 @@
+/**
+ * Digital Guide Service
+ * Handles data fetching and transformation for Digital Guide pages
+ */
+
+import { fetchDrupal, extractText } from '../utils';
+import { DrupalNode, DrupalIncludedEntity } from '../types';
+import { DrupalResponse } from '../api-client';
+
+// Frontend data interfaces
+export interface DigitalGuideTabContent {
+  id: string;
+  content: string; // HTML content
+  cta?: {
+    text: string;
+    buttonLabel: string;
+    buttonHref: string;
+  };
+}
+
+export interface DigitalGuideSectionData {
+  id: string;
+  title: string;
+  description: string;
+  type:
+    | 'iprights'
+    | 'ipcategory'
+    | 'checkyouridea'
+    | 'patents'
+    | 'trademarks'
+    | 'copyrights'
+    | 'designs'
+    | 'plant-varieties'
+    | 'topographic'
+    | string;
+  tabs?: Array<{
+    id: string;
+    label: string;
+    content: DigitalGuideTabContent;
+  }>;
+}
+
+export interface DigitalGuideData {
+  heroHeading: string;
+  heroSubheading: string;
+  sections: DigitalGuideSectionData[];
+}
+
+// Drupal API functions
+export async function fetchDigitalGuideSections(): Promise<DrupalResponse<DrupalNode>> {
+  const endpoint = `/node/digital_guide_section?filter[status]=1&sort=weight`;
+  const response = await fetchDrupal<DrupalNode>(endpoint);
+  return response;
+}
+
+export async function fetchDigitalGuideContent(type: string): Promise<DrupalResponse<DrupalNode>> {
+  const endpoint = `/node/digital_guide_content?filter[status]=1&filter[field_guide_type]=${type}`;
+  const response = await fetchDrupal<DrupalNode>(endpoint);
+  return response;
+}
+
+// Transformation functions
+export function transformDigitalGuideData(sections: DrupalNode[]): DigitalGuideData {
+  return {
+    heroHeading: 'Digital guide',
+    heroSubheading: 'Learn about intellectual property and its fields.',
+    sections: sections.map((section) => {
+      const attrs = section.attributes;
+      const tabData = attrs.field_tab_data ? JSON.parse(attrs.field_tab_data) : [];
+
+      return {
+        id: attrs.field_guide_type || section.id,
+        title: attrs.title || 'Untitled Section',
+        description: extractText(attrs.field_description) || extractText(attrs.body) || '',
+        type: attrs.field_guide_type || 'default',
+        tabs: tabData.map((tab: any) => ({
+          id: tab.id || '',
+          label: tab.label || '',
+          content: {
+            id: tab.id || '',
+            content: tab.content || '',
+            cta: tab.cta,
+          },
+        })),
+      };
+    }),
+  };
+}
+
+export function getDigitalGuideFallbackData(): DigitalGuideData {
+  return {
+    heroHeading: 'Digital guide',
+    heroSubheading: 'Learn about intellectual property and its fields.',
+    sections: [
+      {
+        id: 'iprights',
+        title: 'IP rights',
+        description: 'Learn about types, benefits and protections of IP rights.',
+        type: 'iprights',
+        tabs: [
+          {
+            id: 'about',
+            label: 'About',
+            content: {
+              id: 'about',
+              content:
+                '<h3>About IP Rights</h3><p>IP systems regulate a broad range of activities...</p>',
+            },
+          },
+        ],
+      },
+      {
+        id: 'ipcategory',
+        title: 'IP category',
+        description:
+          'Discover patents, trademarks, copyrights, designs, plant varieties and topographic designs of integrated circuits.',
+        type: 'ipcategory',
+      },
+      {
+        id: 'checkyouridea',
+        title: 'Check your idea',
+        description: 'Find the best protection method for your idea or innovation.',
+        type: 'checkyouridea',
+      },
+    ],
+  };
+}
+
+export async function getDigitalGuideData(): Promise<DigitalGuideData> {
+  try {
+    const response = await fetchDigitalGuideSections();
+    const sections = response.data;
+
+    if (sections.length === 0) {
+      console.log('🔴 DIGITAL_GUIDE: No sections found, using fallback data');
+      return getDigitalGuideFallbackData();
+    }
+
+    const data = transformDigitalGuideData(sections);
+
+    console.log('✅ DIGITAL_GUIDE: Using Drupal data');
+    return data;
+  } catch (error) {
+    console.log('🔴 DIGITAL_GUIDE: Error fetching data, using fallback data');
+    return getDigitalGuideFallbackData();
+  }
+}
+
+// Get content for specific IP type (patents, trademarks, etc.)
+export async function getDigitalGuideContentData(
+  type: string,
+): Promise<DigitalGuideSectionData | null> {
+  try {
+    const response = await fetchDigitalGuideContent(type);
+    const content = response.data;
+
+    if (content.length === 0) {
+      console.log(`🔴 DIGITAL_GUIDE (${type}): No content found`);
+      return null;
+    }
+
+    const data = transformDigitalGuideData(content);
+
+    console.log(`✅ DIGITAL_GUIDE (${type}): Using Drupal data`);
+    return data.sections[0] || null;
+  } catch (error) {
+    console.log(`🔴 DIGITAL_GUIDE (${type}): Error fetching data`);
+    return null;
+  }
+}

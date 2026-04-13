@@ -1,0 +1,1 @@
+export { ArticlesPoliciesSection } from './ArticlesPoliciesSection';

@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://saip.gov.sa
+
+# Sitemaps
+Sitemap: https://saip.gov.sa/sitemap.xml

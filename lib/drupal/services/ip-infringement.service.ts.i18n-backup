@@ -1,0 +1,412 @@
+/**
+ * IP Infringement Service
+ * Handles data fetching and transformation for IP Infringement page
+ */
+
+import { fetchDrupal, getRelated, getImageWithAlt, extractText } from '../utils';
+import {
+  DrupalNode,
+  DrupalIncludedEntity,
+  DrupalStatisticsItemNode,
+  DrupalGuideItemNode,
+} from '../types';
+import { DrupalResponse } from '../api-client';
+import { StatisticsCardData, GuideCardData } from './common-types';
+
+// Frontend data interfaces
+export interface IPInfringementData {
+  heroHeading: string;
+  heroSubheading: string;
+  heroImage?: {
+    src: string;
+    alt: string;
+  };
+  overview: {
+    video: {
+      videoSrc: string;
+      videoPoster: string;
+      description: string;
+    };
+    guide: {
+      guideTitle: string;
+      ctaLabel: string;
+      ctaHref: string;
+      guideCards: GuideCardData[];
+    };
+    statistics: StatisticsCardData[];
+  };
+  services: InfringementServiceData[];
+  media: {
+    heroTitle: string;
+    heroDescription: string;
+    heroImage: string;
+    tabs: Array<{ id: string; label: string }>;
+    content: Record<string, { title: string; description: string }>;
+    filterFields: Array<{ id: string; label: string; type: string; placeholder: string }>;
+    badgeLabel: string;
+  };
+}
+
+export interface InfringementServiceData {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  labels: string[];
+  href: string;
+  [key: string]: unknown; // Added to satisfy FilterableItem interface
+}
+
+// Drupal API functions
+export async function fetchIPInfringementPage(): Promise<DrupalResponse<DrupalNode>> {
+  const includeFields = [
+    'field_hero_background_image',
+    'field_hero_background_image.field_media_image',
+    'field_overview_video_poster',
+    'field_overview_video_poster.field_media_image',
+    'field_guide_items',
+    'field_statistics_items',
+    'field_services_items',
+    'field_media_tabs',
+  ];
+
+  const endpoint = `/node/ip_infringement_page?filter[status]=1&include=${includeFields.join(',')}`;
+  const response = await fetchDrupal<DrupalNode>(endpoint);
+  return response;
+}
+
+// Transformation functions
+export function transformGuideItem(
+  item: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): GuideCardData {
+  const attrs = (item as any).attributes || {};
+
+  return {
+    title: attrs.title || 'Untitled Guide',
+    description: attrs.field_description || '',
+    labels: attrs.field_labels ? JSON.parse(attrs.field_labels) : ['IP infringement'],
+    publicationDate: attrs.field_publication_date || '',
+    primaryButtonLabel: attrs.field_primary_button_label || 'Download file',
+    primaryButtonHref: attrs.field_primary_button_href || '#',
+    secondaryButtonLabel: attrs.field_secondary_button_label || 'View file',
+    secondaryButtonHref: attrs.field_secondary_button_href || '#',
+    titleBg: (attrs.field_title_bg as 'default' | 'green') || 'green',
+  };
+}
+
+export function transformStatisticsItem(
+  item: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): StatisticsCardData {
+  const attrs = (item as any).attributes || {};
+
+  let chartData: Array<{ value: number }> = [];
+  let trend: StatisticsCardData['trend'];
+  let breakdown: StatisticsCardData['breakdown'];
+
+  if (attrs.field_chart_data) {
+    try {
+      chartData = JSON.parse(attrs.field_chart_data);
+    } catch (e) {
+      console.warn('Failed to parse chart data:', e);
+    }
+  }
+
+  if (attrs.field_trend_value && attrs.field_trend_direction) {
+    trend = {
+      value: attrs.field_trend_value,
+      direction: attrs.field_trend_direction,
+      description: attrs.field_trend_description || '',
+    };
+  }
+
+  if (attrs.field_breakdown) {
+    try {
+      breakdown = JSON.parse(attrs.field_breakdown);
+    } catch (e) {
+      console.warn('Failed to parse breakdown data:', e);
+    }
+  }
+
+  return {
+    label: attrs.field_label || 'Untitled Statistic',
+    value: attrs.field_value,
+    chartType: attrs.field_chart_type || 'line',
+    chartData,
+    trend,
+    breakdown,
+  };
+}
+
+export function transformIPInfringementPage(
+  node: DrupalNode,
+  included: DrupalIncludedEntity[] = [],
+): IPInfringementData {
+  const attrs = node.attributes;
+
+  // Get hero image
+  const heroImage = attrs.field_hero_background_image
+    ? (() => {
+        const imageRel = getRelated(
+          node.relationships || {},
+          'field_hero_background_image',
+          included,
+        );
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Get overview video poster
+  const videoPoster = attrs.field_overview_video_poster
+    ? (() => {
+        const imageRel = getRelated(
+          node.relationships || {},
+          'field_overview_video_poster',
+          included,
+        );
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Get guide items
+  const guideItemsData = node.relationships?.field_guide_items
+    ? getRelated(node.relationships, 'field_guide_items', included) || []
+    : [];
+  const guideItems = Array.isArray(guideItemsData)
+    ? guideItemsData.map((item: DrupalIncludedEntity) => transformGuideItem(item, included))
+    : [];
+
+  // Get statistics items
+  const statisticsData = node.relationships?.field_statistics_items
+    ? getRelated(node.relationships, 'field_statistics_items', included) || []
+    : [];
+  const statistics = Array.isArray(statisticsData)
+    ? statisticsData.map((item: DrupalIncludedEntity) => transformStatisticsItem(item, included))
+    : [];
+
+  // Get services items
+  const servicesData = node.relationships?.field_services_items
+    ? getRelated(node.relationships, 'field_services_items', included) || []
+    : [];
+  const services = Array.isArray(servicesData)
+    ? servicesData.map((item: DrupalIncludedEntity) => {
+        const attrs = (item as any).attributes || {};
+        return {
+          id: item.id,
+          title: attrs.title || 'Untitled Service',
+          description: extractText(attrs.field_description) || '',
+          category: attrs.field_category || 'Protection',
+          labels: attrs.field_labels ? JSON.parse(attrs.field_labels) : ['Protection'],
+          href: attrs.field_href || '#',
+        };
+      })
+    : [];
+
+  // Get media tabs
+  const mediaTabsData = node.relationships?.field_media_tabs
+    ? getRelated(node.relationships, 'field_media_tabs', included) || []
+    : [];
+  const mediaTabs = Array.isArray(mediaTabsData)
+    ? mediaTabsData.map((tab: DrupalIncludedEntity) => {
+        const attrs = (tab as any).attributes || {};
+        return {
+          id: attrs.field_tab_id || 'tab',
+          label: attrs.title || 'Untitled Tab',
+        };
+      })
+    : [];
+
+  return {
+    heroHeading: attrs.field_hero_heading || 'IP infringement overview',
+    heroSubheading:
+      extractText(attrs.field_hero_subheading) ||
+      "To ensures compliance with Saudi Arabia's IP laws, protecting the rights of creators, innovators, and businesses.",
+    heroImage: heroImage ? { src: heroImage.src, alt: heroImage.alt } : undefined,
+    overview: {
+      video: {
+        videoSrc: attrs.field_video_src || 'https://www.w3schools.com/html/mov_bbb.mp4',
+        videoPoster: videoPoster?.src || '/images/ip-infringement/video-poster.jpg',
+        description:
+          attrs.field_video_description || 'Watch the video and learn more about IP Infringement',
+      },
+      guide: {
+        guideTitle: attrs.field_guide_title || 'IP infringement guides',
+        ctaLabel: attrs.field_guide_cta_label || 'Go to Guidelines',
+        ctaHref: attrs.field_guide_cta_href || '/guidelines/ip-infringement',
+        guideCards: guideItems,
+      },
+      statistics,
+    },
+    services,
+    media: {
+      heroTitle: 'Media for IP infringement',
+      heroDescription: 'Here you can find news related to IP infringement.',
+      heroImage: '/images/ip-infringement/hero.jpg',
+      tabs:
+        mediaTabs.length > 0
+          ? mediaTabs
+          : [
+              { id: 'news', label: 'News' },
+              { id: 'videos', label: 'Videos' },
+            ],
+      content: {
+        news: {
+          title: 'News',
+          description: 'Get the latest information on IP infringement.',
+        },
+        videos: {
+          title: 'Videos',
+          description:
+            'Explore the latest updates on IP infringement through our video collection.',
+        },
+      },
+      filterFields: [{ id: 'search', label: 'Search', type: 'search', placeholder: 'Search' }],
+      badgeLabel: 'IP Infringement',
+    },
+  };
+}
+
+export function getIPInfringementFallbackData(): IPInfringementData {
+  return {
+    heroHeading: 'IP infringement overview',
+    heroSubheading:
+      "To ensures compliance with Saudi Arabia's IP laws, protecting the rights of creators, innovators, and businesses. Cases of infringement are handled promptly and fairly, safeguarding IP and supporting a transparent and innovative ecosystem.",
+    heroImage: {
+      src: '/images/ip-infringement/hero.jpg',
+      alt: 'IP Infringement overview',
+    },
+    overview: {
+      video: {
+        videoSrc: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        videoPoster: '/images/ip-infringement/video-poster.jpg',
+        description: 'Watch the video and learn more about IP Infringement',
+      },
+      guide: {
+        guideTitle: 'IP infringement guides',
+        ctaLabel: 'Go to Guidelines',
+        ctaHref: '/guidelines/ip-infringement',
+        guideCards: [
+          {
+            title: 'Beneficiary Guide IP Infringement Complaint',
+            description: 'description',
+            labels: ['IP infringement'],
+            publicationDate: '04.08.2024',
+            primaryButtonLabel: 'Download file',
+            primaryButtonHref: '/files/beneficiary-guide-ip-infringement.pdf',
+            secondaryButtonLabel: 'View file',
+            secondaryButtonHref: '/files/beneficiary-guide-ip-infringement.pdf',
+            titleBg: 'green',
+          },
+        ],
+      },
+      statistics: [
+        {
+          label: 'Number of IP infringement cases in 2023',
+          value: 4076,
+          chartType: 'line',
+          chartData: [
+            { value: 800 },
+            { value: 1200 },
+            { value: 1800 },
+            { value: 2400 },
+            { value: 3000 },
+            { value: 3600 },
+            { value: 4076 },
+          ],
+          trend: { value: '100%', direction: 'up', description: 'vs last month' },
+        },
+        {
+          label: 'Number of resolved cases in 2023',
+          value: 4011,
+          chartType: 'line',
+          chartData: [
+            { value: 750 },
+            { value: 1100 },
+            { value: 1650 },
+            { value: 2200 },
+            { value: 2800 },
+            { value: 3400 },
+            { value: 4011 },
+          ],
+          trend: { value: '100%', direction: 'up', description: 'vs last month' },
+        },
+        {
+          label: `Applicant's type`,
+          chartType: 'pie',
+          breakdown: [
+            { label: 'Entities', value: 20.97, displayValue: '20,97%', color: '#388A5A' },
+            { label: 'Individuals', value: 79.03, displayValue: '79,03%', color: '#1C6846' },
+          ],
+        },
+      ],
+    },
+    services: [
+      {
+        id: 'trademark-infringement',
+        title: 'Complaint of trademark infringement',
+        description: 'A service that allows the user to file an industrial model application.',
+        category: 'Protection',
+        labels: ['Protection'],
+        href: '/services/ip-infringement/trademark-complaint',
+      },
+      {
+        id: 'copyright-infringement',
+        title: 'Complaint of copyright infringement',
+        description:
+          'A service that allows the user to modify the specifications "No substantial change may be made".',
+        category: 'Protection',
+        labels: ['Protection'],
+        href: '/services/ip-infringement/copyright-complaint',
+      },
+    ],
+    media: {
+      heroTitle: 'Media for IP infringement',
+      heroDescription: 'Here you can find news related to IP infringement.',
+      heroImage: '/images/ip-infringement/hero.jpg',
+      tabs: [
+        { id: 'news', label: 'News' },
+        { id: 'videos', label: 'Videos' },
+      ],
+      content: {
+        news: {
+          title: 'News',
+          description: 'Get the latest information on IP infringement.',
+        },
+        videos: {
+          title: 'Videos',
+          description:
+            'Explore the latest updates on IP infringement through our video collection.',
+        },
+      },
+      filterFields: [{ id: 'search', label: 'Search', type: 'search', placeholder: 'Search' }],
+      badgeLabel: 'IP Infringement',
+    },
+  };
+}
+
+export async function getIPInfringementPageData(): Promise<IPInfringementData> {
+  try {
+    const response = await fetchIPInfringementPage();
+    const nodes = response.data;
+    const included = response.included || [];
+
+    if (nodes.length === 0) {
+      console.log('🔴 IP INFRINGEMENT: No content found, using fallback data');
+      return getIPInfringementFallbackData();
+    }
+
+    const node = nodes[0];
+    const data = transformIPInfringementPage(node, included);
+
+    console.log('✅ IP INFRINGEMENT: Using Drupal data');
+    return data;
+  } catch (error) {
+    console.log('🔴 IP INFRINGEMENT: Error fetching data, using fallback data');
+    return getIPInfringementFallbackData();
+  }
+}

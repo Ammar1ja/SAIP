@@ -1,0 +1,184 @@
+/**
+ * Public Consultations Service
+ * Handles data fetching and transformation for Public Consultations page
+ */
+
+import { fetchDrupal, extractText } from '../utils';
+import { DrupalNode, DrupalIncludedEntity } from '../types';
+import { DrupalResponse } from '../api-client';
+
+// Frontend data interfaces
+export interface PublicConsultationsData {
+  heroHeading: string;
+  heroSubheading: string;
+  consultations: ConsultationCardData[];
+}
+
+export interface ConsultationCardData {
+  id: string;
+  title: string;
+  durationDate: string;
+  primaryButtonLabel: string;
+  primaryButtonHref: string;
+}
+
+export interface ConsultationDetailData {
+  id: string;
+  title: string;
+  closingDate: string;
+  description: string;
+  content: string;
+}
+
+// Drupal API functions
+export async function fetchPublicConsultationsPage(): Promise<DrupalResponse<DrupalNode>> {
+  const endpoint = `/node/public_consultations_page?filter[status]=1`;
+  const response = await fetchDrupal<DrupalNode>(endpoint);
+  return response;
+}
+
+// Fetch individual consultations
+export async function fetchConsultations(): Promise<DrupalResponse<DrupalNode>> {
+  const endpoint = `/node/consultation?filter[status]=1`;
+  const response = await fetchDrupal<DrupalNode>(endpoint);
+  return response;
+}
+
+// Fetch single consultation by ID
+export async function fetchConsultationById(id: string): Promise<DrupalNode | null> {
+  try {
+    const endpoint = `/node/consultation/${id}`;
+    const response = await fetchDrupal<DrupalNode>(endpoint);
+    return response.data?.[0] || null;
+  } catch (error) {
+    console.error('Error fetching consultation:', error);
+    return null;
+  }
+}
+
+// Transformation functions
+export function transformConsultationCard(
+  item: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): ConsultationCardData {
+  const attrs = (item as any).attributes || {};
+  const nid = attrs.drupal_internal__nid || item.id;
+
+  return {
+    id: nid.toString(),
+    title: attrs.title || 'Untitled Consultation',
+    durationDate:
+      attrs.field_duration_date ||
+      `Date of closing public consultations: ${attrs.field_closing_date || 'TBD'}`,
+    primaryButtonLabel: attrs.field_primary_button_label || 'Read more',
+    primaryButtonHref:
+      attrs.field_primary_button_href ||
+      `/resources/tools-and-research/public-consultations/${nid}`,
+  };
+}
+
+export function transformConsultationDetail(
+  item: DrupalNode,
+  included: DrupalIncludedEntity[] = [],
+): ConsultationDetailData {
+  const attrs = item.attributes;
+  const nid = attrs.drupal_internal__nid || item.id;
+
+  return {
+    id: nid.toString(),
+    title: attrs.title || 'Untitled Consultation',
+    closingDate: attrs.field_closing_date || '',
+    description:
+      attrs.field_duration_date ||
+      `Date of closing public consultations: ${attrs.field_closing_date || 'TBD'}`,
+    content: extractText(attrs.body) || extractText(attrs.field_content) || '',
+  };
+}
+
+export function getPublicConsultationsFallbackData(): PublicConsultationsData {
+  return {
+    heroHeading: 'Public consultations',
+    heroSubheading:
+      'SAIP invites the public to participate in the formulation of regulations related to intellectual property. Consultations are open to all individuals and entities. SAIP is committed to reviewing all feedback received and will consider the responses received in the development of regulations.',
+    consultations: [
+      {
+        id: 'nice-classification-ce34',
+        title: 'Public opinion poll on the Nice Classification Expert Committee Meeting (CE34)',
+        durationDate: 'Date of closing public consultations: 27.02.2025',
+        primaryButtonLabel: 'Read more',
+        primaryButtonHref:
+          '/resources/tools-and-research/public-consultations/nice-classification-ce34',
+      },
+      {
+        id: 'ip-rights-awareness',
+        title: 'Public consultation on IP rights awareness campaign',
+        durationDate: 'Date of closing public consultations: 15.03.2025',
+        primaryButtonLabel: 'Read more',
+        primaryButtonHref: '/resources/tools-and-research/public-consultations/ip-rights-awareness',
+      },
+    ],
+  };
+}
+
+export async function getPublicConsultationsPageData(): Promise<PublicConsultationsData> {
+  try {
+    // Fetch consultations
+    const consultationsResponse = await fetchConsultations();
+    const consultations = consultationsResponse.data.map((item) =>
+      transformConsultationCard(item, consultationsResponse.included || []),
+    );
+
+    // Try to fetch page data for hero section
+    try {
+      const pageResponse = await fetchPublicConsultationsPage();
+      if (pageResponse.data.length > 0) {
+        const node = pageResponse.data[0];
+        const attrs = node.attributes;
+
+        console.log('✅ PUBLIC CONSULTATIONS: Using Drupal data from page');
+        return {
+          heroHeading: attrs.field_hero_heading || 'Public consultations',
+          heroSubheading:
+            extractText(attrs.field_hero_subheading) ||
+            'SAIP invites the public to participate in the formulation of regulations.',
+          consultations,
+        };
+      }
+    } catch (pageError) {
+      // Continue with consultations only
+    }
+
+    // If we have consultations, return them with default hero
+    if (consultations.length > 0) {
+      console.log('✅ PUBLIC CONSULTATIONS: Using Drupal data from individual items');
+      return {
+        heroHeading: 'Public consultations',
+        heroSubheading: 'SAIP invites the public to participate in the formulation of regulations.',
+        consultations,
+      };
+    }
+
+    console.log('🔴 PUBLIC CONSULTATIONS: No content found, using fallback data');
+    return getPublicConsultationsFallbackData();
+  } catch (error) {
+    console.log('🔴 PUBLIC CONSULTATIONS: Error fetching data, using fallback data');
+    return getPublicConsultationsFallbackData();
+  }
+}
+
+// Get single consultation detail
+export async function getConsultationDetailData(
+  id: string,
+): Promise<ConsultationDetailData | null> {
+  try {
+    const consultation = await fetchConsultationById(id);
+    if (!consultation) {
+      return null;
+    }
+
+    return transformConsultationDetail(consultation, []);
+  } catch (error) {
+    console.error('Error fetching consultation detail:', error);
+    return null;
+  }
+}

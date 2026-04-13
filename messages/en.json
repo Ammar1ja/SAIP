@@ -1,0 +1,2040 @@
+{
+  "home": {
+    "title": "Welcome to SAIP",
+    "description": "We support innovation through intellectual property.",
+    "heroTitle": "Saudi Authority for Intellectual Property",
+    "heroSubtitle": "Protecting creativity. Empowering innovation."
+  },
+  "verificationBar": {
+    "officialWebsite": "An Official website of the Kingdom of Saudi Arabia",
+    "howYouKnow": "How you know?",
+    "govSaTitle": "Official Saudi Government website URL ends with .gov.sa",
+    "govSaDescription": "Website belongs to an official government organization in the Kingdom of Saudi Arabia always ends with",
+    "httpsTitle": "Official Secure websites use HTTPS",
+    "httpsDescription": "Secured governments websites in the Kingdom of Saudi Arabia use Https encryption.",
+    "registeredOn": "Registered on Digital Government Authority:"
+  },
+  "buttons": {
+    "contact": "Contact Us",
+    "readAll": "Read all",
+    "readMore": "Read more",
+    "readMoreAboutSAIP": "Read more about SAIP",
+    "learnMore": "Learn more",
+    "viewMore": "View more",
+    "goToMedia": "Go to Media to see more",
+    "goToFaq": "Go to FAQs page",
+    "viewMoreStatistics": "View more statistics",
+    "viewMorePublications": "View more publications",
+    "viewAll": "View all",
+    "viewLess": "View less",
+    "showLess": "Show less",
+    "goTo": "Go to",
+    "herExcellency": "Her Excellency",
+    "viewDetails": "View details",
+    "viewFile": "View file",
+    "downloadFile": "Download file"
+  },
+  "navigation": {
+    "main": {
+      "home": "Home",
+      "homepage": "Homepage",
+      "search": "Search",
+      "saip": "SAIP",
+      "services": "Services",
+      "resources": "Resources",
+      "mediaCenter": "Media Center",
+      "contactUs": "Contact us"
+    },
+    "groups": {
+      "ipProtection": "IP Protection & Management",
+      "ipEnablement": "IP enablement",
+      "ipEnforcement": "IP enforcement & dispute",
+      "toolsResearch": "Tools & research",
+      "ipInformation": "IP information",
+      "ipLicenses": "IP licenses",
+      "lawsRegulations": "Laws & regulations",
+      "mediaLibrary": "Media Library",
+      "contactUs": "Contact us"
+    },
+    "links": {
+      "aboutSaip": "About SAIP",
+      "nationalIpStrategy": "National IP strategy",
+      "organisationalStructure": "Organisational structure",
+      "saipProjects": "SAIP projects",
+      "entitiesPartners": "Entities & partners",
+      "servicesOverview": "Services overview",
+      "serviceDirectory": "SAIP service directory",
+      "patents": "Patents",
+      "trademarks": "Trademarks",
+      "copyrights": "Copyrights",
+      "designs": "Designs",
+      "plantVarieties": "Plant varieties",
+      "layoutDesigns": "Layout Designs of Integrated Circuits",
+      "ipLicensing": "IP Licensing",
+      "ipAcademy": "IP Academy",
+      "ipSupportCenters": "IP Support Centers",
+      "ipClinics": "IP Clinics",
+      "ipInfringement": "IP Infringement",
+      "generalSecretariat": "IP General Secretariat",
+      "digitalGuide": "Digital guide",
+      "guidelines": "Guidelines",
+      "faqs": "FAQs",
+      "ipGlossary": "IP glossary",
+      "reports": "Reports",
+      "ipSearchEngine": "IP search engine",
+      "gazette": "Gazette",
+      "publications": "Publications",
+      "ipObservatory": "IP observatory",
+      "openData": "Open data",
+      "publicConsultations": "Public consultations",
+      "ipAgents": "IP agents",
+      "supervisoryUnit": "Supervisory unit",
+      "systemsRegulations": "Systems & regulations",
+      "litigationPaths": "Litigation paths",
+      "internationalTreaties": "International treaties",
+      "mediaCenterMain": "Media Center",
+      "branding": "Branding",
+      "movablesPlatform": "Movables platform",
+      "aboutChairwoman": "About chairwoman",
+      "contactSupport": "Contact & support",
+      "careers": "Careers"
+    }
+  },
+  "footer": {
+    "sections": {
+      "saip": "SAIP",
+      "ipInformation": "IP information",
+      "toolsResearch": "Tools & research",
+      "importantLinks": "Important links",
+      "mediaContact": "Media & Contact us",
+      "socialMedia": "Social Media"
+    },
+    "legal": {
+      "sitemap": "Sitemap",
+      "cookies": "Cookies",
+      "requestOpenData": "Request Open Data",
+      "termsConditions": "Terms & Conditions",
+      "privacyPolicy": "Privacy Policy"
+    },
+    "copyright": {
+      "rights": "All Rights Reserved for Saudi Authority of Intellectual Property",
+      "developed": "Developed and Maintained by Saudi Authority of Intellectual Property",
+      "modified": "Last Modified Date",
+      "lastModifiedDate": "02/12/2025"
+    }
+  },
+  "accessibility": {
+    "title": "Accessibility Tools",
+    "highContrast": "Toggle high contrast mode",
+    "fontSize": "Toggle font size",
+    "contrastEnabled": "High contrast enabled",
+    "contrastDisabled": "High contrast disabled",
+    "fontSizeNormal": "Normal font size",
+    "fontSizeLarge": "Large font size"
+  },
+  "resourcesOverview": {
+    "items": {
+      "faq": "FAQ",
+      "guidelines": "Guidelines",
+      "ipGlossary": "IP Glossary",
+      "reports": "Reports",
+      "digitalGuide": "Digital Guide",
+      "publications": "Publications",
+      "publicConsultations": "Public Consultations",
+      "gazette": "Gazette",
+      "ipObservatory": "IP Observatory",
+      "ipSearchEngine": "IP Search Engine",
+      "openData": "Open Data",
+      "internationalTreaties": "International Treaties",
+      "systemsAndRegulations": "Systems and Regulations",
+      "litigationPaths": "Litigation Paths",
+      "ipAgents": "IP Agents",
+      "supervisoryUnit": "Supervisory Unit"
+    }
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "services": "Services",
+    "resources": "Resources",
+    "saip": "SAIP",
+    "aboutSaip": "About SAIP",
+    "nationalIPStrategy": "National IP Strategy",
+    "orgStructure": "Organisational structure",
+    "aboutChairwoman": "About Chairwoman",
+    "entitiesPartners": "Entities & Partners",
+    "patents": "Patents",
+    "copyrights": "Copyrights",
+    "trademarks": "Trademarks",
+    "designs": "Designs",
+    "plantVarieties": "Plant Varieties",
+    "topographicDesigns": "Layout Designs of Integrated Circuits",
+    "ipEnablement": "IP Enablement",
+    "ipLicensing": "IP Licensing",
+    "ipAcademy": "IP Academy",
+    "ipClinics": "IP Clinics",
+    "ipSupportCenters": "National network of IP support centers",
+    "ipInfringement": "IP Infringement",
+    "ipGeneralSecretariat": "General secretariat of IP dispute resolution committees",
+    "ipEnforcement": "IP enforcement & dispute",
+    "ipInformation": "IP information",
+    "toolsAndResearch": "Tools & research",
+    "lawsAndRegulations": "Laws & regulations",
+    "guidelines": "Guidelines",
+    "faq": "FAQs",
+    "ipGlossary": "IP glossary",
+    "reports": "Reports",
+    "gazette": "Gazette",
+    "publications": "Publications",
+    "mediaCenter": "Media Center",
+    "mediaLibrary": "Media Library",
+    "ipObservatory": "IP observatory",
+    "ipServices": "IP services",
+    "openData": "Open data",
+    "publicConsultations": "Public consultations",
+    "ipAgents": "IP agents",
+    "supervisoryUnit": "Supervisory unit for non-profit sector organizations",
+    "systemsAndRegulations": "Systems & regulations",
+    "litigationPaths": "Litigation paths",
+    "internationalTreaties": "International treaties & agreements",
+    "ipSearchEngine": "IP search engine",
+    "mediaCenter": "Media Center",
+    "mediaLibrary": "Media Library",
+    "mediaCenterPage": "Media Center",
+    "movablesPlatform": "Movables Platform",
+    "branding": "Branding",
+    "contactUs": "Contact us",
+    "contactAndSupport": "Contact & support",
+    "careers": "Careers",
+    "servicesOverview": "Services Overview",
+    "overview": "Overview",
+    "serviceDirectory": "SAIP service directory"
+  },
+  "tabs": {
+    "overview": "Overview",
+    "journey": "Journey",
+    "services": "Services",
+    "media": "Media",
+    "trainingPrograms": "Training programs",
+    "proQualifications": "Pro qualifications",
+    "educationProjects": "Education projects"
+  },
+  "pageNavigation": {
+    "informationLibrary": "Information library",
+    "requirements": "Requirements",
+    "quickLinks": "Quick links",
+    "relatedPages": "Related pages",
+    "statistics": "Statistics"
+  },
+  "about": {
+    "nav": {
+      "missionVision": "SAIP mission & vision",
+      "values": "Our values",
+      "ceoSpeech": "CEO speech",
+      "roles": "Our roles",
+      "pillars": "Our pillars"
+    },
+    "mission": "Mission",
+    "vision": "Vision"
+  },
+  "nationalIPStrategy": {
+    "nav": {
+      "aboutNIPST": "About NIPST",
+      "strategyObjectives": "National strategy objectives",
+      "nationalPillars": "National Pillars",
+      "strategyDocument": "National IP strategy document",
+      "latestNews": "Latest news"
+    },
+    "document": {
+      "showFile": "Show file",
+      "downloadFile": "Download file",
+      "viewDocument": "View National IP Strategy document",
+      "downloadDocument": "Download National IP Strategy document"
+    }
+  },
+  "organisationalStructure": {
+    "nav": {
+      "boardOfDirectors": "Board of Directors",
+      "advisoryBoard": "Advisory Board",
+      "organisationalChart": "Organisational Structure Chart"
+    }
+  },
+  "servicesOverview": {
+    "tabs": {
+      "discover": "Discover services",
+      "discoverMobile": "Overview",
+      "protection": "IP protection & management",
+      "protectionMobile": "Journey",
+      "enablement": "IP enablement",
+      "enablementMobile": "Services",
+      "enforcement": "IP enforcement & dispute",
+      "enforcementMobile": "Media"
+    },
+    "nav": {
+      "discoverServices": "Discover services",
+      "infoYouNeed": "Information you might need",
+      "infoDescription": "Check out the examples below for guidance on where to find specific answers.",
+      "learnMore": "Learn more",
+      "serviceDirectory": "SAIP service directory",
+      "ipProtection": "IP Protection & Management",
+      "aboutIpServices": "About main IP services",
+      "ipEnablement": "IP Enablement",
+      "aboutIpEnablement": "About IP enablement services",
+      "ipEnforcement": "IP Enforcement & Dispute",
+      "aboutEnforcement": "About IP enforcement & Dispute services"
+    }
+  },
+  "seo": {
+    "home": {
+      "title": "SAIP – Saudi Authority for Intellectual Property",
+      "description": "Official website of SAIP, protecting and empowering IP in Saudi Arabia."
+    },
+    "about": {
+      "title": "About SAIP – Vision & Mission",
+      "description": "Learn more about the goals and mission of the Saudi Authority for Intellectual Property."
+    }
+  },
+  "entitiesPartners": {
+    "nationalPartners": "National partners",
+    "governmentSector": "Government sector",
+    "healthcareSector": "Healthcare sector",
+    "academicSector": "Academic sector",
+    "privateSector": "Private sector",
+    "internationalPartners": "International partners",
+    "internationalOrganizations": "International Organizations and Institutions",
+    "government": "Government",
+    "healthcare": "Healthcare",
+    "academic": "Academic",
+    "private": "Private",
+    "goToWebsite": "Go to website"
+  },
+  "services": {
+    "trademark-complaint": {
+      "title": "Complaint of trademark infringement",
+      "description": "Receive a complaint (trademark infringement application).",
+      "executionTime": "Immediately after payment",
+      "serviceFee": "1000 SAR",
+      "targetGroup": "Individuals, Enterprises"
+    },
+    "copyright-complaint": {
+      "title": "Complaint of copyright infringement",
+      "description": "A service that allows the user to modify the specifications \"No substantial change may be made\".",
+      "executionTime": "Immediately after payment",
+      "serviceFee": "1000 SAR",
+      "targetGroup": "Individuals, Enterprises"
+    },
+    "pct": {
+      "title": "Patent Cooperation Treaty (PCT)",
+      "description": "File a single international patent application to seek protection in multiple countries.",
+      "executionTime": "Within 30 months from priority date",
+      "serviceFee": "Variable (depends on application type)",
+      "targetGroup": "Individuals, Enterprises",
+      "steps": {
+        "1": {
+          "title": "Log in",
+          "details": ["Login to the SAIP platform, select Services, and click on Patent Service."]
+        },
+        "2": {
+          "title": "Select PCT application",
+          "details": [
+            "Navigate to Patent Cooperation Treaty (PCT) section.",
+            "Select the type of PCT application you want to file."
+          ]
+        },
+        "3": {
+          "title": "Prepare application documents",
+          "details": [
+            "Download PCT application templates.",
+            "Prepare the request form, description, claims, abstract, and drawings.",
+            "Ensure all documents meet PCT requirements."
+          ]
+        },
+        "4": {
+          "title": "Submit application",
+          "details": [
+            "Fill in all required information.",
+            "Upload all necessary documents.",
+            "Review your application before submission."
+          ]
+        },
+        "5": {
+          "title": "Pay fees and receive confirmation",
+          "details": [
+            "Pay the required PCT filing fees.",
+            "Receive your international application number and filing date."
+          ]
+        }
+      },
+      "requirements": [
+        "Valid patent application or priority claim",
+        "Completed PCT request form",
+        "Description of the invention in Arabic or English",
+        "Claims defining the scope of protection",
+        "Abstract (not exceeding 150 words)",
+        "Drawings (if necessary for understanding the invention)",
+        "Payment of international filing fee",
+        "Power of attorney (if using an agent)"
+      ]
+    }
+  },
+  "serviceDirectory": {
+    "totalNumberOfServices": "Total number of services",
+    "filters": {
+      "topographicDesigns": "Topographic designs of integrated circuits",
+      "plantVarieties": "Plant varieties",
+      "ipAcademy": "IP academy",
+      "ipClinics": "IP clinics",
+      "ipLicensing": "IP licensing",
+      "ipInfringement": "IP infringement",
+      "ipDisputeResolutionCommittees": "IP dispute resolution committees",
+      "ipSupportCenters": "National network of IP support centers"
+    }
+  },
+  "publicConsultations": {
+    "goBackTo": "Go back to Public consultations",
+    "shareOpinion": "Share your opinion",
+    "notFound": "Consultation not found",
+    "notFoundDescription": "The requested consultation could not be found."
+  },
+  "openData": {
+    "pageTitle": "Open Data",
+    "pageDescription": "Access SAIP's open data resources",
+    "nav": {
+      "policy": "SAIP Open Data Policy",
+      "platform": "National Open Data Platform",
+      "request": "Request for Open Data"
+    },
+    "form": {
+      "successMessage": "Thank you for your request! We will review it and respond within 5-7 business days.",
+      "errorMessage": "Something went wrong. Please try again later.",
+      "submitting": "Sending..."
+    }
+  },
+  "gazette": {
+    "pageTitle": "Gazette",
+    "pageDescription": "The trusted source for the latest updates on intellectual property in Saudi Arabia",
+    "nav": {
+      "ipGazette": "IP Gazette",
+      "ipNewspaper": "IP Newspaper"
+    }
+  },
+  "digitalGuide": {
+    "pageTitle": "Digital guide",
+    "goTo": "Go to {title}",
+    "cards": {
+      "ipRights": {
+        "title": "IP rights",
+        "description": "Learn about types, benefits and protections of IP rights."
+      },
+      "ipCategory": {
+        "title": "IP category",
+        "description": "Discover patents, trademarks, copyrights, designs, plant varieties and topographic designs of integrated circuits."
+      },
+      "checkYourIdea": {
+        "title": "Check your idea",
+        "description": "Find the best protection method for your idea or innovation."
+      }
+    },
+    "_TODO": "Content below should be migrated to Drupal CMS for easier editing",
+    "ipRights": {
+      "title": "IP Rights",
+      "tabs": {
+        "about": "About",
+        "scopeOfProtection": "Scope of protection",
+        "scopeOfProtectionShort": "Scope",
+        "importanceOfProtectingIP": "Importance of protecting an IP",
+        "importanceOfProtectingIPShort": "Importance",
+        "protectingAnIdea": "Protecting an idea",
+        "protectingAnIdeaShort": "Protecting"
+      },
+      "content": {
+        "about": {
+          "title": "About IP Rights",
+          "ipSystems": {
+            "title": "IP systems",
+            "intro": "IP systems regulate a broad range of activities, including:",
+            "items": [
+              "artistic expression",
+              "pharmaceutical manufacturing",
+              "and software development"
+            ],
+            "summary": "These activities are indicators of intangible (non-material) efforts, intellectual innovation, and human creativity."
+          },
+          "conclusion": "Therefore, IP rights govern the creation, use, and investment of creative mental effort.",
+          "characteristics": {
+            "title": "Characteristics of IP rights",
+            "p1": "IP rights are similar to ownership rights, as they relate to controlling specific uses of intangible assets. These rights are granted when the \"thing of value\" can be attributed to a single inventor or group of inventors, as long as the inventor deserves recognition.",
+            "p2": "The inventor is the rightful owner, unless the financial rights are transferred to another party through mutual agreement. These rights are enforceable through civil and criminal protection methods."
+          }
+        },
+        "scopeOfProtection": {
+          "title": "What exactly will be protected?",
+          "ipSystemsProperty": {
+            "title": "IP systems and property rights",
+            "p1": "IP systems address all rights considered a type of property right."
+          },
+          "distinction": "It is essential to specify the \"thing\" that is the subject of this property. The significance lies in the distinction between IP and traditional property, which involves tangible physical objects.",
+          "types": {
+            "title": "Different Types of IP Rights",
+            "artistic": {
+              "label": "Artistic or literary work:",
+              "description": "The property rights are located in the work itself."
+            },
+            "patent": {
+              "label": "Patent:",
+              "description": "The property rights are in the creative idea solving a specific technical issue."
+            },
+            "trademark": {
+              "label": "Trademark:",
+              "description": "Ownership rights to a trademark that distinguishes goods or services."
+            },
+            "design": {
+              "label": "Design:",
+              "description": "The property rights are in the arrangement of lines, shapes, colors, or sculptures that give the product its distinct and attractive appearance."
+            }
+          },
+          "innovators": {
+            "title": "Rights of innovators",
+            "p1": "Innovators have the right to use the \"thing\" that is the subject of their IP. They also have the ability to control and exploit it. The duration of IP rights varies according to the specific system in place."
+          }
+        },
+        "importance": {
+          "title": "Importance of protecting an IP",
+          "intro": "An effective protection system guarantees creators a level of protection, allowing them to freely use and exploit their IP. Without this system, creators would lack motivation to innovate.",
+          "publicProtection": {
+            "title": "Protecting the public",
+            "p1": "Effective protection for producers of intellectual works ensures public benefits. By preventing the copying or imitation of IP, creators, and owners are incentivized, improving public welfare in various areas."
+          },
+          "economicImpact": {
+            "title": "Economic impact",
+            "p1": "A system that protects IP rights boosts employment and economic returns. Countries with strong innovation, patents, and trademarks attract both domestic and foreign investment. The protection system also attracts well-known international trademarks and makes the country a regional hub for businesses."
+          }
+        },
+        "protectingIdea": {
+          "title": "Protecting an idea",
+          "innovative": {
+            "title": "Protecting your innovative idea",
+            "p1": "You may have an innovative idea, be developing or improving an existing product or service, or the result of a project with a partner, but it may still be in its early stages."
+          },
+          "howTo": {
+            "title": "How to protect your idea",
+            "p1": "To protect your idea, you need to develop, express, or embody it in a protectable manner, such as a patent, design, trademark, or copyright, or by using other IP tools."
+          },
+          "guidance": {
+            "title": "Guidance on IP protection",
+            "p1": "You can obtain guidance on protecting IP through IP clinics."
+          }
+        }
+      }
+    },
+    "ipCategory": {
+      "title": "IP Category",
+      "selectArea": "Select an area of IP that interests you.",
+      "categories": {
+        "patents": "Patents",
+        "trademarks": "Trademarks",
+        "copyrights": "Copyrights",
+        "designs": "Designs",
+        "plantVarieties": "Plant varieties",
+        "layoutDesigns": "Layout Designs of Integrated Circuits"
+      },
+      "tabs": {
+        "about": "About",
+        "protection": "Protection",
+        "prototype": "Prototype",
+        "initialPrototype": "Initial prototype",
+        "initialPrototypeShort": "Prototype",
+        "patentApplication": "Patent application",
+        "patentApplicationShort": "Patent",
+        "registrationOfTrademark": "Registration of trademark",
+        "registrationOfTrademarkShort": "Registration",
+        "protectedCategories": "Protected categories",
+        "protectedCategoriesShort": "Categories",
+        "optionalRegistration": "Optional registration",
+        "optionalRegistrationShort": "Registration",
+        "registrationOfDesigns": "Registration of designs",
+        "registrationOfDesignsShort": "Registration",
+        "submittingApplication": "Submitting plant varieties application",
+        "submittingApplicationShort": "Submitting application"
+      },
+      "labels": {
+        "patents": "Patents",
+        "trademarks": "Trademark",
+        "copyrights": "Copyrights",
+        "designs": "Designs",
+        "plantVarieties": "Plant varieties",
+        "layoutDesigns": "Layout designs of IC"
+      },
+      "checklist": {
+        "patents": "Patents checklist",
+        "trademarks": "Trademarks checklist",
+        "copyrights": "Copyrights checklist",
+        "designs": "Designs checklist",
+        "plantVarieties": "Plant varieties checklist",
+        "layoutDesigns": "Layout designs of IC checklist"
+      },
+      "patentsContent": {
+        "about": {
+          "title": "About patents",
+          "whatIsInvention": {
+            "title": "What is an invention?",
+            "p1": "An invention is an idea conceived by an inventor and solves a problem in technology. It must be new, innovative, and novel, improving products or methods."
+          },
+          "whatIsPatent": {
+            "title": "What is a patent?",
+            "p1": "A patent is a certificate granting exclusive rights to an inventor. It prevents production, use, distribution, or sale of the invention without permission for commercial purposes."
+          },
+          "conditions": {
+            "title": "Conditions for obtaining a patent",
+            "novelty": "Novelty:",
+            "noveltyDesc": "The invention must be new, not already existing, and distinct from current technologies. It must not have been disclosed to the public.",
+            "inventive": "Inventive step:",
+            "inventiveDesc": "The invention should involve an inventive activity, meaning, it is not obvious to skilled persons in the field. Industrial applicability: The invention must have practical or industrial use, not purely theoretical.",
+            "eligibility": "Eligibility of the subject:",
+            "eligibilityDesc": "The patent's subject must not violate Islamic law, harm health, or the environment, ensuring it is suitable for patenting."
+          },
+          "cta": {
+            "text": "Ensure your invention is novel, inventive, and industrially applicable for patent protection.",
+            "button": "Patents checklist",
+            "ariaLabel": "Go to Patents checklist"
+          }
+        },
+        "protection": {
+          "title": "Patents protection",
+          "nonDisclosure": {
+            "title": "Importance of non-disclosure before registration",
+            "p1": "To protect a patent, avoid disclosing your invention before registration. When discussing it, share only basic information to explain the idea, without revealing details. Public disclosure before filing negatively affects novelty and patent eligibility."
+          },
+          "nda": {
+            "title": "Using NDAs for protection",
+            "p1": "When presenting to investors or seeking funding, you may need to discuss details. Use a Non-Disclosure Agreement (NDA) to safeguard your idea before sharing it with contractors or partners."
+          },
+          "filing": {
+            "title": "Filing a patent application",
+            "p1": "You can file a patent application yourself through the authority's unified services platform on their website. Alternatively, appoint an accredited IP agent to file on your behalf."
+          },
+          "drafting": {
+            "title": "Drafting a patent application",
+            "p1": "To draft your application, search for relevant patents in databases as reference models. This approach ensures proper structure and compliance with patent requirements."
+          }
+        },
+        "prototype": {
+          "title": "Initial prototype",
+          "definition": {
+            "title": "Definition and purpose of a prototype",
+            "p1": "The first prototype is a preliminary version of an invention or product, used to evaluate the idea and guide development toward the final version. It transforms a theoretical idea into a tangible model or design that demonstrates basic specifications."
+          },
+          "requirements": {
+            "title": "Prototypes and patent requirements",
+            "p1": "While a prototype is not required to obtain a patent, it serves as a valuable tool for evaluating and refining ideas before market launch. Developing a prototype can also assist in presentations to investors."
+          },
+          "guidance": {
+            "title": "Guidance for patent preparation",
+            "p1": "Leverage the IP Clinics for assistance in preparing and filing a patent with the authority. These services provide support throughout the process."
+          }
+        },
+        "application": {
+          "title": "Submission of a patent application",
+          "disclosure": {
+            "title": "Full disclosure requirement for applications",
+            "p1": "The application must include a detailed description of the invention, enabling any skilled professional familiar with the field to implement and apply it. This principle ensures knowledge exchange between the inventor and society."
+          },
+          "period": {
+            "title": "Patent protection period",
+            "p1": "In exchange for disclosing the invention, the inventor receives 20 years of non-renewable protection. After this period, the invention becomes public property, allowing unrestricted use by all."
+          },
+          "details": {
+            "title": "Providing invention details",
+            "p1": "Inventors must include all invention details in the application. Policies and guidelines are available to assist in drafting forms and submitting them to SAIP."
+          },
+          "cta": {
+            "platform": {
+              "text": "Start the patent application process on the SAIP Platform",
+              "button": "Go to SAIP Platform",
+              "ariaLabel": "Go to SAIP Platform"
+            },
+            "journey": {
+              "text": "Interested in understanding patents better? Start your journey here!",
+              "button": "Go to Patents journey",
+              "ariaLabel": "Go to Patents journey"
+            }
+          }
+        }
+      },
+      "designsContent": {
+        "about": {
+          "title": "About designs",
+          "whatIs": {
+            "title": "What is design?",
+            "p1": "Design refers to the decorative or aesthetic aspect of a product, which is not for functional or technical purposes. It can be three-dimensional (e.g., product shape) or two-dimensional (e.g., patterns, lines, colors), including textile designs."
+          },
+          "protection": {
+            "title": "Design protection",
+            "p1": "A design protection document grants the owner exclusive rights to use, license, or sell the design and prohibits copying or imitation without permission. Registering a product's shape as a design protects its external appearance, boosting its commercial value and marketability."
+          },
+          "commercial": {
+            "title": "Commercial use and restrictions",
+            "p1": "Exploitation of the design for commercial purposes must not violate Islamic law, harm living beings, or damage the environment. The design must also avoid including trademarks, flags, or official logos belonging to others."
+          },
+          "cta": {
+            "text": "Check the uniqueness and aesthetic appeal of your design to secure its registration.",
+            "button": "Designs checklist",
+            "ariaLabel": "Go to Designs checklist"
+          }
+        },
+        "protection": {
+          "title": "Designs Protection",
+          "conditions": {
+            "title": "Industrial model conditions for mandatory availability",
+            "items": [
+              "The industrial model must be new, and its quality standard should not be disclosed to the public through publication, use, or any other means before the date of filing the registration or priority request.",
+              "It must have distinctive features that set it apart from known models."
+            ]
+          },
+          "searching": {
+            "title": "Searching for new designs",
+            "p1": "To verify the novelty of a design, you can search specialized databases. These databases help identify new product ideas, improve existing products, and ensure no infringement on the IP rights of others."
+          },
+          "p2": "You can search registered design information using keywords, competitor names, designers, or by using international classes and categories based on the Locarno classification for designs."
+        },
+        "prototype": {
+          "title": "The prototype",
+          "model": {
+            "title": "The prototype model",
+            "p1": "The initial prototype model is a preliminary version of a product or invention, used as a basis for evaluating the idea and development towards the final product intended for market release. It is designed to transform a theoretical idea into a tangible product or practical application model, or a design model to display the basic specifications."
+          },
+          "importance": {
+            "title": "Importance of the prototype",
+            "p1": "While presenting an initial model is not required to obtain a design certificate, it is a valuable tool for evaluating and refining ideas before launching the final product in the market."
+          },
+          "p2": "Additionally, developing an initial experimental model may be helpful for presentation to investors.",
+          "clinics": {
+            "title": "IP Clinics",
+            "p1": "You can benefit from guidance services provided by IP clinics."
+          }
+        },
+        "registration": {
+          "title": "Registration of designs",
+          "submitting": {
+            "title": "Submitting a design application",
+            "p1": "You can submit an electronic application for registering an design through the Unified Platform for IP Services on the SAIP website if your place of residence is within Saudi Arabia."
+          },
+          "p2": "Alternatively, you can appoint an authorized IP agent to submit the application on your behalf.",
+          "reference": {
+            "title": "Searching for reference models",
+            "p1": "To submit the application for registering the design yourself, you can search for relevant design certificates in the previously mentioned databases and use them as a reference model when preparing your application."
+          },
+          "cta": {
+            "platform": {
+              "text": "Start the design registration process on the SAIP Platform",
+              "button": "Go to SAIP Platform",
+              "ariaLabel": "Go to SAIP Platform"
+            },
+            "journey": {
+              "text": "Interested in understanding designs better? Start your journey here!",
+              "button": "Go to Designs journey",
+              "ariaLabel": "Go to Designs journey"
+            }
+          }
+        }
+      }
+    },
+    "checkYourIdea": {
+      "title": "Check your idea",
+      "yes": "Yes",
+      "no": "No",
+      "answerYes": "Answer Yes",
+      "answerNo": "Answer No",
+      "continueHint": "To continue select an answer",
+      "goBack": "Go back",
+      "goToIpClinics": "Go to IP clinics",
+      "notEligible": {
+        "title": "The idea is not eligible for IP protection.",
+        "description": "It must be documented, created, or developed into a tangible form."
+      },
+      "notIP": {
+        "title": "Probably your idea is not an IP.",
+        "description": "For more information and help go to IP Clinics."
+      },
+      "redirected": {
+        "copyright": "You have been redirected to the copyright information page as your work satisfies the criteria for copyright protection.",
+        "trademark": "You have been redirected to the trademark information page as your work meets the criteria for trademark protection.",
+        "patent": "You have been redirected to the patent information page as your work meets the criteria for patent protection.",
+        "design": "You have been redirected to the design information page as your work meets the criteria for design protection.",
+        "layoutDesign": "You have been redirected to the topographic designs of IC information page as your work meets the criteria for design protection.",
+        "plantVariety": "You have been redirected to the plant varieties information page as your work meets the criteria for plants protection."
+      }
+    }
+  },
+  "ipSearchEngine": {
+    "pageTitle": "IP Search Engine",
+    "pageDescription": "Search intellectual property records",
+    "nav": {
+      "search": "IP Search Engine",
+      "whoCanUse": "Who and when can use?"
+    }
+  },
+  "internationalTreaties": {
+    "readMore": "Read more",
+    "backToList": "Go back to International treaties & agreements"
+  },
+  "mediaCenter": {
+    "tabs": {
+      "news": "News",
+      "videos": "Videos",
+      "articles": "Articles"
+    },
+    "navigationAriaLabel": "Media Center Navigation",
+    "news": {
+      "title": "News",
+      "description": "Get the latest information on IP system in Saudi Arabia.",
+      "search": "Search",
+      "searchPlaceholder": "Search news...",
+      "date": "Date",
+      "datePlaceholder": "Select date range",
+      "category": "Category",
+      "categoryPlaceholder": "Select category",
+      "totalNumber": "Total number",
+      "paginationAriaLabel": "News articles pagination",
+      "publicationDate": "Publication Date",
+      "source": "Source",
+      "goBackToNews": "Go back to News"
+    },
+    "videos": {
+      "title": "Videos",
+      "description": "Explore the latest updates on the IP in Saudi Arabia through our video collection. Stay informed with expert insights, industry trends, and key developments shaping intellectual property today.",
+      "paginationAriaLabel": "Videos pagination",
+      "filterCategories": {
+        "general": "General",
+        "trademarks": "Trademarks",
+        "patents": "Patents",
+        "copyrights": "Copyrights",
+        "designs": "Designs",
+        "topographicDesigns": "Topographic designs of Integrated Circuits",
+        "plantVarieties": "Plants varieties",
+        "ipAcademy": "IP academy",
+        "ipClinics": "IP clinics",
+        "ipLicensing": "IP licensing",
+        "ipInfringement": "IP infringement",
+        "ipDisputeSecretariat": "General secretariat of IP dispute resolution committees",
+        "ipSupportCenters": "National network of IP support centers"
+      },
+      "categories": {
+        "latest": "The latest from SAIP",
+        "events": "Events & Conferences",
+        "intellectualProperty": "Intellectual Property",
+        "ipAgents": "IP Agents",
+        "ipServices": "IP Services"
+      }
+    },
+    "articles": {
+      "title": "Articles",
+      "description": "Read articles about intellectual property topics.",
+      "policies": "Articles policies"
+    },
+    "articleDetail": {
+      "backLabel": "Go back to Articles",
+      "publicationDate": "Publication Date",
+      "commentsTitle": "Comments",
+      "addCommentTitle": "Add comment",
+      "seeMore": "See more",
+      "authorFallback": "A. Hamed bin Mohammed Fayez",
+      "form": {
+        "fullName": "Full name",
+        "fullNamePlaceholder": "Type your full name",
+        "email": "Email",
+        "emailPlaceholder": "Type your Email",
+        "phoneNumber": "Phone number",
+        "phoneNumberPlaceholder": "Type your phone number",
+        "comment": "Comment",
+        "commentPlaceholder": "Type your message",
+        "submit": "Send request",
+        "submitting": "Sending...",
+        "success": "Your comment has been submitted.",
+        "error": "Failed to submit comment. Please try again."
+      }
+    },
+    "notFound": {
+      "title": "Article not found",
+      "description": "The article you're looking for doesn't exist or has been removed.",
+      "backButton": "Go back to Media Center"
+    },
+    "fallbackLocale": {
+      "message": "This content is not available in your language. Showing English version."
+    }
+  },
+  "articlesPolicies": {
+    "pageTitle": "Articles polices",
+    "pageDescription": "Learn about SAIP's Intellectual Property Blog policies and submission guidelines",
+    "title": "Articles polices",
+    "backLabel": "Go back to Articles",
+    "blogTitle": "Intellectual Property Blog",
+    "blogDescription": "The Intellectual Property Blog is an Arabic-language platform launched by the Saudi Authority for Intellectual Property (SAIP). It is dedicated to publishing short articles on topics related to intellectual property. The blog aims to enhance Arabic content by discussing and addressing various intellectual property issues and themes.",
+    "publishingTitle": "Publishing Guidelines:",
+    "publishingGuidelines": [
+      "The article must be original and not extracted from previously published material, even by the same author.",
+      "The article should be concise (600–1200 words), divided into coherent paragraphs. Short or excessively long articles will not be accepted unless the length is necessary for content clarity.",
+      "The content must be relevant to intellectual property topics.",
+      "The article should not be descriptive in nature.",
+      "Key points should be presented in the introduction, clearly highlighting the problem being addressed.",
+      "The article should discuss the problem, analyze it, and conclude with a proposed solution.",
+      "References and sources must be reliable, with hyperlinks included where applicable. Direct quotes should be enclosed in quotation marks.",
+      "Intellectual property rights must be respected, avoiding any infringement of third-party rights. Authors are fully responsible for any violations, and SAIP reserves the right to delete articles without prior notice if such infringements occur."
+    ],
+    "submissionTitle": "How to Submit Articles:",
+    "submissionInstructions": [
+      "Articles should be submitted in a Word file, including the author's full name in Arabic at the end, along with a brief biography and email address.",
+      "Articles or inquiries should be sent to the blog's email: rs.policies@saip.gov.sa.",
+      "The blog team will review submissions for idea clarity and language accuracy, ensuring adherence to the blog’s quality standards.",
+      "If all conditions are met, the article will be published directly without requiring revisions, and the author's details will be acknowledged upon publication.",
+      "Articles that do not meet the blog’s requirements will be rejected outright without notifying the author.",
+      "Once published on the blog, the article cannot be republished or reused elsewhere without prior approval from SAIP."
+    ]
+  },
+  "movablesPlatform": {
+    "table": {
+      "number": "Number",
+      "movableName": "Movable name",
+      "postingDuration": "Posting duration",
+      "postingDate": "Posting date",
+      "status": "Status",
+      "commOfficer": "Communication officer",
+      "phoneNumber": "Phone number",
+      "email": "E-mail",
+      "details": "Details"
+    },
+    "filters": {
+      "search": "Search",
+      "searchPlaceholder": "Search movables...",
+      "postingDate": "Posting date",
+      "totalNumber": "Total number",
+      "status": "Status",
+      "all": "All"
+    },
+    "status": {
+      "open": "Open",
+      "closed": "Closed",
+      "awarded": "Awarded"
+    },
+    "viewDetails": "View details",
+    "noData": "No movables available at this time",
+    "paginationAriaLabel": "Movables platform pagination"
+  },
+  "aboutChairwoman": {
+    "goBack": "Go back to organisational structure",
+    "source": "Source",
+    "sourceName": "SAIP"
+  },
+  "contactAndSupport": {
+    "anchors": {
+      "contactInformation": "Contact information",
+      "appointmentBooking": "Appointment booking",
+      "beneficiarySupport": "Beneficiary support",
+      "followUs": "Follow us on social media"
+    },
+    "contactInfo": {
+      "customerService": "Customer service number",
+      "beneficiarySupport": "Beneficiary support",
+      "appointmentBooking": "Appointment booking platform",
+      "location": "SAIP location",
+      "socialMedia": "Social media",
+      "availability": ["Sun - Thu", "8:00 AM - 4:00 PM"]
+    },
+    "contactCards": {
+      "goToBeneficiarySupport": "Go to Beneficiary support",
+      "bookYourAppointment": "Book your appointment",
+      "locationAddress": [
+        "Riyadh 13321,",
+        "As Sahafah Olaya St 6531, 3059,",
+        "Saudi Authority for Intellectual Property"
+      ]
+    },
+    "buttons": {
+      "goToBeneficiary": "Go to Beneficiary support",
+      "bookAppointment": "Book your appointment",
+      "sendRequest": "Send request"
+    },
+    "form": {
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Type your full name",
+      "fullNameHelper": "Please enter your full name.",
+      "email": "Email",
+      "emailPlaceholder": "Type your Email",
+      "emailHelper": "Please enter your email address.",
+      "phoneNumber": "Phone number",
+      "phoneNumberPlaceholder": "Type your phone number",
+      "phoneNumberHelper": "Please provide your phone number.",
+      "subject": "Subject",
+      "subjectPlaceholder": "Select your subject",
+      "subjectHelper": "Please select a subject from the list.",
+      "subjectOptions": {
+        "general": "General inquiry",
+        "support": "Technical support",
+        "feedback": "Feedback",
+        "complaint": "Complaint",
+        "other": "Other"
+      },
+      "howCanWeHelp": "How can we help?",
+      "howCanWeHelpPlaceholder": "Type your message",
+      "howCanWeHelpHelper": "Please describe how we can help.",
+      "successMessage": "Thank you for contacting us! We will respond within 2-3 business days.",
+      "errorMessage": "Something went wrong. Please try again later.",
+      "submitting": "Sending..."
+    }
+  },
+  "branding": {
+    "anchors": {
+      "logo": "SAIP logo",
+      "colors": "SAIP colors",
+      "font": "SAIP font",
+      "brandGuide": "SAIP brand guide"
+    },
+    "colors": {
+      "mainColors": "Main colors",
+      "secondaryColors": "Secondary colors",
+      "darkGreen": {
+        "title": "Dark green",
+        "description": "The color represents ambition, belonging, and reference, which goes back to the color of the Saudi flag."
+      },
+      "turquoise": {
+        "title": "Turquoise",
+        "description": "Color represents growth and prosperity and indicates creativity in various fields of intellectual property."
+      },
+      "blue": {
+        "title": "Blue",
+        "description": "The color reflects the spirit of protection and responsibility."
+      },
+      "grey": {
+        "title": "Grey",
+        "description": "Color expresses balance and formality."
+      }
+    },
+    "font": {
+      "exampleQuote": "Intellectual Property protection",
+      "regular": "Regular",
+      "bold": "Bold"
+    },
+    "downloadSvg": "Download SVG",
+    "downloadPng": "Download PNG",
+    "downloadJpg": "Download JPG",
+    "downloadLogo": "Download logo",
+    "downloadFont": "Download font",
+    "downloadFontTitle": "Download SAIP logo",
+    "downloadBrandGuide": "Download brand guide",
+    "imageExportCards": {
+      "basicLogo": {
+        "title": "Basic version of the SAIP logo",
+        "description": "The primary logo horizontal is used in all applications and means of communication."
+      },
+      "partnerLogo": {
+        "title": "SAIP logo with a partner",
+        "description": "The secondary horizontal logo is used when there is a partner logo next to the SAIP logo."
+      },
+      "backgroundLogo": {
+        "title": "SAIP logo with background",
+        "description": "When using a white background, the main colored logo should be used, but the logo with white color should be used when placing a colored or photographed background."
+      }
+    }
+  },
+  "careers": {
+    "anchors": {
+      "saipCareers": "SAIP careers",
+      "wipoCareers": "Careers at WIPO"
+    },
+    "buttons": {
+      "goToEmploymentPortal": "Go to Employment portal",
+      "goToWipoPortal": "Go to WIPO portal"
+    }
+  },
+  "sitemap": {
+    "pageTitle": "Sitemap",
+    "pageDescription": "A sitemap serves as a guide, simplifying navigation and making information on the website easier to locate.",
+    "sections": {
+      "saip": "SAIP",
+      "services": "Services",
+      "resources": "Resources",
+      "mediaCenter": "Media Center",
+      "contactUs": "Contact us"
+    },
+    "subsections": {
+      "ipProtection": "IP protection & management",
+      "ipEnablement": "IP enablement",
+      "ipEnforcement": "IP enforcement & dispute",
+      "ipInformation": "IP information",
+      "toolsSearch": "Tools & Search",
+      "ipLicenses": "IP licenses",
+      "lawsRegulations": "Laws & regulations",
+      "mediaLibrary": "Media library"
+    },
+    "links": {
+      "aboutSaip": "About SAIP",
+      "nationalIpStrategy": "National IP strategy",
+      "organisationalStructure": "Organisational structure",
+      "saipProjects": "SAIP projects",
+      "entitiesPartners": "Entities & partners",
+      "servicesOverview": "Services overview",
+      "serviceDirectory": "SAIP service directory",
+      "patents": "Patents",
+      "trademarks": "Trademarks",
+      "copyrights": "Copyrights",
+      "designs": "Designs",
+      "plantVarieties": "Plant varieties",
+      "layoutDesigns": "Layout designs of Integrated Circuits",
+      "licensing": "Licensing of IP activities",
+      "ipAcademy": "IP academy",
+      "ipClinics": "IP clinics",
+      "ipSupportCenters": "National network of IP support centers",
+      "ipInfringement": "IP infringement",
+      "generalSecretariat": "General secretariat of IP dispute resolution committees",
+      "resourcesOverview": "Resources overview",
+      "digitalGuide": "Digital guide",
+      "guidelines": "Guidelines",
+      "faqs": "FAQs",
+      "ipGlossary": "IP glossary",
+      "reports": "Reports",
+      "ipSearchEngine": "IP search engine",
+      "gazette": "Gazette",
+      "publications": "Publications",
+      "ipObservatory": "IP observatory",
+      "openData": "Open data",
+      "publicConsultations": "Public consultations",
+      "ipAgents": "IP agents",
+      "supervisoryUnit": "Supervisory unit for non-profit sector organizations",
+      "systemsRegulations": "Systems & regulations",
+      "litigationPaths": "Litigation paths",
+      "internationalTreaties": "International treaties & agreements",
+      "mediaCenterMain": "Media Center",
+      "branding": "Branding",
+      "movablesPlatform": "Movables platform",
+      "aboutChairwoman": "About chairwoman",
+      "contactSupport": "Contact & support",
+      "careers": "Careers"
+    }
+  },
+  "serviceDetail": {
+    "stepLabel": "Step {number}",
+    "toggle": {
+      "show": "Show step",
+      "hide": "Hide step"
+    },
+    "applicationSteps": "Application steps",
+    "requirements": "Requirements",
+    "executionTime": "Execution time",
+    "serviceFee": "Service fee",
+    "targetGroup": "Target group",
+    "serviceChannel": "Service channel",
+    "faqLabel": "Go to FAQs page",
+    "goToPlatform": "Go to SAIP Platform",
+    "goBackToServices": "Go back to Services",
+    "tabs": {
+      "steps": "Application steps",
+      "requirements": "Requirements"
+    },
+    "sidebar": {
+      "executionTime": "Execution time",
+      "serviceFee": "Service fee",
+      "targetGroup": "Target group",
+      "serviceChannel": "Service channel",
+      "faqTitle": "Frequently Asked Questions",
+      "faqLabel": "Go to FAQs page",
+      "platformButton": "Go to SAIP Platform"
+    },
+    "emptyStates": {
+      "noSteps": "No steps available.",
+      "noRequirements": "No requirements specified."
+    },
+    "relatedServices": "Related services",
+    "relatedServicesDesc": "Explore more services",
+    "commonValues": {
+      "free": "Free",
+      "continuous": "Continuous",
+      "online": "Online",
+      "digital": "Digital",
+      "onSite": "On-site",
+      "onSiteDigital": "On-site / Digital",
+      "individualsSmesStartups": "Individuals, SMEs, Startups"
+    }
+  },
+  "common": {
+    "goBack": "Go back",
+    "tabs": {
+      "overview": "Overview",
+      "services": "Services",
+      "media": "Media",
+      "journey": "Journey",
+      "howToJoin": "How to join",
+      "centers": "Centers",
+      "trainingPrograms": "Training programs",
+      "proQualifications": "Pro qualifications",
+      "educationProjects": "Education projects"
+    },
+    "expandableTab": {
+      "showMore": "Show more",
+      "hide": "Hide"
+    },
+    "nav": {
+      "informationLibrary": "Information library",
+      "statistics": "Statistics",
+      "relatedPages": "Related pages",
+      "quickLinks": "Quick links",
+      "requirements": "Requirements"
+    },
+    "statistics": {
+      "title": "Statistics",
+      "viewMore": "View more statistics"
+    },
+    "relatedPages": {
+      "title": "Related pages",
+      "faqs": "FAQs",
+      "guidelines": "Guidelines",
+      "ipClinics": "IP Clinics",
+      "ipAcademy": "IP Academy",
+      "lawsAndRegulations": "Laws & regulations",
+      "internationalTreaties": "International treaties & agreements"
+    },
+    "gazette": {
+      "heading": "IP Gazette",
+      "text": "<p>The IP Gazette is your trusted source for all trademark-related updates. Here, you will find details of trademark applications submitted on or after 19/12/2023, along with any subsequent changes to these records.</p><p>Whether it's renewals, ownership transfers, or modifications, the Gazette ensures you stay informed with the latest and most accurate trademark information.</p>",
+      "buttonText": "Go to IP Gazette"
+    },
+    "copyrights": {
+      "heroSecondSubheading": "An author is the creator of a work, identified by their name unless stated otherwise. For anonymous or pseudonymous works, the publisher may represent the author. This term also includes contributors like scriptwriters and dialogue authors in visual or audio projects."
+    },
+    "designs": {
+      "heroHeading": "Designs overview",
+      "heroSubheading": "Industrial designs protect the visual appearance of products, enhancing their marketability without affecting their function.",
+      "overviewHeaderDescription": "Watch the video and learn the key steps involved in designs.",
+      "guideTitle": "Design Guide",
+      "guideCtaLabel": "Go to Guidelines",
+      "publicationsTitle": "Publications",
+      "publicationsDescription": "The design publications provides important updates and information on design procedures, changes in regulations, and relevant industry developments in Saudi Arabia.",
+      "tocAriaLabel": "Designs journey navigation",
+      "servicesTitle": "Designs services",
+      "placeholders": {
+        "untitledService": "Untitled Service",
+        "untitled": "Untitled"
+      },
+      "fallback": {
+        "guideCards": [
+          {
+            "title": "Industrial Design Registration Guide",
+            "description": "Learn how to register your industrial designs and protect their visual appearance",
+            "labels": ["Designs"],
+            "publicationDate": "04.08.2024",
+            "primaryButtonLabel": "Download file",
+            "primaryButtonHref": "/files/design-registration.pdf",
+            "secondaryButtonLabel": "View file",
+            "secondaryButtonHref": "/files/design-registration.pdf",
+            "titleBg": "green"
+          },
+          {
+            "title": "Design Protection Guide",
+            "description": "Guidelines for protecting the visual features of industrial designs",
+            "labels": ["Designs"],
+            "publicationDate": "04.08.2024",
+            "primaryButtonLabel": "Download file",
+            "primaryButtonHref": "/files/design-protection.pdf",
+            "secondaryButtonLabel": "View file",
+            "secondaryButtonHref": "/files/design-protection.pdf",
+            "titleBg": "green"
+          },
+          {
+            "title": "International Design Registration",
+            "description": "Understanding international design registration through the Hague System",
+            "labels": ["Designs"],
+            "publicationDate": "04.08.2024",
+            "primaryButtonLabel": "Download file",
+            "primaryButtonHref": "/files/international-design.pdf",
+            "secondaryButtonLabel": "View file",
+            "secondaryButtonHref": "/files/international-design.pdf",
+            "titleBg": "green"
+          }
+        ],
+        "statistics": [
+          {
+            "label": "Number of design applications in 2023",
+            "value": 2156,
+            "chartType": "line",
+            "chartData": [
+              { "value": 500 },
+              { "value": 800 },
+              { "value": 1100 },
+              { "value": 1400 },
+              { "value": 1700 },
+              { "value": 2000 },
+              { "value": 2156 }
+            ],
+            "trend": { "value": "92%", "direction": "up", "description": "vs last month" }
+          },
+          {
+            "label": "Number of registered designs in 2023",
+            "value": 1987,
+            "chartType": "line",
+            "chartData": [
+              { "value": 450 },
+              { "value": 700 },
+              { "value": 950 },
+              { "value": 1200 },
+              { "value": 1450 },
+              { "value": 1700 },
+              { "value": 1987 }
+            ],
+            "trend": { "value": "87%", "direction": "up", "description": "vs last month" }
+          },
+          {
+            "label": "Design category distribution",
+            "chartType": "pie",
+            "breakdown": [
+              { "label": "Product Design", "value": 52.3, "displayValue": "52.3%", "color": "#388A5A" },
+              { "label": "Textile Design", "value": 28.9, "displayValue": "28.9%", "color": "#1C6846" },
+              { "label": "Other", "value": 18.8, "displayValue": "18.8%", "color": "#0D4D2E" }
+            ]
+          }
+        ],
+        "journeySections": {
+          "guidance": {
+            "title": "Guidance",
+            "description": "Starting your industrial design protection journey. Learn about the requirements and get professional assistance to protect the visual appearance of your products."
+          },
+          "design-checklist": {
+            "title": "Design Checklist",
+            "description": "Evaluate whether your design meets the necessary criteria for protection. Assess novelty and originality requirements before filing.",
+            "buttonLabel": "Go to design checklist",
+            "buttonHref": "/resources/ip-information/digital-guide/ip-category/designs/checklist"
+          },
+          "ip-clinics": {
+            "title": "IP Clinics",
+            "description": "Get professional guidance on design protection, including technical and legal inquiries about registration and protecting your rights.",
+            "buttonLabel": "Go to IP Clinics",
+            "buttonHref": "/services/ip-clinics"
+          },
+          "ip-search-engine": {
+            "title": "IP Search Engine",
+            "description": "Search for registered designs through the SAIP intellectual property (IP) engine.",
+            "buttonLabel": "Go to IP Search Engine",
+            "buttonHref": "/resources/tools-and-research/ip-search-engine"
+          },
+          "protection": {
+            "title": "Protection",
+            "description": "Secure exclusive rights for your industrial design. Submit your application through our online portal to protect designs that are new and have individual character.",
+            "buttonLabel": "Apply for protection",
+            "buttonHref": "#"
+          },
+          "management": {
+            "title": "Management",
+            "description": "Monitor and manage your design rights, including renewals, licensing, and transfer of rights."
+          }
+        },
+        "journeySectionIds": [
+          "guidance",
+          "design-checklist",
+          "ip-clinics",
+          "ip-search-engine",
+          "protection",
+          "management"
+        ],
+        "tocItems": [
+          {
+            "id": "guidance",
+            "label": "Guidance",
+            "subItems": [
+              { "id": "design-checklist", "label": "Design Checklist" },
+              { "id": "ip-clinics", "label": "IP Clinics" },
+              { "id": "ip-search-engine", "label": "IP Search Engine" }
+            ]
+          },
+          { "id": "protection", "label": "Protection" },
+          { "id": "management", "label": "Management" }
+        ],
+        "services": [
+          {
+            "title": "Design Application Service",
+            "description": "Submit applications for protection of industrial designs that are new and have individual character.",
+            "labels": ["Protection"],
+            "href": "/services/designs/application",
+            "primaryButtonLabel": "View details",
+            "primaryButtonHref": "/services/designs/application"
+          },
+          {
+            "title": "Design Certificate Renewal",
+            "description": "Renew your design protection certificate to maintain exclusive rights over your registered design.",
+            "labels": ["Management"],
+            "href": "/services/designs/renewal",
+            "primaryButtonLabel": "View details",
+            "primaryButtonHref": "/services/designs/renewal"
+          },
+          {
+            "title": "Design Search",
+            "description": "Search existing design registrations to ensure your design is novel and doesn't infringe on existing rights.",
+            "labels": ["Guidance"],
+            "href": "/services/designs/search",
+            "primaryButtonLabel": "View details",
+            "primaryButtonHref": "/services/designs/search"
+          }
+        ]
+      },
+      "journey": {
+        "description": "We are dedicated to empowering design holders by providing a seamless and transparent experience throughout the design protection process.",
+        "secondDescription": "From fostering innovation to protecting, managing, and enforcing your design rights, we ensure your creations are safeguarded and transformed into valuable assets that enhance market presence and drive economic growth. Learn more about the design journey."
+      }
+    },
+    "topographicDesigns": {
+      "overviewDescription": "Watch the video and learn the key steps involved in topographic designs."
+    },
+    "form": {
+      "requiredFields": "* Required fields",
+      "uploadFiles": "Upload files",
+      "browseFiles": "Browse files",
+      "fileSizeLimit": "Maximum file size allowed is 2MB, supported file formats include .jpg, .png, and .pdf.",
+      "selectedFiles": "Selected files",
+      "removeFile": "Remove file"
+    },
+    "filters": {
+      "filters": "Filters",
+      "filter": "Filter",
+      "search": "Search",
+      "clearFilters": "Clear filters",
+      "hideFilters": "Hide additional filters",
+      "showFilters": "Show additional filters",
+      "totalNumber": "Total number",
+      "noItemsFound": "No items found matching your filters.",
+      "noPublicationsFound": "No publications found matching your filters.",
+      "noOptionsAvailable": "No options available",
+      "noServicesAvailable": "No services available",
+      "serviceType": "Service type",
+      "services": "Services",
+      "serviceCategory": "Service category",
+      "targetGroup": "Target group",
+      "select": "Select",
+      "all": "All",
+      "selected": "selected",
+      "date": "Date",
+      "selectDate": "Select date",
+      "selectDateRange": "Select date range",
+      "publicationDate": "Publication date",
+      "type": "Type",
+      "category": "Category",
+      "general": "General",
+      "service": "Service",
+      "documentName": "Document name",
+      "committeeType": "Committee type",
+      "preview": "Preview",
+      "showResults": "Show results",
+      "serviceTypeOptions": {
+        "guidance": "Guidance",
+        "protection": "Protection",
+        "management": "Management",
+        "enforcement": "Enforcement"
+      },
+      "targetGroupOptions": {
+        "individuals": "Individuals",
+        "enterprises": "Enterprises"
+      },
+      "ipCategoryOptions": {
+        "Trademarks": "Trademarks",
+        "Patents": "Patents",
+        "Copyright": "Copyright",
+        "Designs": "Designs",
+        "Plant Varieties": "Plant Varieties",
+        "Layout Designs": "Layout Designs"
+      }
+    },
+    "searchModal": {
+      "placeholder": "Search SAIP...",
+      "searching": "Searching...",
+      "noResults": "No results found for",
+      "tryDifferent": "Try different keywords or check your spelling",
+      "foundResults": "Found {count} result",
+      "foundResultsPlural": "Found {count} results",
+      "startTyping": "Start typing to search",
+      "searchDescription": "Search for services, resources, news, and more across SAIP",
+      "types": {
+        "page": "Page",
+        "service": "Service",
+        "news": "News",
+        "article": "Article",
+        "resource": "Resource",
+        "about": "About"
+      }
+    },
+    "globalSearch": {
+      "modalLabel": "Global search",
+      "placeholder": "Search",
+      "voiceSearch": "Voice search",
+      "searchButton": "Search",
+      "closeSearch": "Close search",
+      "mostCommonSearches": "Most common searches",
+      "suggestedSearches": "Suggested searches",
+      "quickSearches": {
+        "news": "News",
+        "services": "Services",
+        "articles": "Articles"
+      },
+      "resultsTitle": "Search results \"{query}\"",
+      "resultsCount": "{count} Result(s) found",
+      "filter": "Filter",
+      "sort": "Sort",
+      "applyFilters": "Apply Filters ({count})",
+      "clearFilters": "Clear Filter",
+      "categoryLabel": "Category",
+      "typeLabel": "Type",
+      "selections": "selections",
+      "searchTypePlaceholder": "Search",
+      "clearSearch": "Clear search",
+      "showMore": "Show {count} more",
+      "noResultsTitle": "No results found",
+      "noResultsDescription": "We’re sorry, but we couldn’t find any results matching your search. Please try adjusting your keywords.",
+      "startTypingTitle": "Start typing to search",
+      "startTypingDescription": "Search for services, resources, news, and more across SAIP",
+      "actionLabel": "View details",
+      "sortOptions": {
+        "relevance": "Relevance",
+        "newest": "Newest",
+        "oldest": "Oldest"
+      },
+      "typeOptions": {
+        "services": "Services",
+        "guidelines": "Guidelines",
+        "faqs": "FAQs",
+        "news": "News",
+        "articles": "Articles",
+        "reports": "Reports",
+        "publications": "Publications",
+        "lawsRegulations": "Laws & regulations",
+        "projects": "Projects",
+        "about": "About SAIP",
+        "pages": "Pages"
+      },
+      "categories": {
+        "patents": "Patents",
+        "trademarks": "Trademarks",
+        "copyrights": "Copyrights",
+        "designs": "Designs",
+        "plantVarieties": "Plant varieties",
+        "layoutDesigns": "Layout designs of integrated circuits",
+        "ipLicensing": "Licensing of IP activities",
+        "ipAcademy": "IP academy",
+        "ipClinics": "IP clinics",
+        "ipSupportCenters": "National network of IP support centers",
+        "ipInfringement": "IP infringement",
+        "ipDisputeResolution": "IP dispute resolution committees"
+      }
+    },
+    "buttons": {
+      "viewDetails": "View details"
+    },
+    "labels": {
+      "publicationNumber": "Publication number",
+      "durationDate": "Duration date",
+      "publishedDate": "Published date",
+      "publicationDate": "Publication date",
+      "reportType": "Report Type",
+      "value": "Value",
+      "totalNumber": "Total number",
+      "onThisPage": "On this page",
+      "journey": "{category} journey"
+    },
+    "errors": {
+      "noPillarsAvailable": "No pillars available."
+    },
+    "commentsAndSuggestions": "Comments & suggestions",
+    "commentsAndSuggestionsDesc": "For any inquiry or feedback on Government Services, please fill the required information.",
+    "contactUs": "Contact us"
+  },
+  "ipClinics": {
+    "nav": {
+      "servicesOfIpClinics": "Services of the IP clinics"
+    },
+    "servicesTitle": "IP Clinics services"
+  },
+  "ipLicensing": {
+    "informationLibrary": "Information library",
+    "requirementsTitle": "IP licensing requirements",
+    "requirementsDescription": "You are exempt from the professional verification certificate requirement if you meet any of the following conditions:",
+    "exemptionsTitle": "Exemptions",
+    "quickLinksTitle": "Quick links",
+    "quickLinks": {
+      "ipAgents": "IP agents",
+      "supervisoryUnit": "Supervisory unit for non-profit sector organizations"
+    },
+    "viewFile": "View file",
+    "downloadFile": "Download file",
+    "relatedServicesTitle": "Related services",
+    "goToPlatform": "Go to SAIP Platform",
+    "relatedServices": {
+      "licenseRegistration": {
+        "question": "Do you meet all the conditions?",
+        "title": "IP agent license registration",
+        "description": "Become a certified IP Agent and represent clients in IP matters. Join a network of professionals dedicated to protecting IP in Saudi Arabia.",
+        "price": "3000 SAR"
+      },
+      "agentsExam": {
+        "question": "Are you ready but haven't passed the exam yet?",
+        "title": "IP agents exam",
+        "description": "The professional test for Agents is required to obtain a license for providing IP services. It aims to build specialized national professionals and includes knowledge, skills, practices, and real-life examples.",
+        "price": "1000 SAR"
+      }
+    }
+  },
+  "ipAgents": {
+    "location": "Location",
+    "locationLabel": "Location",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "categoryLabel": "Category"
+  },
+  "supervisoryUnit": {
+    "anchors": {
+      "overview": "About supervisory unit",
+      "targetAreas": "Target areas",
+      "objectives": "Objectives of the supervisory unit",
+      "civilAssociations": "Civil associations under the technical supervision of SAIP",
+      "contact": "Contact"
+    },
+    "contactHeading": "Contact",
+    "contactDescription": "Contact to the supervisory unit at SAIP",
+    "classification": "Classification",
+    "email": "Email",
+    "location": "Location",
+    "goToWebsite": "Go to website"
+  },
+  "litigationPaths": {
+    "tabs": {
+      "trademarkAppeal": "For appealing decisions related to Trademarks",
+      "trademarkObjection": "For objection of Trademark registration",
+      "trademarkCancellation": "For cancellation of a registered Trademark",
+      "trademarkInfringement": "In case of infringement on Trademarks",
+      "copyrightViolation": "In cases of violations of the Copyright protection system",
+      "patentDesigns": "For Patent, Designs, Topographic designs of IC, Plant varieties"
+    },
+    "charts": {
+      "trademarkAppeal": {
+        "appealSaip": "Appeal against SAIP decision about rejecting to register a trademark",
+        "appealSaipNote": "within 60 days from the date of notification",
+        "trademarkCommittee": "Trademark appeals committee",
+        "appealCommittee": "Appeal against the decision of the Trademark Appeals committee",
+        "appealCommitteeNote": "within 60 days from the date of notification",
+        "commercialCourt": "Lawsuit to commercial court"
+      },
+      "trademarkObjection": {
+        "objectRegistration": "Object on the registration of Trademark",
+        "objectNote": "within 60 days from the date of notification",
+        "trademarkCommittee": "The committee for considering trademarks lawsuits",
+        "appealDecision": "Appeal against the decision of the trademark claims committee",
+        "appealNote": "within 60 days from the date of notification",
+        "commercialCourt": "Lawsuit to commercial court"
+      },
+      "trademarkCancellation": {
+        "cancelRequest": "Request for cancellation of a registered Trademark",
+        "trademarkCommittee": "The committee for considering trademarks lawsuits",
+        "appealDecision": "Appeal against the decision of the trademark claims committee",
+        "appealNote": "within 60 days from the date of notification",
+        "commercialCourt": "Lawsuit to commercial court"
+      },
+      "trademarkInfringement": {
+        "civilLawsuits": "Civil lawsuits",
+        "commercialCourt": "Lawsuit to commercial court",
+        "executionFinal": "Execution of final judgment",
+        "startService": "Start the service",
+        "criminalCases": "Criminal cases and public rights",
+        "publicProsecution": "Public Prosecution"
+      },
+      "copyrightViolation": {
+        "civilLawsuits": "Civil lawsuits",
+        "commercialCourt": "Lawsuit to commercial court",
+        "executionFinal": "Execution of final judgment",
+        "startService": "Start the service",
+        "criminalCases": "Criminal cases and public rights",
+        "publicProsecution": "Public Prosecution"
+      },
+      "patentDesigns": {
+        "objectGranted": "Object on a granted patent",
+        "appealReject": "Appeal against AIP decision about rejecting to grant a patent",
+        "appealRejectNote": "within 60 days from the date of notification",
+        "patentCommittee": "The committee for considering patents lawsuits",
+        "appealDecision": "Appeal against the decision of the patent claims committee",
+        "appealNote": "within 60 days from the date of notification",
+        "commercialCourt": "Lawsuit to commercial court",
+        "civilLawsuits": "Civil lawsuits",
+        "executionFinal": "Execution of final judgment",
+        "startService": "Start the service",
+        "criminalCases": "Criminal cases and public rights",
+        "publicProsecution": "Public Prosecution"
+      }
+    }
+  },
+  "ipAcademy": {
+    "whatWeOffer": "Information library",
+    "informationYouMightNeed": "Information you might need",
+    "informationDescription": "Check out the examples below for guidance on where to find specific answers.",
+    "keyAdvantages": "Key advantages",
+    "learnMore": "Learn more",
+    "training": {
+      "date": "Date",
+      "category": "Category",
+      "duration": "Duration",
+      "fees": "Fees",
+      "location": "Location",
+      "hosts": "Hosts",
+      "readMore": "Read more",
+      "register": "Register",
+      "viewDetails": "View details"
+    },
+    "qualifications": {
+      "readMore": "Read more"
+    },
+    "projects": {
+      "category": "Category",
+      "viewDetails": "View details",
+      "downloadFile": "Download file"
+    },
+    "qualificationDetails": {
+      "proQualifications": "Pro qualifications",
+      "goBack": "Go back to Pro qualifications",
+      "detailsTitle": "Pro qualifications details",
+      "forWhom": "For whom",
+      "testRequirements": "Test requirements",
+      "studyMaterial": "Study material",
+      "examPrograms": "Exam preparation programs",
+      "chaptersEvaluation": "Chapters & evaluation",
+      "relatedServices": "Related services",
+      "shortDescription": "Short description",
+      "sidebar": {
+        "startDate": "Start date",
+        "duration": "Duration",
+        "fees": "Fees",
+        "language": "Language",
+        "testType": "Test type",
+        "passingScore": "Passing score",
+        "location": "Location",
+        "registerLabel": "Register for exam"
+      }
+    },
+    "trainingDetails": {
+      "trainingPrograms": "Training programs",
+      "goBack": "Go back to Training programs",
+      "detailsTitle": "Training program details",
+      "forWhom": "For whom",
+      "whatYouWillLearn": "What you will learn",
+      "courseFormat": "Course format",
+      "courseMaterials": "Course materials",
+      "courseProgramme": "Course programme",
+      "relatedServicesTitle": "Related services",
+      "relatedServicesDescription": "Short description",
+      "sidebar": {
+        "startDate": "Start date",
+        "duration": "Duration",
+        "fees": "Fees",
+        "language": "Language",
+        "location": "Location",
+        "registerLabel": "Register for exam"
+      }
+    },
+    "projectDetails": {
+      "educationProjects": "Education projects",
+      "goBack": "Go back to Education projects",
+      "detailsTitle": "Education projects details",
+      "partners": "Partners",
+      "projectScope": "Project scope",
+      "targetAudience": "Target audience",
+      "projectDetails": "Project details"
+    },
+    "registration": {
+      "examTitle": "Register for Exam",
+      "examDescription": "Complete the form below to register for the professional qualification exam.",
+      "courseTitle": "Register for Course",
+      "courseDescription": "Complete the form below to register for the training course.",
+      "form": {
+        "fullName": "Full name",
+        "email": "Email address",
+        "phone": "Phone number",
+        "nationalId": "National ID / Iqama number",
+        "examType": "Exam type",
+        "preferredDate": "Preferred date",
+        "preferredLocation": "Preferred location",
+        "specialRequirements": "Special requirements (if any)",
+        "organization": "Organization / Company",
+        "jobTitle": "Job title",
+        "courseName": "Course name",
+        "attendanceMode": "Attendance mode",
+        "additionalInfo": "Additional information",
+        "terms": "I accept the terms and conditions",
+        "submitExam": "Register for Exam",
+        "submitCourse": "Register for Course"
+      },
+      "options": {
+        "ipAgents": "Professional examination for IP agents",
+        "enforcement": "IP Enforcement Officers Exam",
+        "other": "Other",
+        "riyadh": "Riyadh Test Center",
+        "jeddah": "Jeddah Test Center",
+        "dammam": "Dammam Test Center",
+        "online": "Online",
+        "onsite": "On-site",
+        "hybrid": "Hybrid"
+      },
+      "success": "Your registration has been submitted successfully! You will receive a confirmation email shortly.",
+      "error": "An error occurred while submitting your registration. Please try again."
+    }
+  },
+  "ipGeneralSecretariat": {
+    "tabs": {
+      "overview": "Overview",
+      "howToJoin": "How to join",
+      "howToJoinMobile": "Committees",
+      "centers": "Centers",
+      "centersMobile": "Services",
+      "documentsDecisions": "Documents & decisions",
+      "documentsDecisionsMobile": "Documents"
+    },
+    "centersTitle": "IP General Secretariat services",
+    "documentsTitle": "Documents & decisions",
+    "noDocuments": "No documents available at the moment.",
+    "viewDocument": "View document",
+    "howToJoin": {
+      "title": "Committees",
+      "description": "There are three types of committees: Trademark committee, Patent, design, integrated circuits & plant varieties committees and Copyright committee."
+    },
+    "committeeSection": {
+      "about": "About",
+      "responsibilities": "Responsibilities"
+    },
+    "overview": {
+      "nav": {
+        "committees": "Committees",
+        "responsibilities": "Committee responsibilities",
+        "statistics": "Statistics",
+        "relatedPages": "Related pages"
+      },
+      "committeesTitle": "Committees",
+      "responsibilitiesTitle": "Committee responsibilities",
+      "statisticsTitle": "Statistics",
+      "viewMoreStatistics": "View more statistics",
+      "viewAll": "View all",
+      "showLess": "Show less"
+    },
+    "media": {
+      "news": "News",
+      "videos": "Videos",
+      "badgeLabel": "IP General Secretariat"
+    },
+    "filters": {
+      "serviceType": "Service type",
+      "targetGroup": "Target group"
+    }
+  },
+  "ipInfringement": {
+    "servicesTitle": "IP infringement services",
+    "infringementGuides": "Infringement guides",
+    "media": {
+      "news": "News",
+      "videos": "Videos",
+      "articles": "Articles",
+      "badgeLabel": "IP Infringement"
+    }
+  },
+  "ipSupportCenters": {
+    "aboutTisc": "About TISC",
+    "responsibilities": "TISC responsibilities",
+    "guidelines": "TISC guidelines",
+    "statistics": "Statistics",
+    "viewMoreStatistics": "View more statistics",
+    "readMoreAbout": "Read more about TISC",
+    "centers": {
+      "title": "Centers",
+      "viewFullList": "View full list of centers",
+      "networkTitle": "National Network of IP Support Centers",
+      "totalNumber": "Total number",
+      "location": "Location",
+      "sort": "Sort",
+      "aToZ": "A - Z",
+      "zToA": "Z - A",
+      "email": "Email",
+      "website": "Website"
+    },
+    "media": {
+      "news": "News",
+      "videos": "Videos",
+      "articles": "Articles",
+      "badgeLabel": "IP Support Centers"
+    }
+  },
+  "ipGlossary": {
+    "heroHeading": "IP Glossary",
+    "heroSubheading": "Comprehensive glossary of over 250 key terms in Arabic and English.",
+    "tabs": {
+      "glossary": "Glossary",
+      "acronyms": "Acronyms"
+    },
+    "totalNumber": "Total number",
+    "search": "Search",
+    "arabicAlphabet": "Arabic alphabet",
+    "filterByLetter": "Filter by letter",
+    "clearFilters": "Clear filters",
+    "all": "ALL",
+    "table": {
+      "english": "English",
+      "arabic": "Arabic",
+      "description": "Description",
+      "acronym": "Acronym",
+      "englishName": "English Name",
+      "arabicName": "Arabic Name"
+    }
+  },
+  "reports": {
+    "filters": {
+      "search": "Search",
+      "category": "Category",
+      "reportType": "Report type",
+      "date": "Date",
+      "selectCategory": "Select category",
+      "selectReportType": "Select report type",
+      "selectDate": "Select date range"
+    },
+    "totalNumber": "Total number",
+    "noReportsFound": "No reports found.",
+    "detail": {
+      "overview": "Overview",
+      "methodology": "Methodology",
+      "keyFindings": "Key findings",
+      "relatedReports": "Related reports",
+      "publicationDate": "Publication date",
+      "reportType": "Report type"
+    }
+  },
+  "ipObservatory": {
+    "goBack": "Go back to IP observatory",
+    "tabs": {
+      "registrationApplication": "Registration application",
+      "registrationCertificates": "Registration certificates"
+    },
+    "seeDetails": "See details",
+    "ipCategories": {
+      "title": "IP Categories",
+      "description": "Select from different types of intellectual property categories including patents, trademarks, copyrights, designs, plant varieties, and topographic designs of integrated circuits."
+    },
+    "registrationTypes": {
+      "title": "Registration Types",
+      "description": "Choose between registration applications and registration certificates to filter and view relevant intellectual property services and documentation."
+    },
+    "table": {
+      "title": "Table",
+      "classificationName": "Classification name",
+      "registrationNumber": "Number of application or registration certificate",
+      "sort": "Sort",
+      "noData": "No data found matching your filters."
+    },
+    "charts": {
+      "filters": {
+        "date": "Date",
+        "selectDate": "Select date",
+        "status": "Status",
+        "selectStatus": "Select status",
+        "active": "Active",
+        "pending": "Pending"
+      }
+    },
+    "lastDataUpdate": "Last data update:"
+  },
+  "projects": {
+    "pageTitle": "SAIP Projects",
+    "pageDescription": "Explore projects and initiatives by Saudi Authority for Intellectual Property",
+    "etimad": "Go to Etimad platform",
+    "breadcrumbs": {
+      "home": "Home",
+      "saip": "SAIP",
+      "projects": "SAIP projects"
+    },
+    "filters": {
+      "tenderActivity": "Tender activity",
+      "tenderStage": "Tender stage",
+      "tenderType": "Tender type",
+      "search": "Search",
+      "clearFilters": "Clear filters",
+      "bidSubmissionDeadline": "Bid submission deadline",
+      "sorting": "Sorting according to",
+      "ascending": "Ascending",
+      "descending": "Descending"
+    },
+    "totalNumber": "Total number",
+    "card": {
+      "referenceNo": "Reference no.",
+      "tenderStage": "Tender stage",
+      "mainActivity": "Main activity",
+      "tenderFees": "Tender fees",
+      "publicationDate": "Publication date",
+      "tenderType": "Tender type",
+      "announcementVendor": "Announcement vendor",
+      "bidSubmissionDeadline": "Bid submission deadline",
+      "resultsNotAnnounced": "Results have not been announced yet"
+    }
+  },
+  "feedback": {
+    "question": "Was this page useful?",
+    "yes": "Yes",
+    "no": "No",
+    "close": "Close",
+    "submit": "Submit",
+    "submitted": "Your feedback is submitted!",
+    "pleaseTellUsWhy": "Please tell us why",
+    "youCanSelectMultiple": "(you can select multiple options)",
+    "reasons": {
+      "contentRelevant": "Content is relevant",
+      "wellWritten": "It was well written",
+      "easyToRead": "The layout made it easy to read",
+      "somethingElse": "Something else"
+    },
+    "im": "I'm",
+    "gender": {
+      "male": "Male",
+      "female": "Female",
+      "preferNotToSay": "Prefer not to say"
+    },
+    "feedbackText": "Feedback",
+    "feedbackPlaceholder": "Type your feedback...",
+    "characterCount": "{count}/{max} characters",
+    "characterLimitError": "Feedback must not exceed {max} characters",
+    "moreInformation": "For more information you may review",
+    "eParticipationStatement": "e-participation statement",
+    "and": "and",
+    "rulesOfEngagement": "rules of engagement",
+    "statistics": "{yesPercentage}% of users said {yesLabel} from {totalFeedbacks} Feedbacks"
+  },
+  "faq": {
+    "feedbackQuestion": "Do you find the answer to this question helpful?",
+    "feedbackStatistics": "{percentage}% found this helpful ({total} responses)",
+    "lastUpdate": "Date of last update:",
+    "noFeedbackYet": "No feedback yet"
+  },
+  "ipCategories": {
+    "names": {
+      "Patents": "Patents",
+      "Trademarks": "Trademarks",
+      "Copyrights": "Copyrights",
+      "Designs": "Designs",
+      "IP Infringement": "IP Infringement",
+      "Plant Varieties": "Plant Varieties",
+      "Plant varieties": "Plant varieties",
+      "Layout Designs": "Layout Designs of IC",
+      "Topographic designs of IC": "Topographic designs of IC",
+      "IP Licensing": "IP Licensing"
+    },
+    "media": {
+      "heroTitle": "Media for {category}",
+      "heroDescription": "Here you can find news, videos, articles and events on various categories of IP.",
+      "news": {
+        "title": "News",
+        "description": "Get the latest information on {category} in Saudi Arabia thanks to news from SAIP."
+      },
+      "videos": {
+        "title": "Videos",
+        "description": "Watch the latest videos about {category}."
+      },
+      "articles": {
+        "title": "Articles",
+        "description": "Read articles about {category} topics."
+      },
+      "badgeLabel": "{category}",
+      "noDataYet": "No data yet – coming soon!"
+    }
+  }
+}

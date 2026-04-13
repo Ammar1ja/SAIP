@@ -1,0 +1,66 @@
+/**
+ * News Service
+ * Functional API for news-related API calls and data transformations
+ */
+
+import { fetchContentType, FetchParams } from '../utils';
+import { DrupalNode } from '../types';
+
+export interface NewsItem {
+  id: number;
+  title: string;
+  description: string;
+  image?: string;
+  date: Date;
+  slug: string;
+  promoted?: boolean;
+}
+
+/**
+ * Fetch news articles
+ */
+export async function getNews(params?: FetchParams): Promise<DrupalNode[]> {
+  const defaultParams = {
+    sort: '-created',
+    ...params,
+  };
+  return fetchContentType('news', defaultParams);
+}
+
+/**
+ * Fetch featured news (promoted to front page)
+ */
+export async function getFeaturedNews(limit: number = 5): Promise<DrupalNode[]> {
+  return getNews({
+    limit,
+    filter: { promote: '1' },
+    sort: '-created',
+  });
+}
+
+/**
+ * Transform Drupal news to frontend format
+ */
+export function transformToNewsItems(drupalNews: DrupalNode[]): NewsItem[] {
+  return drupalNews.map((node, index) => ({
+    id: node.attributes.drupal_internal__nid,
+    title: node.attributes.title,
+    description: node.attributes.body?.value || '',
+    image: `/images/news-${index + 1}.jpg`, // TODO: Get from Drupal media field
+    date: new Date(node.attributes.created),
+    slug: `/news/${node.attributes.drupal_internal__nid}`,
+    promoted: node.attributes.promote,
+  }));
+}
+
+/**
+ * Get featured news for homepage
+ */
+export async function getHomepageFeaturedNews(): Promise<NewsItem[]> {
+  try {
+    const drupalNews = await getFeaturedNews(5);
+    return transformToNewsItems(drupalNews);
+  } catch (error) {
+    return []; // Return empty array as fallback
+  }
+}

@@ -1,0 +1,265 @@
+import { fetchDrupal, getRelated, getImageWithAlt, extractText } from '../utils';
+import { DrupalEntitiesPartnersPageNode, DrupalPartner, DrupalIncludedEntity } from '../types';
+
+// Frontend interfaces
+export interface PartnerData {
+  id: string;
+  name: string;
+  logo?: {
+    url: string;
+    alt: string;
+  };
+  website?: string;
+  description?: string;
+  type?: string;
+}
+
+export interface EntitiesPartnersData {
+  heroHeading: string;
+  heroSubheading: string;
+  heroImage?: {
+    url: string;
+    alt: string;
+  };
+  governmentPartners: PartnerData[];
+  healthcarePartners: PartnerData[];
+}
+
+/**
+ * Fetch entities & partners page data from Drupal
+ */
+export async function fetchEntitiesPartnersPage(): Promise<DrupalEntitiesPartnersPageNode[]> {
+  const includeFields = [
+    'field_hero_background_image',
+    'field_hero_background_image.field_media_image',
+    'field_government_partners',
+    'field_government_partners.field_image',
+    'field_government_partners.field_image.field_media_image',
+    'field_government_partners.field_main_category',
+    'field_healthcare_partners',
+    'field_healthcare_partners.field_image',
+    'field_healthcare_partners.field_image.field_media_image',
+    'field_healthcare_partners.field_main_category',
+  ];
+
+  const includeString = includeFields.join(',');
+  const endpoint = `/node/entities_partners_page?filter[status]=1&include=${includeString}`;
+
+  const response = await fetchDrupal(endpoint);
+  return response.data as DrupalEntitiesPartnersPageNode[];
+}
+
+/**
+ * Transform Drupal partner data to frontend format
+ */
+export function transformPartner(
+  partner: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): PartnerData {
+  const attrs = (partner as any).attributes || {};
+  const relationships = (partner as any).relationships || {};
+
+  // Get logo - relationships need to be resolved first
+  const logoFromAttrs = attrs.field_image
+    ? getImageWithAlt(attrs.field_image, included)
+    : undefined;
+  const logoFromRels = relationships.field_image
+    ? (() => {
+        const imageRel = getRelated(relationships, 'field_image', included);
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+  const logo = logoFromAttrs || logoFromRels;
+
+  // Get category name
+  const categoryTerm = relationships.field_main_category
+    ? (() => {
+        const term = getRelated(relationships, 'field_main_category', included);
+        return term && !Array.isArray(term) ? term : null;
+      })()
+    : null;
+  const categoryName = categoryTerm?.attributes?.name || '';
+
+  return {
+    id: partner.id,
+    name: attrs.title || 'Untitled Partner',
+    logo: logo ? { url: logo.src, alt: logo.alt } : undefined,
+    website: attrs.field_website_url || undefined,
+    description: extractText(attrs.body),
+    type: attrs.field_partner_type || undefined,
+  };
+}
+
+/**
+ * Transform Drupal entities & partners page data to frontend format
+ */
+export function transformEntitiesPartnersPage(
+  node: DrupalEntitiesPartnersPageNode,
+  included: DrupalIncludedEntity[] = [],
+): EntitiesPartnersData {
+  const attrs = node.attributes;
+
+  // Get hero image
+  const heroImage = attrs.field_hero_background_image
+    ? (() => {
+        const imageRel = getRelated(
+          node.relationships || {},
+          'field_hero_background_image',
+          included,
+        );
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Debug relationships
+  console.log('🔍 ENTITIES PARTNERS DEBUG:', {
+    nodeId: node.id,
+    nodeTitle: attrs.title,
+    field_government_partners_attrs: attrs.field_government_partners,
+    field_healthcare_partners_attrs: attrs.field_healthcare_partners,
+    field_government_partners_rels: node.relationships?.field_government_partners,
+    field_healthcare_partners_rels: node.relationships?.field_healthcare_partners,
+    relationships: Object.keys(node.relationships || {}),
+    includedCount: included.length,
+    includedTypes: included.map((entity) => entity.type),
+  });
+
+  // Get government partners - relationships are in node.relationships, not attrs
+  const governmentPartnersData = node.relationships?.field_government_partners
+    ? (() => {
+        const partners = getRelated(node.relationships, 'field_government_partners', included);
+        return Array.isArray(partners) ? partners : [];
+      })()
+    : [];
+  const governmentPartners = governmentPartnersData.map((partner: DrupalIncludedEntity) =>
+    transformPartner(partner as DrupalPartner, included),
+  );
+
+  // Get healthcare partners - relationships are in node.relationships, not attrs
+  const healthcarePartnersData = node.relationships?.field_healthcare_partners
+    ? (() => {
+        const partners = getRelated(node.relationships, 'field_healthcare_partners', included);
+        return Array.isArray(partners) ? partners : [];
+      })()
+    : [];
+  const healthcarePartners = healthcarePartnersData.map((partner: DrupalIncludedEntity) =>
+    transformPartner(partner as DrupalPartner, included),
+  );
+
+  console.log('🔍 PARTNERS DEBUG:', {
+    governmentPartnersData: governmentPartnersData.length,
+    healthcarePartnersData: healthcarePartnersData.length,
+    governmentPartners: governmentPartners.length,
+    healthcarePartners: healthcarePartners.length,
+    governmentPartnersRaw: governmentPartnersData,
+    healthcarePartnersRaw: healthcarePartnersData,
+    firstGovernmentPartner: governmentPartners[0],
+    firstHealthcarePartner: healthcarePartners[0],
+  });
+
+  return {
+    heroHeading: attrs.field_hero_heading || 'Entities & Partners',
+    heroSubheading:
+      attrs.field_hero_subheading ||
+      'SAIP is proud to partner with many local and international entities.',
+    heroImage: heroImage ? { url: heroImage.src, alt: heroImage.alt } : undefined,
+    governmentPartners,
+    healthcarePartners,
+  };
+}
+
+/**
+ * Get entities & partners page data with fallback
+ */
+export async function getEntitiesPartnersPageData(): Promise<EntitiesPartnersData> {
+  try {
+    const nodes = await fetchEntitiesPartnersPage();
+
+    if (nodes.length === 0) {
+      console.log('🔴 ENTITIES PARTNERS: No content found, using fallback data');
+      return getEntitiesPartnersFallbackData();
+    }
+
+    const node = nodes[0] as DrupalEntitiesPartnersPageNode;
+    const response = await fetchDrupal(
+      `/node/entities_partners_page/${node.id}?include=${[
+        'field_hero_background_image',
+        'field_hero_background_image.field_media_image',
+        'field_government_partners',
+        'field_government_partners.field_image',
+        'field_government_partners.field_image.field_media_image',
+        'field_government_partners.field_main_category',
+        'field_healthcare_partners',
+        'field_healthcare_partners.field_image',
+        'field_healthcare_partners.field_image.field_media_image',
+        'field_healthcare_partners.field_main_category',
+      ].join(',')}`,
+    );
+
+    const transformedData = transformEntitiesPartnersPage(node, response.included);
+    console.log('✅ ENTITIES PARTNERS: Successfully fetched Drupal data');
+    return transformedData;
+  } catch (error) {
+    console.log(
+      '🔴 ENTITIES PARTNERS: Failed to fetch data, using fallback:',
+      (error as Error).message,
+    );
+    return getEntitiesPartnersFallbackData();
+  }
+}
+
+/**
+ * Fallback data for entities & partners page
+ */
+export function getEntitiesPartnersFallbackData(): EntitiesPartnersData {
+  return {
+    heroHeading: 'Entities & Partners',
+    heroSubheading: 'SAIP is proud to partner with many local and international entities.',
+    heroImage: {
+      url: '/images/national-ip-strategy/hero.jpg',
+      alt: 'Entities & Partners',
+    },
+    governmentPartners: [
+      {
+        id: 'fallback-1',
+        name: 'Communications, Space and Technology Commission',
+        logo: {
+          url: '/images/partners/cstc.png',
+          alt: 'Communications, Space and Technology Commission',
+        },
+        website: 'https://www.cst.gov.sa/',
+        description:
+          "Leading Saudi Arabia's digital transformation and space technology initiatives",
+        type: 'Government Agency',
+      },
+      {
+        id: 'fallback-2',
+        name: 'Saudi Digital Library',
+        logo: {
+          url: '/images/partners/sdl.png',
+          alt: 'Saudi Digital Library',
+        },
+        website: 'https://sdl.edu.sa/',
+        description: 'National digital library providing access to academic resources',
+        type: 'Government Agency',
+      },
+    ],
+    healthcarePartners: [
+      {
+        id: 'fallback-3',
+        name: 'King Fahad Medical City',
+        logo: {
+          url: '/images/partners/kfmc.png',
+          alt: 'King Fahad Medical City',
+        },
+        website: 'https://www.kfmc.med.sa/',
+        description: 'Premier medical complex providing specialized healthcare services',
+        type: 'Medical Institution',
+      },
+    ],
+  };
+}

@@ -1,0 +1,50 @@
+# dependencies
+node_modules
+package-lock.json
+
+# testing
+coverage
+
+# next.js
+.next/
+out/
+build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+storybook-static/
+/test-results/
+
+/.npm-only-allow
+tsconfig.tsbuildinfo
+
+saip.git
+.cursor/
+
+*storybook.log
+
+# drupal backend - ignore cache, uploads, and vendor
+drupal-backend/vendor/
+drupal-backend/.ddev/
+drupal-backend/web/sites/default/files/
+
+# Local environment overrides (secrets, developer-specific config)
+.env.local
+.env.build
+
+# Scripts for Drupal backend
+scripts
+_backup_dedicated_pages/

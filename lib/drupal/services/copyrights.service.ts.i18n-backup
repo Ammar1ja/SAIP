@@ -1,0 +1,1013 @@
+import { fetchDrupal } from '../utils';
+import { getRelated, getImageWithAlt, extractText } from '../utils';
+import {
+  DrupalIPCategoryPageNode,
+  DrupalIncludedEntity,
+  DrupalGuideItemNode,
+  DrupalPublicationItemNode,
+  DrupalStatisticsItemNode,
+  DrupalJourneySectionNode,
+  DrupalMediaTabNode,
+} from '../types';
+import { DrupalResponse } from '../api-client';
+
+// Frontend interfaces
+export interface CopyrightsData {
+  heroHeading: string;
+  heroSubheading: string;
+  heroImage?: {
+    src: string;
+    alt: string;
+  };
+  overview: {
+    header: {
+      title: string;
+      description: string;
+      videoSrc?: string;
+      videoPoster?: {
+        src: string;
+        alt: string;
+      };
+    };
+    guide: {
+      guideTitle: string;
+      guideCards: GuideCardData[];
+    };
+    statistics: {
+      statistics: StatisticsCardData[];
+      statisticsTitle: string;
+      statisticsCtaLabel: string;
+      statisticsCtaHref: string;
+    };
+  };
+  journey: {
+    sectionIds: string[];
+    sections: Record<string, JourneySectionData>;
+    tocItems: TOCItemData[];
+    tocAriaLabel: string;
+  };
+  services: {
+    title: string;
+    services: ServiceItemData[];
+    serviceTypeOptions: ServiceOptionData[];
+    targetGroupOptions: ServiceOptionData[];
+  };
+  media: {
+    heroTitle: string;
+    heroDescription: string;
+    heroImage: string;
+    tabs: MediaTabData[];
+    content: Record<string, MediaContentData>;
+    filterFields: FilterFieldData[];
+    badgeLabel: string;
+  };
+}
+
+export interface GuideCardData {
+  title: string;
+  description: string;
+  labels: string[];
+  publicationDate: string;
+  primaryButtonLabel: string;
+  primaryButtonHref: string;
+  secondaryButtonLabel: string;
+  secondaryButtonHref: string;
+  titleBg: 'default' | 'green';
+}
+
+export interface StatisticsCardData {
+  label: string;
+  value?: number;
+  chartType: 'line' | 'pie' | 'bar';
+  chartData?: Array<{ value: number }>;
+  trend?: {
+    value: string;
+    direction: 'up' | 'down';
+    description?: string;
+  };
+  breakdown?: Array<{
+    label: string;
+    value: number;
+    displayValue: string;
+    color: string;
+  }>;
+}
+
+export interface JourneySectionData {
+  title: string;
+  description: string;
+  buttonLabel?: string;
+  buttonHref?: string;
+  items?: Array<{
+    title: string;
+    description: string;
+  }>;
+}
+
+export interface TOCItemData {
+  id: string;
+  label: string;
+  subItems?: TOCItemData[];
+}
+
+export interface ServiceItemData {
+  title: string;
+  labels: string[];
+  description: string;
+  href: string;
+  primaryButtonLabel?: string;
+}
+
+export interface ServiceOptionData {
+  value: string;
+  label: string;
+}
+
+export interface MediaTabData {
+  id: string;
+  label: string;
+}
+
+export interface MediaContentData {
+  title: string;
+  description: string;
+}
+
+export interface FilterFieldData {
+  id: string;
+  label: string;
+  type: string;
+  placeholder: string;
+}
+
+// Drupal API functions
+export async function fetchCopyrightsPage(): Promise<DrupalResponse<DrupalIPCategoryPageNode>> {
+  const includeFields =
+    'field_hero_background_image,field_overview_video_poster,field_guide_items,field_statistics_items,field_journey_sections,field_services_items,field_media_tabs';
+
+  // Try new content type first
+  try {
+    const endpoint = `/node/copyrights_page?filter[status]=1&include=${includeFields}`;
+    const response = await fetchDrupal<DrupalIPCategoryPageNode>(endpoint);
+    return response;
+  } catch (error) {
+    // Fallback to old content type
+    const endpoint = `/node/ip_category_page?filter[status]=1&include=${includeFields}`;
+    const response = await fetchDrupal<DrupalIPCategoryPageNode>(endpoint);
+    return response;
+  }
+}
+
+// Utility function to extract and clean description text from Drupal
+const getDescription = (desc: any): string => {
+  if (typeof desc === 'string') return desc;
+  if (desc && typeof desc === 'object' && desc.value) {
+    const htmlContent = desc.processed || desc.value;
+    // Strip HTML tags and decode entities
+    return htmlContent
+      .replace(/<[^>]*>/g, '') 
+      .replace(/&nbsp;/g, ' ') 
+      .replace(/&amp;/g, '&') 
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .trim();
+  }
+  return '';
+};
+
+// Transformation functions
+export function transformGuideItem(
+  item: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): GuideCardData {
+  const attrs = (item as any).attributes || {};
+
+  // Format date from ISO string to display format
+  const formatDate = (dateStr: string): string => {
+    if (!dateStr) return '';
+    try {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
+    } catch (e) {
+      return dateStr;
+    }
+  };
+
+  return {
+    title: attrs.title || 'Untitled Guide',
+    description: getDescription(attrs.field_description),
+    labels: ['Copyrights'],
+    publicationDate: formatDate(attrs.field_publication_date),
+    primaryButtonLabel: attrs.field_primary_button_label || 'Download file',
+    primaryButtonHref: attrs.field_primary_button_href || '#',
+    secondaryButtonLabel: attrs.field_secondary_button_label || 'View file',
+    secondaryButtonHref: attrs.field_secondary_button_href || '#',
+    titleBg: (attrs.field_title_bg as 'default' | 'green') || 'green',
+  };
+}
+
+export function transformStatisticsItem(
+  item: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): StatisticsCardData {
+  const attrs = (item as any).attributes || {};
+
+  let chartData: Array<{ value: number }> = [];
+  let trend: StatisticsCardData['trend'];
+  let breakdown: StatisticsCardData['breakdown'];
+
+  // Handle chart data - could be complex object or simple array
+  if (attrs.field_chart_data) {
+    try {
+      if (typeof attrs.field_chart_data === 'string') {
+        const parsed = JSON.parse(attrs.field_chart_data);
+        if (parsed.series && Array.isArray(parsed.series)) {
+          // Convert series to simple value array
+          chartData = parsed.series.map((s: any) => ({ value: s.value }));
+        } else if (Array.isArray(parsed)) {
+          chartData = parsed;
+        }
+      } else if (attrs.field_chart_data.series && Array.isArray(attrs.field_chart_data.series)) {
+        chartData = attrs.field_chart_data.series.map((s: any) => ({ value: s.value }));
+      } else if (Array.isArray(attrs.field_chart_data)) {
+        chartData = attrs.field_chart_data;
+      }
+    } catch (e) {
+      console.warn('Failed to parse chart data:', e);
+    }
+  }
+
+  if (attrs.field_trend_value && attrs.field_trend_direction) {
+    trend = {
+      value: attrs.field_trend_value,
+      direction: attrs.field_trend_direction as 'up' | 'down',
+      description: attrs.field_trend_description,
+    };
+  }
+
+  // Handle breakdown data - convert region data to expected format
+  if (attrs.field_breakdown) {
+    try {
+      let parsedBreakdown;
+      if (typeof attrs.field_breakdown === 'string') {
+        parsedBreakdown = JSON.parse(attrs.field_breakdown);
+      } else {
+        parsedBreakdown = attrs.field_breakdown;
+      }
+
+      if (parsedBreakdown.by_region && Array.isArray(parsedBreakdown.by_region)) {
+        // Convert breakdown to expected format
+        const total = parsedBreakdown.by_region.reduce(
+          (sum: number, region: any) => sum + region.value,
+          0,
+        );
+        breakdown = parsedBreakdown.by_region.map((region: any) => ({
+          label: region.region,
+          value: total > 0 ? (region.value / total) * 100 : 0,
+          displayValue: `${region.value}`,
+          color: '#388A5A', // Default green color
+        }));
+      } else if (Array.isArray(parsedBreakdown)) {
+        breakdown = parsedBreakdown;
+      }
+    } catch (e) {
+      console.warn('Failed to parse breakdown data:', e);
+    }
+  }
+
+  return {
+    label: attrs.field_label || 'Untitled Statistic',
+    value: attrs.field_value,
+    chartType: (attrs.field_chart_type as 'line' | 'pie' | 'bar') || 'line',
+    chartData,
+    trend,
+    breakdown,
+  };
+}
+
+export function transformJourneySection(
+  section: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): JourneySectionData {
+  const attrs = (section as any).attributes || {};
+
+  // Extract description from Drupal object format
+  const getDescription = (desc: any): string => {
+    if (typeof desc === 'string') return desc;
+    if (desc && typeof desc === 'object' && desc.value) {
+      const htmlContent = desc.processed || desc.value;
+      // Strip HTML tags and decode entities
+      return htmlContent
+        .replace(/<[^>]*>/g, '') // Remove HTML tags like <p>, </p>
+        .replace(/&nbsp;/g, ' ') // Replace non-breaking spaces
+        .replace(/&amp;/g, '&') // Decode HTML entities
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .trim();
+    }
+    return '';
+  };
+
+  let items: Array<{ title: string; description: string }> = [];
+  if (attrs.field_items) {
+    try {
+      items = JSON.parse(attrs.field_items);
+    } catch (e) {
+      console.warn('Failed to parse journey items:', e);
+    }
+  }
+
+  return {
+    title: attrs.title || 'Untitled Section',
+    description: getDescription(attrs.field_description),
+    buttonLabel: attrs.field_button_label,
+    buttonHref: attrs.field_button_href,
+    items,
+  };
+}
+
+export function transformMediaTab(
+  tab: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): MediaTabData {
+  const attrs = (tab as any).attributes || {};
+
+  // Clean up tab ID - remove quotes and extra characters
+  const cleanTabId = (id: string): string => {
+    if (!id) return 'tab';
+    return id.replace(/['"]/g, '').toLowerCase();
+  };
+
+  return {
+    id: cleanTabId(attrs.field_tab_id),
+    label: attrs.title || 'Untitled Tab',
+  };
+}
+
+export function transformCopyrightsPage(
+  node: DrupalIPCategoryPageNode,
+  included: DrupalIncludedEntity[] = [],
+): CopyrightsData {
+  const attrs = node.attributes;
+
+  // Get hero image
+  const heroImage = attrs.field_hero_background_image
+    ? (() => {
+        const imageRel = getRelated(
+          node.relationships || {},
+          'field_hero_background_image',
+          included,
+        );
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Get overview video poster
+  const videoPoster = attrs.field_overview_video_poster
+    ? (() => {
+        const imageRel = getRelated(
+          node.relationships || {},
+          'field_overview_video_poster',
+          included,
+        );
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Get guide items
+  const guideItemsData = node.relationships?.field_guide_items
+    ? getRelated(node.relationships, 'field_guide_items', included) || []
+    : [];
+  const guideItems = Array.isArray(guideItemsData)
+    ? guideItemsData.map((item: DrupalIncludedEntity) => transformGuideItem(item, included))
+    : [];
+
+  // Get statistics items
+  const statisticsItemsData = node.relationships?.field_statistics_items
+    ? getRelated(node.relationships, 'field_statistics_items', included) || []
+    : [];
+  const statisticsItems = Array.isArray(statisticsItemsData)
+    ? statisticsItemsData.map((item: DrupalIncludedEntity) =>
+        transformStatisticsItem(item, included),
+      )
+    : [];
+
+  // Get journey sections
+  const journeySectionsData = node.relationships?.field_journey_sections
+    ? getRelated(node.relationships, 'field_journey_sections', included) || []
+    : [];
+  const journeySections = Array.isArray(journeySectionsData)
+    ? journeySectionsData.reduce(
+        (acc: Record<string, JourneySectionData>, section: DrupalIncludedEntity) => {
+          const transformed = transformJourneySection(section, included);
+          const sectionId = (section as any).attributes?.field_section_id || 'section';
+          acc[sectionId] = transformed;
+          return acc;
+        },
+        {},
+      )
+    : {};
+
+  // Get media tabs
+  const mediaTabsData = node.relationships?.field_media_tabs
+    ? getRelated(node.relationships, 'field_media_tabs', included) || []
+    : [];
+  const mediaTabs = Array.isArray(mediaTabsData)
+    ? mediaTabsData.map((tab: DrupalIncludedEntity) => transformMediaTab(tab, included))
+    : [];
+
+  // Get services items
+  const servicesItemsData = node.relationships?.field_services_items
+    ? getRelated(node.relationships, 'field_services_items', included) || []
+    : [];
+  const servicesItems = Array.isArray(servicesItemsData)
+    ? servicesItemsData.map((item: DrupalIncludedEntity) => {
+        const attrs = (item as any).attributes || {};
+
+        // Extract description from Drupal object format
+        const getDescription = (desc: any): string => {
+          if (typeof desc === 'string') return desc;
+          if (desc && typeof desc === 'object' && desc.value) {
+            const htmlContent = desc.processed || desc.value;
+            // Strip HTML tags and decode entities
+            return htmlContent
+              .replace(/<[^>]*>/g, '') // Remove HTML tags like <p>, </p>
+              .replace(/&nbsp;/g, ' ') // Replace non-breaking spaces
+              .replace(/&amp;/g, '&') // Decode HTML entities
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .replace(/&quot;/g, '"')
+              .trim();
+          }
+          return '';
+        };
+
+        return {
+          title: attrs.title || 'Untitled Service',
+          labels: ['Protection'],
+          description: getDescription(attrs.field_description),
+          href: attrs.field_href || '#',
+          primaryButtonLabel: attrs.field_primary_button_label || 'View details',
+        };
+      })
+    : [];
+
+  return {
+    heroHeading: attrs.field_hero_heading || 'Copyrights overview',
+    heroSubheading:
+      attrs.field_hero_subheading ||
+      'Find out what a copyright is, how to register it, and what services are available for copyright owners.',
+    heroImage: heroImage ? { src: heroImage.src, alt: heroImage.alt } : undefined,
+    overview: {
+      header: {
+        title: attrs.field_overview_header_title || 'Information library',
+        description:
+          attrs.field_overview_header_description ||
+          'Watch the video and learn the key steps involved in copyrights.',
+        videoSrc: attrs.field_overview_video_src,
+        videoPoster: videoPoster ? { src: videoPoster.src, alt: videoPoster.alt } : undefined,
+      },
+      guide: {
+        guideTitle: attrs.field_guide_title || 'Copyright guides',
+        guideCards: guideItems,
+      },
+      statistics: {
+        statistics: statisticsItems,
+        statisticsTitle: attrs.field_statistics_title || 'Statistics',
+        statisticsCtaLabel: attrs.field_statistics_cta_label || 'View more statistics',
+        statisticsCtaHref: attrs.field_statistics_cta_href || '/resources/statistics',
+      },
+    },
+    journey: {
+      sectionIds: Object.keys(journeySections),
+      sections: journeySections,
+      tocItems: Object.keys(journeySections).map((sectionId) => {
+        const section = journeySections[sectionId];
+        return {
+          id: sectionId,
+          label: section.title,
+          subItems:
+            section.items?.map((item, index) => ({
+              id: `${sectionId}-${index}`,
+              label: item.title,
+            })) || [],
+        };
+      }),
+      tocAriaLabel: 'Copyrights journey navigation',
+    },
+    services: {
+      title: attrs.field_services_title || 'Copyrights services',
+      services: servicesItems,
+      serviceTypeOptions: [
+        { value: 'all', label: 'All' },
+        { value: 'registration', label: 'Registration' },
+        { value: 'management', label: 'Management' },
+        { value: 'enforcement', label: 'Enforcement' },
+      ],
+      targetGroupOptions: [
+        { value: 'all', label: 'All' },
+        { value: 'individuals', label: 'Individuals' },
+        { value: 'enterprises', label: 'Enterprises' },
+      ],
+    },
+    media: {
+      heroTitle: 'Media for copyrights',
+      heroDescription:
+        'Here you can find news, videos, articles and events on various categories of IP.',
+      heroImage: '/images/copyrights/hero.jpg',
+      tabs:
+        mediaTabs.length > 0
+          ? mediaTabs
+          : [
+              { id: 'news', label: 'News' },
+              { id: 'videos', label: 'Videos' },
+              { id: 'articles', label: 'Articles' },
+            ],
+      content: {
+        news: {
+          title: 'News',
+          description:
+            'Get the latest information on copyrights in Saudi Arabia thanks to news from SAIP.',
+        },
+        videos: {
+          title: 'Videos',
+          description:
+            'Explore the latest updates on the IP in Saudi Arabia through our video collection about copyrights.',
+        },
+        articles: {
+          title: 'Articles',
+          description:
+            'Discover the latest articles from SAIP. Explore expert insights, key developments, and detailed analyses to stay ahead in the world of intellectual property.',
+        },
+      },
+      filterFields: [
+        { id: 'search', label: 'Search', type: 'search', placeholder: 'Search' },
+        { id: 'date', label: 'Date', type: 'date', placeholder: 'dd.mm.rrrr' },
+      ],
+      badgeLabel: 'Copyrights',
+    },
+  };
+}
+
+export function getCopyrightsFallbackData(): CopyrightsData {
+  return {
+    heroHeading: 'Copyrights overview',
+    heroSubheading:
+      'Find out what a copyright is, how to register it, and what services are available for copyright owners.',
+    heroImage: {
+      src: '/images/copyrights/hero.jpg',
+      alt: 'Copyrights overview',
+    },
+    overview: {
+      header: {
+        title: 'Information library',
+        description: 'Watch the video and learn the key steps involved in copyrights.',
+        videoSrc: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        videoPoster: {
+          src: '/images/copyrights/overview.jpg',
+          alt: 'Copyrights overview video',
+        },
+      },
+      guide: {
+        guideTitle: 'Copyright guides',
+        guideCards: [
+          {
+            title: 'Saudi Design Classification',
+            description: 'Locarno Classification Guide (14th Edition)',
+            labels: ['Copyrights'],
+            publicationDate: '04.08.2024',
+            primaryButtonLabel: 'Download file',
+            primaryButtonHref: '/files/saudi-design-classification.pdf',
+            secondaryButtonLabel: 'View file',
+            secondaryButtonHref: '/files/saudi-design-classification.pdf',
+            titleBg: 'green',
+          },
+          {
+            title: 'Software Copyright Protection Guide',
+            description: 'Guidelines for Protecting Copyright in Software',
+            labels: ['Copyrights'],
+            publicationDate: '04.08.2024',
+            primaryButtonLabel: 'Download file',
+            primaryButtonHref: '/files/software-copyright-guide.pdf',
+            secondaryButtonLabel: 'View file',
+            secondaryButtonHref: '/files/software-copyright-guide.pdf',
+            titleBg: 'green',
+          },
+          {
+            title: 'Guide to patent application content',
+            description: 'The content of the patent application necessary for filing',
+            labels: ['Copyrights'],
+            publicationDate: '04.08.2024',
+            primaryButtonLabel: 'Download file',
+            primaryButtonHref: '/files/guide-to-patent-application-content.pdf',
+            secondaryButtonLabel: 'View file',
+            secondaryButtonHref: '/files/guide-to-patent-application-content.pdf',
+            titleBg: 'green',
+          },
+        ],
+      },
+      statistics: {
+        statistics: [
+          {
+            label: 'Number of copyright applications in 2023',
+            value: 4076,
+            chartType: 'line',
+            chartData: [
+              { value: 1000 },
+              { value: 1500 },
+              { value: 2000 },
+              { value: 2500 },
+              { value: 3000 },
+              { value: 3500 },
+              { value: 4076 },
+            ],
+            trend: { value: '100%', direction: 'up', description: 'vs last month' },
+          },
+          {
+            label: 'Number of registered copyrights in 2023',
+            value: 4011,
+            chartType: 'line',
+            chartData: [
+              { value: 900 },
+              { value: 1200 },
+              { value: 1800 },
+              { value: 2200 },
+              { value: 2700 },
+              { value: 3200 },
+              { value: 4011 },
+            ],
+            trend: { value: '100%', direction: 'up', description: 'vs last month' },
+          },
+          {
+            label: `Applicant's type`,
+            chartType: 'pie',
+            breakdown: [
+              { label: 'Entities', value: 20.97, displayValue: '20,97%', color: '#388A5A' },
+              { label: 'Individuals', value: 79.03, displayValue: '79,03%', color: '#1C6846' },
+            ],
+          },
+        ],
+        statisticsTitle: 'Statistics',
+        statisticsCtaLabel: 'View more statistics',
+        statisticsCtaHref: '/resources/statistics',
+      },
+    },
+    journey: {
+      sectionIds: [
+        'guidance',
+        'copyright-checklist',
+        'ip-clinics',
+        'ip-search-engine',
+        'not-patentable',
+        'discoveries-and-concepts',
+        'functional-and-procedural-elements',
+        'public-domain-and-natural-processes',
+        'works-contrary-to-public-order-or-morality',
+        'excluded-functional-works',
+        'protection',
+        'management',
+        'enforcement',
+      ],
+      sections: {
+        guidance: {
+          title: 'Guidance',
+          description:
+            'Turn your creations into registered work. Begin your journey by understanding your creative work and its potential for copyright protection',
+        },
+        'copyright-checklist': {
+          title: 'Copyright checklist',
+          description:
+            'Evaluate whether your design meets the necessary criteria to qualify for registration. This checklist helps businesses and professionals systematically assess the originality, compliance, and registrability of a design before committing to the application process.',
+          buttonLabel: 'Go to copyright checklist',
+          buttonHref: '#',
+        },
+        'ip-clinics': {
+          title: 'IP Clinics',
+          description:
+            'Apply for one of the IP Clinics services to receive guidance and support for registering and protecting your creative works. These services include assistance with legal inquiries, compliance checks, and practical advice to strengthen your copyright application process.',
+          buttonLabel: 'Go to IP Clinics',
+          buttonHref: '#',
+        },
+        'ip-search-engine': {
+          title: 'IP Search Engine',
+          description:
+            'Use the SAIP Search Engine to search for existing works registered in Saudi Arabia. This is a step for authors, artists, and creators to confirm the originality of their work, avoid potential conflicts, and gain valuable insights into the competitive landscape.',
+          buttonLabel: 'Go to IP search engine',
+          buttonHref: '#',
+        },
+        'not-patentable': {
+          title: 'Not patentable categories',
+          description:
+            'Certain types of content and works are excluded from copyright protection under Saudi regulations. These exclusions align with international norms and local legal and cultural considerations.',
+        },
+        'discoveries-and-concepts': {
+          title: 'Discoveries and concepts',
+          description: '',
+          items: [
+            {
+              title: 'Ideas and abstract concepts: ',
+              description:
+                'Ideas, theories, and abstract principles that are not expressed in a tangible form are not protectable under copyright law.',
+            },
+            {
+              title: 'Scientific discoveries:',
+              description:
+                'Identification of natural laws or scientific phenomena without a specific creative expression or application.',
+            },
+            {
+              title: 'Theoretical methods: ',
+              description:
+                'Abstract methodologies or frameworks for understanding phenomena without creative implementation or tangible expression.',
+            },
+          ],
+        },
+        'functional-and-procedural-elements': {
+          title: 'Functional and procedural elements',
+          description: '',
+          items: [
+            {
+              title: 'Functional elements:',
+              description:
+                'General guidelines and rules: Procedural or instructional content, such as rules, policies, and technical manuals, not expressed in a creative form.',
+            },
+            {
+              title: 'Mental acts: ',
+              description:
+                'Intellectual or observational techniques that lack creative articulation, such as classifications or non-creative compilations.',
+            },
+            {
+              title: 'Aesthetic arrangements: ',
+              description:
+                'Functional or purely decorative patterns without creative originality or a fixed medium of expression.',
+            },
+          ],
+        },
+        'public-domain-and-natural-processes': {
+          title: 'Public domain and natural processes',
+          description: '',
+          items: [
+            {
+              title: 'Traditional knowledge and folklore:',
+              description:
+                'Unless fixed and attributed according to cultural heritage laws, traditional expressions may not be eligible for exclusive copyright protection.',
+            },
+            {
+              title: 'Naturally occurring phenomena:',
+              description:
+                'Works or elements found in nature, such as naturally occurring patterns or genetic sequences, unless presented as part of a creative expression.',
+            },
+          ],
+        },
+        'works-contrary-to-public-order-or-morality': {
+          title: 'Works contrary to public order or morality',
+          description: '',
+          items: [
+            {
+              title: 'Prohibited content:',
+              description:
+                ' Works that contravene public health, safety, or Islamic principles, including those promoting harmful, unethical, or illegal activities.',
+            },
+            {
+              title: 'Examples:',
+              description:
+                'Content inciting violence, promoting illegal substances, or violating public decency laws is excluded from protection.',
+            },
+          ],
+        },
+        'excluded-functional-works': {
+          title: 'Excluded functional works',
+          description: '',
+          items: [
+            {
+              title: 'Practical applications:',
+              description:
+                'Processes or systems designed purely for functional purposes without creative expression are not protectable.',
+            },
+            {
+              title: 'Medical or therapeutic techniques:',
+              description:
+                'These are excluded unless they involve a significant creative or technical component beyond mere utility.',
+            },
+          ],
+        },
+        protection: {
+          title: 'Protection',
+          description:
+            "Securing your creative rights: protecting your work ensures exclusive rights to its use, reproduction, and commercialization. Filing an application for copyright protection in Saudi Arabia requires adherence to the country's laws and guidelines.",
+        },
+        management: {
+          title: 'Management',
+          description:
+            'Once your copyright is registered, there are several steps you can take to maintain and maximize its value.',
+        },
+        enforcement: {
+          title: 'Enforcement',
+          description:
+            'SAIP is committed to safeguarding the rights of copyright holders and providing effective mechanisms for copyright enforcement in Saudi Arabia.',
+        },
+      },
+      tocItems: [
+        {
+          id: 'guidance',
+          label: 'Guidance',
+          subItems: [
+            { id: 'copyright-checklist', label: 'Copyright checklist' },
+            { id: 'ip-clinics', label: 'IP Clinics' },
+            { id: 'ip-search-engine', label: 'IP Search Engine' },
+            {
+              id: 'not-patentable',
+              label: 'Non-patentable categories',
+              subItems: [
+                { id: 'discoveries-and-concepts', label: 'Discoveries and concepts' },
+                {
+                  id: 'functional-and-procedural-elements',
+                  label: 'Functional and procedural elements',
+                },
+                {
+                  id: 'public-domain-and-natural-processes',
+                  label: 'Public domain and natural processes',
+                },
+                {
+                  id: 'works-contrary-to-public-order-or-morality',
+                  label: 'Works contrary to public order or morality',
+                },
+                { id: 'excluded-functional-works', label: 'Excluded functional works' },
+              ],
+            },
+          ],
+        },
+        { id: 'protection', label: 'Protection' },
+        { id: 'management', label: 'Management' },
+        { id: 'enforcement', label: 'Enforcement' },
+      ],
+      tocAriaLabel: 'Copyrights journey navigation',
+    },
+    services: {
+      title: 'Copyrights services',
+      services: [
+        {
+          title: 'New work registration service (computer software and applications)',
+          labels: ['Protection'],
+          description:
+            'This service is made available to register copyright works and obtain certificates documenting the registration process for a computer software and application work.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'New work registration service (architectural works)',
+          labels: ['Protection'],
+          description:
+            'This service is made available to register copyright work and obtain certificates documenting the registration process for an architectural works.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'Work modification service',
+          labels: ['Protection'],
+          description:
+            'It allows the applicant to modify the data and information of the work registered in the system.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'Work recordation service',
+          labels: ['Protection'],
+          description:
+            'It allows the applicant to modify the data and information of the work registered in the system.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'Request to enforce a copyright final judgment',
+          labels: ['Protection'],
+          description:
+            'A request to enforce a final and enforceable judgement which the SAIP shall be the competent body to enforce.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'Mandatory License for Copyright works ',
+          labels: ['Protection'],
+          description:
+            'Availability for the target group of the mandatory license for translation and reproduction in accordance with the controls, conditions and cases stipulated in the copyright protection system and its executive regulations.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'New work registration service (written works)',
+          labels: ['Protection'],
+          description:
+            'This service is made available to register copyright work and obtain certificates documenting the registration process for a new written works.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'New work registration service (photographic works)',
+          labels: ['Protection'],
+          description:
+            'This service is provided to register copyright works and issue an approved certificate that contributes to documenting the photographic work. Photographic work: It means the recording of light or any other radiation on any medium on which a picture',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'New work registration service (artistic works and applied arts)',
+          labels: ['Protection'],
+          description:
+            'This service is provided to register copyright works and issue an approved certificate that contributes to the documentation of applied artistic and artistic works. Artistic and applied artistic works: ar﻿tistic works are meant to be two-dimensional.',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'New work registration service (topographic sculptural works)',
+          labels: ['Protection'],
+          description:
+            'This service is provided to register copyright works and issue an approved certificate that contributes to documenting topographic sculptural works. Topographic sculptural works: It means the three-dimensional representation of a geographical area.This service is provided to register copyright works and issue an approved certificate that contributes to authenticating a work of stereoscopic topographical works. Stereoscopic topographical works: three-dimensional designs and models...',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+        {
+          title: 'New work registration service (schematic works)',
+          labels: ['Protection'],
+          description:
+            'This service is provided to register copyright works and issue an approved certificate that contributes to documenting a work of planning works. Graphic works: are technical, scientific, mechanical, and engineering drawings',
+          href: '#',
+          primaryButtonLabel: 'View details',
+        },
+      ],
+      serviceTypeOptions: [
+        { value: 'all', label: 'All' },
+        { value: 'registration', label: 'Registration' },
+        { value: 'management', label: 'Management' },
+        { value: 'enforcement', label: 'Enforcement' },
+      ],
+      targetGroupOptions: [
+        { value: 'all', label: 'All' },
+        { value: 'individuals', label: 'Individuals' },
+        { value: 'enterprises', label: 'Enterprises' },
+      ],
+    },
+    media: {
+      heroTitle: 'Media for copyrights',
+      heroDescription:
+        'Here you can find news, videos, articles and events on various categories of IP.',
+      heroImage: '/images/copyrights/hero.jpg',
+      tabs: [
+        { id: 'news', label: 'News' },
+        { id: 'videos', label: 'Videos' },
+        { id: 'articles', label: 'Articles' },
+      ],
+      content: {
+        news: {
+          title: 'News',
+          description:
+            'Get the latest information on copyrights in Saudi Arabia thanks to news from SAIP.',
+        },
+        videos: {
+          title: 'Videos',
+          description:
+            'Explore the latest updates on the IP in Saudi Arabia through our video collection about copyrights.',
+        },
+        articles: {
+          title: 'Articles',
+          description:
+            'Discover the latest articles from SAIP. Explore expert insights, key developments, and detailed analyses to stay ahead in the world of intellectual property.',
+        },
+      },
+      filterFields: [
+        { id: 'search', label: 'Search', type: 'search', placeholder: 'Search' },
+        { id: 'date', label: 'Date', type: 'date', placeholder: 'dd.mm.rrrr' },
+      ],
+      badgeLabel: 'Copyrights',
+    },
+  };
+}
+
+export async function getCopyrightsPageData(): Promise<CopyrightsData> {
+  try {
+    const response = await fetchCopyrightsPage();
+    const nodes = response.data;
+    const included = response.included || [];
+
+    if (nodes.length === 0) {
+      return getCopyrightsFallbackData();
+    }
+
+    const node = nodes[0];
+    const data = transformCopyrightsPage(node, included);
+
+    return data;
+  } catch (error) {
+    return getCopyrightsFallbackData();
+  }
+}
+

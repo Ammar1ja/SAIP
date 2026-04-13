@@ -1,0 +1,233 @@
+/**
+ * Reports Service
+ * Handles data fetching and transformation for Reports page
+ */
+
+import { fetchDrupal, getRelated, getImageWithAlt, extractText } from '../utils';
+import { DrupalNode, DrupalIncludedEntity } from '../types';
+import { DrupalResponse } from '../api-client';
+
+// Frontend data interfaces
+export interface ReportsData {
+  heroHeading: string;
+  heroSubheading: string;
+  heroImage?: {
+    src: string;
+    alt: string;
+  };
+  reports: ReportItemData[];
+  categoryOptions: Array<{ label: string; value: string }>;
+  reportTypeOptions: Array<{ label: string; value: string }>;
+}
+
+export interface ReportItemData {
+  title: string;
+  variant: 'report';
+  publicationDate: string;
+  reportType: string;
+  labels: string[];
+  href: string;
+  primaryButtonLabel: string;
+  primaryButtonHref: string;
+  secondaryButtonLabel: string;
+  secondaryButtonHref: string;
+}
+
+// Drupal API functions
+export async function fetchReportsPage(): Promise<DrupalResponse<DrupalNode>> {
+  const includeFields = [
+    'field_hero_background_image',
+    'field_hero_background_image.field_media_image',
+    'field_reports_items',
+    'field_reports_items.field_category',
+  ];
+
+  const endpoint = `/node/reports_page?filter[status]=1&include=${includeFields.join(',')}`;
+  const response = await fetchDrupal<DrupalNode>(endpoint);
+  return response;
+}
+
+// Fetch individual report items
+export async function fetchReports(): Promise<DrupalResponse<DrupalNode>> {
+  const includeFields = ['field_category', 'field_report_type'];
+
+  const endpoint = `/node/report_item?filter[status]=1&include=${includeFields.join(',')}`;
+  const response = await fetchDrupal<DrupalNode>(endpoint);
+  return response;
+}
+
+// Transformation functions
+export function transformReportItem(
+  item: DrupalIncludedEntity,
+  included: DrupalIncludedEntity[] = [],
+): ReportItemData {
+  const attrs = (item as any).attributes || {};
+  const relationships = (item as any).relationships || {};
+
+  // Get category from relationship
+  const categoryTerms = relationships.field_category
+    ? getRelated(relationships, 'field_category', included) || []
+    : [];
+  const categories = Array.isArray(categoryTerms)
+    ? categoryTerms.map((term: any) => term.attributes?.name || '').filter(Boolean)
+    : [];
+
+  // Get report type from relationship
+  const reportTypeTerm = relationships.field_report_type
+    ? (() => {
+        const term = getRelated(relationships, 'field_report_type', included);
+        return term && !Array.isArray(term) ? term : null;
+      })()
+    : null;
+  const reportType =
+    (reportTypeTerm?.attributes?.name as string | undefined) || attrs.field_report_type || 'Text';
+
+  return {
+    title: attrs.title || 'Untitled Report',
+    variant: 'report',
+    publicationDate: attrs.field_publication_date || '',
+    reportType,
+    labels: categories.length > 0 ? categories : ['Statistical', 'Category'],
+    href: attrs.field_href || '#',
+    primaryButtonLabel: attrs.field_primary_button_label || 'Download',
+    primaryButtonHref: attrs.field_primary_button_href || '#',
+    secondaryButtonLabel: attrs.field_secondary_button_label || 'View',
+    secondaryButtonHref: attrs.field_secondary_button_href || '#',
+  };
+}
+
+export function transformReportsPage(
+  node: DrupalNode,
+  included: DrupalIncludedEntity[] = [],
+): ReportsData {
+  const attrs = node.attributes;
+
+  // Get hero image
+  const heroImage = attrs.field_hero_background_image
+    ? (() => {
+        const imageRel = getRelated(
+          node.relationships || {},
+          'field_hero_background_image',
+          included,
+        );
+        return imageRel && !Array.isArray(imageRel)
+          ? getImageWithAlt(imageRel, included)
+          : undefined;
+      })()
+    : undefined;
+
+  // Get reports items
+  const reportsData = node.relationships?.field_reports_items
+    ? getRelated(node.relationships, 'field_reports_items', included) || []
+    : [];
+  const reports = Array.isArray(reportsData)
+    ? reportsData.map((item: DrupalIncludedEntity) => transformReportItem(item, included))
+    : [];
+
+  // Extract unique categories and report types
+  const categories = [...new Set(reports.flatMap((r) => r.labels))].filter(Boolean);
+  const reportTypes = [...new Set(reports.map((r) => r.reportType))].filter(Boolean);
+
+  return {
+    heroHeading: attrs.field_hero_heading || 'Reports',
+    heroSubheading:
+      extractText(attrs.field_hero_subheading) ||
+      'It offer key statistics and trends in IP domains, highlight growth in IP activities.',
+    heroImage: heroImage ? { src: heroImage.src, alt: heroImage.alt } : undefined,
+    reports,
+    categoryOptions: categories.map((cat) => ({ label: cat, value: cat.toLowerCase() })),
+    reportTypeOptions: reportTypes.map((type) => ({ label: type, value: type.toLowerCase() })),
+  };
+}
+
+export function getReportsFallbackData(): ReportsData {
+  return {
+    heroHeading: 'Reports',
+    heroSubheading:
+      "It offer key statistics and trends in IP domains, highlight growth in IP activities, and reflect SAIP's commitment to transparency, supporting decision-makers, practitioners, and stakeholders in understanding the evolving IP landscape in Saudi Arabia.",
+    heroImage: {
+      src: '/images/reports/hero.jpg',
+      alt: 'Reports',
+    },
+    reports: Array.from({ length: 6 }, (_, i) => ({
+      title: `Report Title ${i + 1}`,
+      variant: 'report' as const,
+      publicationDate: '06.08.2025',
+      reportType: 'Text',
+      labels: ['Statistical', 'Category'],
+      href: '#',
+      primaryButtonLabel: 'Download',
+      primaryButtonHref: '#',
+      secondaryButtonLabel: 'View',
+      secondaryButtonHref: '#download',
+    })),
+    categoryOptions: [
+      { label: 'Trademarks', value: 'trademarks' },
+      { label: 'Patents', value: 'patents' },
+      { label: 'Copyrights', value: 'copyrights' },
+    ],
+    reportTypeOptions: [
+      { label: 'Statistical reports', value: 'statistical' },
+      { label: 'Periodic reports', value: 'periodic' },
+      { label: 'Knowledge reports', value: 'knowledge' },
+    ],
+  };
+}
+
+export async function getReportsPageData(): Promise<ReportsData> {
+  try {
+    // Try to fetch reports page first
+    const pageResponse = await fetchReportsPage();
+    const pageNodes = pageResponse.data;
+    const pageIncluded = pageResponse.included || [];
+
+    if (pageNodes.length === 0) {
+      console.log('🔴 REPORTS: No page content found, trying individual items');
+      // Try fetching individual report items
+      try {
+        const itemsResponse = await fetchReports();
+        const items = itemsResponse.data;
+        const itemsIncluded = itemsResponse.included || [];
+
+        if (items.length === 0) {
+          console.log('🔴 REPORTS: No items found, using fallback data');
+          return getReportsFallbackData();
+        }
+
+        // Transform items to reports data
+        const reports = items.map((item: DrupalNode) => transformReportItem(item, itemsIncluded));
+        const categories = [...new Set(reports.flatMap((r) => r.labels))].filter(Boolean);
+        const reportTypes = [...new Set(reports.map((r) => r.reportType))].filter(Boolean);
+
+        console.log('✅ REPORTS: Using Drupal data from individual items');
+        return {
+          heroHeading: 'Reports',
+          heroSubheading:
+            'It offer key statistics and trends in IP domains, highlight growth in IP activities.',
+          heroImage: {
+            src: '/images/reports/hero.jpg',
+            alt: 'Reports',
+          },
+          reports,
+          categoryOptions: categories.map((cat) => ({ label: cat, value: cat.toLowerCase() })),
+          reportTypeOptions: reportTypes.map((type) => ({
+            label: type,
+            value: type.toLowerCase(),
+          })),
+        };
+      } catch (itemsError) {
+        console.log('🔴 REPORTS: Error fetching items, using fallback data');
+        return getReportsFallbackData();
+      }
+    }
+
+    const node = pageNodes[0];
+    const data = transformReportsPage(node, pageIncluded);
+
+    console.log('✅ REPORTS: Using Drupal data from page');
+    return data;
+  } catch (error) {
+    console.log('🔴 REPORTS: Error fetching data, using fallback data');
+    return getReportsFallbackData();
+  }
+}
