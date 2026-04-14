@@ -16,7 +16,7 @@ export function NewsArticleDetail({ article }: NewsArticleDetailProps) {
     <div className="min-h-screen w-full bg-white">
       <LayoutWrapper className="py-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 relative z-10">
+          <div className="bg-white rounded-lg p-8 relative z-10">
             {article.image && (
               <div className="mb-8">
                 <div className="relative w-full h-64 md:h-96 bg-gray-200 rounded-lg overflow-hidden">
@@ -25,24 +25,28 @@ export function NewsArticleDetail({ article }: NewsArticleDetailProps) {
               </div>
             )}
 
-            {article.excerpt && (
-              <div className="mb-6">
-                <p className="text-lg text-gray-700 leading-relaxed">{article.excerpt}</p>
-              </div>
-            )}
+            <div className="px-0 md:px-[40px] xl:px-[108px]">
+              {article.excerpt && (
+                <div className="mb-6">
+                  <p className="text-lg text-gray-700 leading-relaxed">{article.excerpt}</p>
+                </div>
+              )}
 
-            {/* ✅ Content - Render HTML from Drupal */}
-            {article.content && (
-              <div className="prose prose-lg max-w-none">
-                <div
-                  className="text-gray-700 leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: article.content }}
-                />
-              </div>
-            )}
+              {/* ✅ Content - Render HTML from Drupal */}
+              {article.content && (
+                <div className="prose prose-lg max-w-none">
+                  <div
+                    className="text-gray-700 leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: article.content }}
+                  />
+                </div>
+              )}
+            </div>
 
-            <div className="mt-8 pt-6 border-t border-gray-200">
-              <p className="text-sm text-gray-500">{t('source') || 'Source'}: SAIP</p>
+            <div className="mt-8 pt-6">
+              <p className="text-sm p-[16px] bg-[#F3FCF6] text-gray-500 rounded-[4px]">
+                {t('source') || 'Source'}: SAIP
+              </p>
             </div>
           </div>
         </div>

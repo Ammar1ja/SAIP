@@ -14,4 +14,5 @@ export interface TabVerticalProps {
   showIcons?: boolean;
   size?: 'sm' | 'md' | 'lg';
   ariaLabel?: string;
+  indicatorHeight: 'lg' | 'md' | 'sm';
 }

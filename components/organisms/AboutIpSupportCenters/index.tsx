@@ -38,7 +38,7 @@ const AboutIpSupportCenters = ({ heading, paragraphs, image }: AboutIpSupportCen
             as="h2"
             size="h2"
             weight="medium"
-            className="!text-3xl md:!text-3xl lg:!text-5xl leading-normal !tracking-tide text-left rtl:text-right"
+            className="!text-3xl md:!text-3xl lg:!text-5xl leading-normal !tracking-tide text-left rtl:text-right !w-full"
           >
             {heading}
           </Heading>

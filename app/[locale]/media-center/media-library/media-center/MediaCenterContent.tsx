@@ -85,6 +85,7 @@ export function MediaCenterContent({
               onTabChange={handleTabChange}
               ariaLabel={t('navigationAriaLabel')}
               className="rounded-[16px] bg-white p-6 shadow-[0px_4px_8px_-2px_rgba(16,24,40,0.10),0px_2px_4px_-2px_rgba(16,24,40,0.06)] [&_ul[role='tablist']]:gap-0 [&_button[role='tab']]:px-3 [&_button[role='tab']]:py-2 [&_button[role='tab']]:text-[16px] [&_button[role='tab']]:leading-6 [&_button[aria-selected='true']]:font-semibold [&_button[aria-selected='true']]:text-[#161616] [&_button[aria-selected='true']]:before:w-[3px] [&_button[aria-selected='false']]:font-normal [&_button[aria-selected='false']]:text-[#384250]"
+              indicatorHeight="sm"
             />
           </div>
 

@@ -146,7 +146,7 @@ export default function ArticlePageContent({
                 className="space-y-4 text-base leading-6 text-[#384250] [&_h3]:mt-8 [&_h3]:text-[20px] [&_h3]:leading-[30px] [&_h3]:font-medium [&_h3]:text-[#161616] [&_p]:text-base [&_p]:leading-6"
                 dangerouslySetInnerHTML={{ __html: article.content || '' }}
               />
-              <div className="mt-6 rounded-[8px] bg-primary-50 px-4 py-4 text-sm leading-5 text-[#161616]">
+              <div className="mt-6 rounded-[8px] bg-[#F7FDF9] px-4 py-4 text-sm leading-5 text-[#161616]">
                 Source: SAIP
               </div>
             </div>

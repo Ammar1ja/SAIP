@@ -6,7 +6,7 @@ const newsArticleCardTitle = cva(
     'text-text-default',
     'overflow-hidden',
     'line-clamp-2',
-    'text-[16px]',
+    'text-[18px]',
     'leading-6',
     'font-medium',
   ],

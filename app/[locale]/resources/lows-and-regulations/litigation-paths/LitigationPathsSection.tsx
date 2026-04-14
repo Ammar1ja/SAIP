@@ -7,6 +7,7 @@ import TabVertical from '@/components/molecules/TabVertical';
 import Select from '@/components/atoms/Select';
 import LitigationPathChart from './charts/LitigationPathChart';
 import type { PathwayData } from '@/lib/drupal/services/litigation-paths.service';
+import { Calendar } from 'react-multi-date-picker';
 
 interface LitigationPathsSectionProps {
   sectionHeading: string;
@@ -84,6 +85,7 @@ const LitigationPathsSection = ({
                   activeTab={tabs[activeTabIndex]?.id || tabs[0]?.id}
                   onTabChange={handleTabChange}
                   ariaLabel="Litigation paths navigation"
+                  indicatorHeight="lg"
                 />
               </div>
               <div className="flex-1">

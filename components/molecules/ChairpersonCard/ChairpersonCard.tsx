@@ -27,19 +27,25 @@ export const ChairpersonCard = ({
           className,
         )}
       >
-        <div className="w-full max-w-[500px] md:w-1/2 lg:w-[500px]">
-          <div className="aspect-square relative rounded-lg overflow-hidden">
+        <div className="w-full md:w-[568px] !md:h-[480px]">
+          <div className=" relative rounded-lg overflow-hidden md:w-[568px] !md:h-[480px]">
             {image ? (
-              <Image
+              <img
                 src={image}
                 alt={name}
-                aspectRatio="square"
-                objectFit="cover"
-                quality={100}
-                sizes="(min-width: 1024px) 500px, (min-width: 768px) 50vw, 100vw"
-                className="w-full h-full"
+                className="w-full md: w-[568px] md:h-[480px] object-cover"
               />
             ) : (
+              // <Image
+              //   src={image}
+              //   alt={name}
+              //   aspectRatio="square"
+              //   objectFit="cover"
+              //   quality={100}
+              //   sizes="(min-width: 1024px) 500px, (min-width: 768px) 50vw, 100vw"
+              //   className="!md:w-[568px] !md:h-[480px]"
+              // />
+              // <img src={image} alt={name} className="w-full h-full object-cover" />
               <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-500 text-sm">
                 No image available
               </div>
@@ -47,10 +53,10 @@ export const ChairpersonCard = ({
           </div>
         </div>
         <div className={twMerge('flex-1 text-left', isRTL && 'text-right')}>
-          <div className="text-sm text-gray-600 mb-2">{t('herExcellency')}</div>
-          <h2 className="text-4xl font-medium text-gray-900 mb-2">{name}</h2>
+          <div className="text-[18px] text-[#161616] mb-2">{t('herExcellency')}</div>
+          <h2 className="text-[36px] font-medium text-[#161616] mb-2">{name}</h2>
           <p className="text-gray-600 mb-6">{title}</p>
-          {description && <p className="text-gray-700 mb-6 max-w-2xl">{description}</p>}
+          {description && <p className="text-[18px] text-gray-700 mb-6 max-w-2xl">{description}</p>}
           <div className="mt-6 md:mt-8 lg:mt-10 flex md:justify-start justify-center w-full">
             <Button
               className="w-full md:w-auto"

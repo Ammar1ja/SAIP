@@ -22,7 +22,11 @@ export const PersonCard = ({
       <div
         className={twMerge(
           'relative rounded-lg overflow-hidden',
-          variant === 'grid' ? 'h-[420px] w-full shrink-0' : 'aspect-square',
+          variant === 'grid'
+            ? 'h-[420px] w-full shrink-0'
+            : variant == 'carousel'
+              ? 'md:h-[420px] w-full md:w-[410px]'
+              : 'aspect-square',
         )}
       >
         <Image

@@ -94,7 +94,7 @@ export const NewsArticleCard = ({
 
   return (
     <div className={twMerge(newsArticleCard({ className }))}>
-      <div className="relative h-[200px] w-full shrink-0 overflow-hidden rounded-[8px] md:h-full md:w-[280px]">
+      <div className="relative h-[260px] w-full shrink-0 overflow-hidden rounded-[8px] md:h-full md:w-[280px]">
         <Image
           src={imageSrc}
           alt="News article card"

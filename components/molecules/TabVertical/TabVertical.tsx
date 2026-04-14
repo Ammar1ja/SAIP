@@ -13,6 +13,7 @@ export const TabVertical = ({
   showIcons = false,
   size = 'md',
   ariaLabel,
+  indicatorHeight,
 }: TabVerticalProps) => {
   const renderTabs = (tabs: Tab[], level = 1) => (
     <ul
@@ -33,7 +34,12 @@ export const TabVertical = ({
             <button
               onClick={() => onTabChange(tab.id)}
               className={twMerge(
-                tabStyles({ isActive: activeTab === tab.id, hasIcon: showIcons, size }),
+                tabStyles({
+                  isActive: activeTab === tab.id,
+                  hasIcon: showIcons,
+                  size,
+                  indicatorHeight,
+                }),
                 // Na mobile: zmniejszone paddingi, na desktop: normalne
                 'leading-tight',
                 level === 1 && 'whitespace-nowrap md:whitespace-normal',

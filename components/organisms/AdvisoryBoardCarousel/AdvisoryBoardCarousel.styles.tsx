@@ -34,7 +34,7 @@ export const cardsRow = cva([
   'scrollbar-thumb-gray-300',
 ]);
 
-export const carouselItem = cva(['shrink-0', 'snap-start', 'max-w-[90vw]'], {
+export const carouselItem = cva(['shrink-0', 'snap-start', 'max-w-[410px] !w-[410px]'], {
   variants: {
     size: {
       default: 'w-[350px]',

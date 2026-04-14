@@ -157,7 +157,7 @@ export const Form = ({
                       'overflow-visible',
                     )}
                   >
-                    <div className="relative flex-shrink-0 self-stretch" ref={prefixDropdownRef}>
+                    <div className="relative flex-shrink-0  self-stretch" ref={prefixDropdownRef}>
                       <button
                         type="button"
                         onClick={() => setIsPrefixOpen(!isPrefixOpen)}

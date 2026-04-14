@@ -1,7 +1,7 @@
 import { cva } from 'class-variance-authority';
 
 export const navStyles = cva([
-  'flex flex-col bg-white relative rounded-lg py-4 ',
+  'flex flex-col bg-white relative rounded-lg py-4',
   'border-0 shadow-none',
 ]);
 
@@ -15,7 +15,7 @@ export const tabStyles = cva(
     '[dir="ltr"] [&]:after:left-5 [dir="rtl"] [&]:after:right-5',
     '[dir="ltr"] [&]:after:right-5 [dir="rtl"] [&]:after:left-5',
     'md:[&]:after:hidden',
-    '[&]:before:absolute [&]:before:top-1/2 [&]:before:-translate-y-1/2 [&]:before:h-6 [&]:before:w-[3px] [&]:before:bg-transparent [&]:before:rounded-full',
+    '[&]:before:absolute [&]:before:top-1/2 [&]:before:-translate-y-1/2 [&]:before:w-[3px] [&]:before:bg-transparent [&]:before:rounded-full',
     '[dir="ltr"] [&]:before:left-0',
     '[dir="rtl"] [&]:before:right-0',
     'md:[&]:before:bg-transparent',
@@ -25,30 +25,41 @@ export const tabStyles = cva(
       isActive: {
         true: [
           'text-neutral-900 font-medium',
-          '[&]:after:bg-green-600',
-          'md:[&]:before:bg-green-600',
+          '[&]:after:bg-[#1B8354]',
+          'md:[&]:before:bg-[#1B8354] [&]:before:w-[3px]',
         ],
         false: 'text-neutral-500',
       },
+
       hasIcon: {
         true: '[dir="ltr"]:pl-2 [dir="rtl"]:pr-2 md:[dir="ltr"]:pl-4 md:[dir="rtl"]:pr-4',
         false: '[dir="ltr"]:pl-2 [dir="rtl"]:pr-2 md:[dir="ltr"]:pl-5 md:[dir="rtl"]:pr-5',
       },
+
       size: {
         sm: 'text-sm md:px-3 md:py-2',
         md: 'text-base',
         lg: 'text-lg md:px-5 md:py-4',
       },
+
+      indicatorHeight: {
+        sm: '[&]:before:h-[24px]',
+        md: '[&]:before:h-[48px]',
+        lg: '[&]:before:h-[64px]',
+      },
     },
+
     compoundVariants: [
       {
         isActive: true,
         hasIcon: false,
-        className: 'md:[dir="ltr"]:pl-5 md:[dir="rtl"]:pr-5',
+        className: 'md:[dir="ltr"]:pl-5 md:[dir="rtl"]:pr-5 font-semibold',
       },
     ],
+
     defaultVariants: {
       size: 'md',
+      indicatorHeight: 'md', // ✅ default goes HERE
     },
   },
 );

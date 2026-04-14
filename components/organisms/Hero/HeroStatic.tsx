@@ -12,6 +12,7 @@ import { ChevronIcon } from '@/components/icons';
 import Button from '@/components/atoms/Button';
 import { Share } from 'lucide-react';
 import { TextContent } from '@/components/atoms/TextConent/TextContent';
+import LeadingIcon from '@/assets/images/leading_icon.svg';
 
 const hero = cva(['h-[calc(100vh-72px)]', 'max-h-[520px]', 'relative', 'overflow-hidden'], {
   variants: {
@@ -184,7 +185,7 @@ export const HeroStatic = ({
       day: 'numeric',
     });
   };
-
+  const isRtl = locale === 'ar' ? true : false;
   return (
     <div
       className={twMerge(
@@ -235,7 +236,11 @@ export const HeroStatic = ({
                   ariaLabel={backLabel}
                   className="flex h-8 items-center gap-2 justify-start"
                 >
-                  <ChevronIcon className="h-4 w-4 shrink-0 rotate-90" />
+                  <LeadingIcon
+                    width={16}
+                    height={16}
+                    className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+                  />
                   <span className="truncate">{backLabel}</span>
                 </Button>
               </Link>
@@ -344,7 +349,7 @@ export const HeroStatic = ({
           <>
             <div
               className={twMerge(
-                'flex flex-col gap-3',
+                'flex flex-col gap-[24px]',
                 contentAlign === 'bottom' ? '' : 'absolute top-6 inset-x-0 px-0 md:px-8',
               )}
             >
@@ -364,7 +369,11 @@ export const HeroStatic = ({
                     ariaLabel={backLabel}
                     className="flex h-8 items-center gap-2 justify-start"
                   >
-                    <ChevronIcon className="h-4 w-4 shrink-0 rotate-90" />
+                    <LeadingIcon
+                      width={16}
+                      height={16}
+                      className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+                    />
                     <span className="truncate">{backLabel}</span>
                   </Button>
                 </Link>
@@ -375,7 +384,7 @@ export const HeroStatic = ({
               className={twMerge(
                 'flex w-full flex-col gap-2 text-left rtl:text-right',
                 contentStackClassName,
-                showBackButton ? 'pt-32 sm:pt-36' : '',
+                showBackButton ? 'pt-32 sm:pt-[124px]' : '',
                 textColorClasses,
               )}
             >
@@ -402,7 +411,7 @@ export const HeroStatic = ({
                       {categories.map((category) => (
                         <span
                           key={category.id}
-                          className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700"
+                          className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700 border border-[#E5E7EB]"
                         >
                           {category.name}
                         </span>
