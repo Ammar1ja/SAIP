@@ -36,14 +36,14 @@ export const CONTACT_INFORMATION = [
   {
     id: 'appointment-booking-platform',
     title: 'Appointment booking platform',
-    icon: '/icons/contact-and-support/calendar.svg',
+    icon: '/icons/contact-and-support/calendar.png',
     buttonHref: '#',
     buttonLabel: 'Book your appointment',
   },
   {
     id: 'saip-location',
     title: 'SAIP location',
-    icon: '/icons/contact-and-support/location.svg',
+    icon: '/icons/contact-and-support/location.png',
     locationHref: '#',
     locationAddress: [
       'Riyadh 13321,',

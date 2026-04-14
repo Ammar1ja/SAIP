@@ -12,7 +12,7 @@ import { ChevronIcon } from '@/components/icons';
 import Button from '@/components/atoms/Button';
 import { Share } from 'lucide-react';
 import { TextContent } from '@/components/atoms/TextConent/TextContent';
-import LeadingIcon from '@/assets/images/leading_icon.svg';
+import LeadingIcon from '@/assets/images/leading_icon.png';
 
 const hero = cva(['h-[calc(100vh-72px)]', 'max-h-[520px]', 'relative', 'overflow-hidden'], {
   variants: {
@@ -236,10 +236,10 @@ export const HeroStatic = ({
                   ariaLabel={backLabel}
                   className="flex h-8 items-center gap-2 justify-start"
                 >
-                  <LeadingIcon
-                    width={16}
-                    height={16}
-                    className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+                  <img
+                    src={LeadingIcon.src}
+                    alt=""
+                    className={`w-4 h-4 object-contain ${isRtl ? 'rotate-180 ml-2' : 'rotate-0 mr-2'}`}
                   />
                   <span className="truncate">{backLabel}</span>
                 </Button>
@@ -369,10 +369,10 @@ export const HeroStatic = ({
                     ariaLabel={backLabel}
                     className="flex h-8 items-center gap-2 justify-start"
                   >
-                    <LeadingIcon
-                      width={16}
-                      height={16}
-                      className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+                    <img
+                      src={LeadingIcon.src}
+                      alt=""
+                      className={`w-4 h-4 object-contain ${isRtl ? 'rotate-180 ml-2' : 'rotate-0 mr-2'}`}
                     />
                     <span className="truncate">{backLabel}</span>
                   </Button>

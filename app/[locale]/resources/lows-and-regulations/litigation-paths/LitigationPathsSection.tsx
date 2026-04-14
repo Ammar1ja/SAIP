@@ -7,7 +7,6 @@ import TabVertical from '@/components/molecules/TabVertical';
 import Select from '@/components/atoms/Select';
 import LitigationPathChart from './charts/LitigationPathChart';
 import type { PathwayData } from '@/lib/drupal/services/litigation-paths.service';
-import { Calendar } from 'react-multi-date-picker';
 
 interface LitigationPathsSectionProps {
   sectionHeading: string;

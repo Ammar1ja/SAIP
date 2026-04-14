@@ -22,7 +22,7 @@ const TABS = [
 import Link from 'next/link';
 import { ROUTES } from '@/lib/routes';
 import { useTranslations, useLocale } from 'next-intl';
-import LeadingIcon from '@/assets/images/leading_icon.svg';
+import LeadingIcon from '@/assets/images/leading_icon.png';
 const WatchFigmaIcon = ({ className = '' }: { className?: string }) => (
   <svg
     viewBox="0 0 13.2192 20"
@@ -138,11 +138,11 @@ const TrademarkComplaintPage = () => {
           href={ROUTES.SERVICES.SERVICE_DIRECTORY}
           className="inline-flex items-center gap-2 mb-8 px-4 py-2 border rounded-lg text-sm hover:bg-neutral-100 transition"
         >
-          <LeadingIcon
-            width={16}
-            height={16}
-            className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
-          />{' '}
+          <img
+    src={LeadingIcon.src}
+    alt=""
+    className={`w-4 h-4 object-contain ${isRtl ? 'rotate-180 ml-2' : 'rotate-0 mr-2'}`}
+  />{' '}
           {t('goBackToServices')}
         </Link>
         <div className="mb-14" />

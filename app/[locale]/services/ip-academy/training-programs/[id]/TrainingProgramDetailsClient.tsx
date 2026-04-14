@@ -25,13 +25,12 @@ import FeedbackSection from '@/components/organisms/FeedbackSection';
 import RelatedServicesSection from '@/components/organisms/RelatedServicesSection/RelatedServicesSection';
 import { TrainingProgram } from '@/components/sections/TrainingProgramsSection/TrainingProgramsSection.types';
 import { useTranslations, useLocale } from 'next-intl';
-import LeadingIcon from '@/assets/images/leading_icon.svg';
-import Calendar from '@/assets/images/calendar.svg';
-import Leading from '@/assets/images/leading_icon.svg';
-import Location from '@/assets/images/location.svg';
-import Riyal from '@/assets/images/Riyal.svg';
-import User from '@/assets/images/user.svg';
-import Watch from '@/assets/images/watch.svg';
+import LeadingIcon from '@/assets/images/leading_icon.png';
+import Calendar from '@/assets/images/calendar.png';
+import Location from '@/assets/images/location.png';
+import Riyal from '@/assets/images/Riyal.png';
+import User from '@/assets/images/user.png';
+import Watch from '@/assets/images/watch.png';
 interface TrainingProgramDetailsClientProps {
   program: TrainingProgramData;
   relatedPrograms?: TrainingProgram[];
@@ -176,10 +175,10 @@ export default function TrainingProgramDetailsClient({
           className="cursor-pointer mb-8 px-3 h-8 border border-[#d2d6db] rounded-[4px] text-sm font-medium text-[#161616] hover:bg-neutral-100 transition inline-flex items-center gap-2"
           onClick={() => window.history.back()}
         >
-          <LeadingIcon
-            width={16}
-            height={16}
-            className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+          <img
+            src={LeadingIcon.src}
+            alt=""
+            className={`w-4 h-4 object-contain ${isRtl ? 'rotate-180 ml-2' : 'rotate-0 mr-2'}`}
           />{' '}
           {t.goBack}
         </button>
@@ -210,27 +209,27 @@ export default function TrainingProgramDetailsClient({
           <DetailSidebar
             items={[
               {
-                icon: <Calendar className="w-6 h-6" />,
+                icon: <img src={Calendar.src} alt="" className="w-6 h-6 object-contain" />,
                 label: t.sidebar.startDate,
                 value: formatDate(program.startDate),
               },
               {
-                icon: <Watch className="w-6 h-6" />,
+                icon: <img src={Watch.src} alt="" className="w-6 h-6 object-contain" />,
                 label: t.sidebar.duration,
                 value: program.duration,
               },
               {
-                icon: <Riyal className="w-6 h-6" />,
+                icon: <img src={Riyal.src} alt="" className="w-6 h-6 object-contain" />,
                 label: t.sidebar.fees,
                 value: program.fees,
               },
               {
-                icon: <User className="w-6 h-6" />,
+                icon: <img src={User.src} alt="" className="w-6 h-6 object-contain" />,
                 label: t.sidebar.language,
                 value: program.language,
               },
               {
-                icon: <Location className="w-6 h-6" />,
+                icon: <img src={Location.src} alt="" className="w-6 h-6 object-contain" />,
                 label: t.sidebar.location,
                 value: program.location,
               },
@@ -367,17 +366,17 @@ export default function TrainingProgramDetailsClient({
                   value: service.duration,
                 },
                 {
-                  icon: <Riyal className="w-4 h-4 text-white" />,
+                  icon: <img src={Riyal.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tTraining('fees'),
                   value: service.fees,
                 },
                 {
-                  icon: <Location className="w-4 h-4 text-white" />,
+                  icon: <img src={Location.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tTraining('location'),
                   value: service.location,
                 },
                 {
-                  icon: <User className="w-4 h-4 text-white" />,
+                  icon: <img src={User.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tTraining('hosts'),
                   value: service.host,
                 },

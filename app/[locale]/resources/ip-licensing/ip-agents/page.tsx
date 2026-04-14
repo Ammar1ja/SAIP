@@ -8,7 +8,7 @@ import { getIPAgentsPageData } from '@/lib/drupal/services/ip-agents.service';
 export const generateMetadata: GenerateMetadata = async ({ params }) => {
   const { locale } = await params;
   const data = await getIPAgentsPageData(locale);
-
+  const test1 = {};
   return {
     title: data.hero.title,
     description: data.hero.description,
