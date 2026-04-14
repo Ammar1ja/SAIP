@@ -51,7 +51,7 @@ export const TabVertical = ({
               aria-labelledby={`tab-${tab.id}`}
               id={`tab-${tab.id}`}
             >
-              {showIcons && tab.icon}
+              {showIcons && React.isValidElement(tab.icon) && tab.icon}
               <span className="relative inline-block">{tab.label || tab.id}</span>
             </button>
             {tab.subItems && tab.subItems.length > 0 && (

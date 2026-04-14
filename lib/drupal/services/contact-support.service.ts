@@ -188,7 +188,7 @@ function transformContactSupportPage(
     contactInformation.push({
       id: 'appointment-booking',
       title: 'Appointment booking platform',
-      icon: '/icons/contact-and-support/calendar.svg',
+      icon: '/icons/contact-and-support/calendar.png',
       buttonLabel: 'Book your appointment',
       buttonHref: attrs.field_appointment_button_url,
     });
@@ -199,7 +199,7 @@ function transformContactSupportPage(
     contactInformation.push({
       id: 'saip-location',
       title: 'SAIP location',
-      icon: '/icons/contact-and-support/location.svg',
+      icon: '/icons/contact-and-support/location.png',
       locationAddress: attrs.field_location_address_lines,
     });
   }

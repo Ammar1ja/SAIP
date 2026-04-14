@@ -12,12 +12,7 @@ import { UsersIcon } from '@/components/icons/strategy/UsersIcon';
 import { AddNoteIcon, PatentDocIcon, CirclePlusIcon } from '@/components/icons/services';
 import { BookIcon } from '@/components/icons/BookIcon';
 import { useTranslations, useLocale } from 'next-intl';
-import Calendar from '@/assets/images/calendar.svg';
-import Leading from '@/assets/images/leading_icon.svg';
-import Location from '@/assets/images/location.svg';
-import Riyal from '@/assets/images/Riyal.svg';
-import User from '@/assets/images/user.svg';
-import Watch from '@/assets/images/watch.svg';
+
 const TrainingProgramsSection: FC<TrainingProgramsSectionProps> = ({
   programs = MOCK_TRAINING_PROGRAMS,
   heroTitle = 'Training programs',

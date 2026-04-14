@@ -26,13 +26,13 @@ import CommentsAndSuggestionsSection from '@/components/organisms/CommentsAndSug
 import FeedbackSection from '@/components/organisms/FeedbackSection';
 import { ROUTES } from '@/lib/routes';
 import { useTranslations, useLocale } from 'next-intl';
-import LeadingIcon from '@/assets/images/leading_icon.svg';
-import Calendar from '@/assets/images/calendar.svg';
-import Leading from '@/assets/images/leading_icon.svg';
-import Location from '@/assets/images/location.svg';
-import Riyal from '@/assets/images/Riyal.svg';
-import User from '@/assets/images/user.svg';
-import Watch from '@/assets/images/watch.svg';
+import LeadingIcon from '@/assets/images/leading_icon.png';
+import Calendar from '@/assets/images/calendar.png';
+import Leading from '@/assets/images/leading_icon.png';
+import Location from '@/assets/images/location.png';
+import Riyal from '@/assets/images/Riyal.png';
+import User from '@/assets/images/user.png';
+import Watch from '@/assets/images/watch.png';
 interface QualificationDetailsClientProps {
   qualification: QualificationData;
   relatedQualifications?: QualificationData[];
@@ -132,10 +132,10 @@ export default function QualificationDetailsClient({
           className="mb-8 inline-flex h-8 cursor-pointer items-center rounded-sm border border-[#D2D6DB] px-3 text-sm leading-5 font-medium text-[#161616] transition hover:bg-neutral-100"
           onClick={() => window.history.back()}
         >
-          <LeadingIcon
-            width={16}
-            height={16}
-            className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+          <img
+            src={LeadingIcon.src}
+            alt=""
+            className={`w-4 h-4 object-contain ${isRtl ? 'rotate-180 ml-2' : 'rotate-0 mr-2'}`}
           />
           {t.goBack}
         </button>
@@ -163,12 +163,12 @@ export default function QualificationDetailsClient({
           <DetailSidebar
             items={[
               {
-                icon: <Calendar className="w-6 h-6" />,
+                icon: <img src={Calendar.src} alt="" className="w-6 h-6 object-contain" />,
                 label: t.sidebar.startDate,
                 value: qualification.startDate,
               },
               {
-                icon: <Watch className="w-6 h-6" />,
+                icon: <img src={Watch.src} alt="" className="w-6 h-6 object-contain" />,
                 label: t.sidebar.duration,
                 value: qualification.duration,
               },
@@ -178,7 +178,7 @@ export default function QualificationDetailsClient({
                 value: qualification.fees,
               },
               {
-                icon: <User className="w-6 h-6" />,
+                icon: <img src={User.src} alt="" className="w-6 h-6 object-contain" />,
                 label: t.sidebar.language,
                 value: qualification.language,
               },
@@ -193,7 +193,7 @@ export default function QualificationDetailsClient({
                 value: qualification.passingScore,
               },
               {
-                icon: <Location className="w-6 h-6" />,
+                icon: <img src={Location.src} alt="" className="w-6 h-6 object-contain" />,
                 label: t.sidebar.location,
                 value: qualification.location,
               },
@@ -335,11 +335,10 @@ export default function QualificationDetailsClient({
                   <button
                     onClick={() => scrollCarousel('left')}
                     disabled={!canScrollPrev}
-                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
-                      canScrollPrev
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${canScrollPrev
                         ? 'bg-primary-700 text-white hover:bg-primary-800 cursor-pointer'
                         : 'bg-[#e5e7eb] text-[#9aa4b2] cursor-not-allowed'
-                    }`}
+                      }`}
                     aria-label="Previous"
                   >
                     <ChevronLeft className="w-6 h-6" />
@@ -347,11 +346,10 @@ export default function QualificationDetailsClient({
                   <button
                     onClick={() => scrollCarousel('right')}
                     disabled={!canScrollNext}
-                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
-                      canScrollNext
+                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${canScrollNext
                         ? 'bg-primary-700 text-white hover:bg-primary-800 cursor-pointer'
                         : 'bg-[#e5e7eb] text-[#9aa4b2] cursor-not-allowed'
-                    }`}
+                      }`}
                     aria-label="Next"
                   >
                     <ChevronRight className="w-6 h-6" />

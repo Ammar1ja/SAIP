@@ -4,7 +4,7 @@ import Section from '@/components/atoms/Section';
 import TimelineSteps from '@/components/organisms/TimelineSteps';
 import RequirementsList from '@/components/organisms/RequirementsList';
 import ServiceInfoSidebar from '@/components/organisms/ServiceInfoSidebar';
-import LeadingIcon from '@/assets/images/leading_icon.svg';
+import LeadingIcon from '@/assets/images/leading_icon.png';
 
 const TABS = [
   { id: 'steps', label: 'Application steps' },
@@ -36,10 +36,10 @@ const RegistrationTemplate = ({
             href={backHref}
             className="mb-8 px-4 py-2 border rounded-lg text-sm hover:bg-neutral-100 transition inline-block"
           >
-            <LeadingIcon
-              width={16}
-              height={16}
-              className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+            <img
+              src={LeadingIcon.src}
+              alt=""
+              className={`w-4 h-4 object-contain ${isRtl ? 'rotate-180 ml-2' : 'rotate-0 mr-2'}`}
             />{' '}
             Go back to Services
           </a>
