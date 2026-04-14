@@ -31,7 +31,7 @@ export default async function Web({ searchParams, params }: PageProps) {
 
   return (
     <>
-    {/* comment */}
+      {/* comment */}
       <Seo titleKey="home.title" descriptionKey="home.description" />
 
       <Hero

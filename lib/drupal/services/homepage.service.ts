@@ -361,7 +361,9 @@ export function transformHomepage(
             description: extractText(highlightItem.attributes?.field_description) || '',
             icon: (() => {
               // Return React element instead of string
-              const effectiveIconUrl = safeIconUrl || '/icons/highlights/agent.svg';
+              const effectiveIconUrl = safeIconUrl?.includes('/api/')
+                ? '/icons/highlights/agent.svg'
+                : safeIconUrl || '/icons/highlights/agent.svg';
               return React.createElement('img', {
                 src: effectiveIconUrl,
                 alt: '',

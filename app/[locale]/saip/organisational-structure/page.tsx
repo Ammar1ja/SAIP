@@ -75,7 +75,7 @@ export default async function OrganisationalStructure({ params }: PageProps) {
       <section id="board">
         <Section fullWidth constrain={false} className="!px-0">
           <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-12 px-4 md:px-8 xl:px-0">
-            <h2 className="text-5xl font-medium text-center">{data.boardHeading}</h2>
+            <h2 className="text-4xl md:text-5xl font-medium text-center">{data.boardHeading}</h2>
             <ChairpersonCard
               image={data.chairperson.image}
               name={data.chairperson.name}

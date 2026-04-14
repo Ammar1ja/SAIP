@@ -6,6 +6,7 @@ import { twMerge } from 'tailwind-merge';
 import { useLocale, useTranslations } from 'next-intl';
 import { ChairpersonCardProps } from './ChairpersonCard.types';
 import { ROUTES } from '@/lib/routes';
+import NextImage from 'next/image';
 
 export const ChairpersonCard = ({
   image,
@@ -23,17 +24,20 @@ export const ChairpersonCard = ({
       <div
         data-testid="chairperson-card"
         className={twMerge(
-          'flex flex-col md:flex-row items-center gap-12 self-stretch bg-primary-50 rounded-3xl p-12',
+          'flex flex-col md:flex-row items-center gap-12 self-stretch bg-primary-50 rounded-3xl p-0 md:p-12 h-[480px]',
           className,
         )}
       >
-        <div className="w-full md:w-[568px] !md:h-[480px]">
-          <div className=" relative rounded-lg overflow-hidden md:w-[568px] !md:h-[480px]">
+        <div className="w-full md:w-[568px] h-[480px]">
+          <div className=" relative rounded-lg overflow-hidden md:w-[568px] h-[480px]">
             {image ? (
-              <img
+              <NextImage
                 src={image}
                 alt={name}
-                className="w-full md: w-[568px] md:h-[480px] object-cover"
+                width={568}
+                height={480}
+                className="w-full md:w-[568px] md:h-[480px] object-cover"
+                quality={100}
               />
             ) : (
               // <Image
@@ -43,9 +47,13 @@ export const ChairpersonCard = ({
               //   objectFit="cover"
               //   quality={100}
               //   sizes="(min-width: 1024px) 500px, (min-width: 768px) 50vw, 100vw"
-              //   className="!md:w-[568px] !md:h-[480px]"
+              //   className="w-full !md:w-[568px] !md:h-[480px]"
               // />
-              // <img src={image} alt={name} className="w-full h-full object-cover" />
+              //    <img
+              //   src={image}
+              //   alt={name}
+              //   className="w-full md: w-[568px] md:h-[480px] object-cover"
+              // />
               <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-500 text-sm">
                 No image available
               </div>
