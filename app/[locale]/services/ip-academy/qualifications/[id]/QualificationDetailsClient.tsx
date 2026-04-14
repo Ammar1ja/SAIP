@@ -5,11 +5,8 @@ import Breadcrumbs from '@/components/molecules/Breadcrumbs';
 import Section from '@/components/atoms/Section';
 import ServiceCard from '@/components/molecules/ServiceCard';
 import {
-  AddNoteIcon,
-  CirclePlusIcon,
   CircleInfoIcon,
   PatentDocIcon,
-  LocationPinIcon,
 } from '@/components/icons/services';
 import { UsersIcon } from '@/components/icons/strategy/UsersIcon';
 import { AimIcon } from '@/components/icons/roles/AimIcon';

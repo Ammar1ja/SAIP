@@ -10,12 +10,7 @@ import { getIPAcademyPageData } from '@/lib/drupal/services/ip-academy.service';
 import { getMessages } from 'next-intl/server';
 import { cookies } from 'next/headers';
 import { ROUTES } from '@/lib/routes';
-import Calendar from '@/assets/images/calendar.png';
-import Leading from '@/assets/images/leading_icon.png';
-import Location from '@/assets/images/location.png';
-import Riyal from '@/assets/images/Riyal.png';
-import User from '@/assets/images/user.png';
-import Watch from '@/assets/images/watch.png';
+
 export const revalidate = 300;
 
 export default async function IpAcademyPage({ params }: { params: Promise<{ locale: string }> }) {

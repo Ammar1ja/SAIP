@@ -27,7 +27,6 @@ import { TrainingProgram } from '@/components/sections/TrainingProgramsSection/T
 import { useTranslations, useLocale } from 'next-intl';
 import LeadingIcon from '@/assets/images/leading_icon.png';
 import Calendar from '@/assets/images/calendar.png';
-import Leading from '@/assets/images/leading_icon.png';
 import Location from '@/assets/images/location.png';
 import Riyal from '@/assets/images/Riyal.png';
 import User from '@/assets/images/user.png';
