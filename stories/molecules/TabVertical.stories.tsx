@@ -48,6 +48,7 @@ export const InteractiveWithIcons = () => {
       onTabChange={setActiveTab}
       showIcons={true}
       size="md"
+      indicatorHeight="md"
     />
   );
 };
@@ -99,6 +100,7 @@ export const Large: Story = {
     },
     showIcons: false,
     size: 'lg',
+    indicatorHeight: 'md',
   },
 };
 
@@ -180,6 +182,7 @@ export const Tablet: Story = {
     },
     showIcons: false,
     size: 'md',
+    indicatorHeight: 'md',
   },
   globals: {
     viewport: {
