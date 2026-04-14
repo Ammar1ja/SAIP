@@ -5,6 +5,7 @@ export const expandableTabGroupStyles = cva('w-full', {
     variant: {
       default: 'space-y-2',
       bordered: '',
+      minimal: 'bg-transparent',
     },
   },
   defaultVariants: {

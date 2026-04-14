@@ -16,7 +16,7 @@ export const searchInput = cva([
   'dark:bg-gray-800',
   'border',
   'border-[#9DA4AE]',
-  'dark:border-gray-700',
+  'dark:border-[#9DA4AE]',
   'text-base',
   'text-text-primary-paragraph',
   'dark:text-gray-100',

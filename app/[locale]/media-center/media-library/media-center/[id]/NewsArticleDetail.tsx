@@ -44,8 +44,9 @@ export function NewsArticleDetail({ article }: NewsArticleDetailProps) {
             </div>
 
             <div className="mt-8 pt-6">
-              <p className="text-sm p-[16px] bg-[#F3FCF6] text-gray-500 rounded-[4px]">
-                {t('source') || 'Source'}: SAIP
+              <p className="text-sm p-[16px] bg-[#384250] text-gray-500 rounded-[4px]">
+                {t('source') || 'Source'}:{' '}
+                <span className="font-semibold text-[#1F2A37]">{'SAIP'}</span>
               </p>
             </div>
           </div>

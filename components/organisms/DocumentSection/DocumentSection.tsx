@@ -175,7 +175,7 @@ const DocumentSection = ({
         {heading?.trim() ? (
           <h2
             className={cn(
-              'text-3xl md:text-4xl lg:text-5xl font-medium text-gray-900',
+              'text-3xl md:text-4xl lg:text-5xl font-medium text-[#161616]',
               headingClassName,
             )}
           >
@@ -183,10 +183,12 @@ const DocumentSection = ({
           </h2>
         ) : null}
         {description && (
-          <DocumentSectionDescription
-            description={description}
-            className={cn(withImageTextLayout.descriptionOffset, descriptionClassName)}
-          />
+          <>
+            <DocumentSectionDescription
+              description={description}
+              className={cn(withImageTextLayout.descriptionOffset, descriptionClassName)}
+            />
+          </>
         )}
         {buttons.length > 0 && (
           <div

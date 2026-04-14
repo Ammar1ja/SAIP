@@ -171,7 +171,7 @@ const IPJourneySection = ({
     const paragraphClass =
       typography === 'guidance'
         ? 'text-[18px] text-neutral-700 leading-[28px] mb-2'
-        : 'text-base text-neutral-700 leading-6 mb-2';
+        : 'text-base text-[#161616] font-normal leading-6 mb-2 !w-full';
     const listItemClass =
       typography === 'guidance'
         ? 'text-[18px] text-neutral-700 leading-[28px] pl-1'
