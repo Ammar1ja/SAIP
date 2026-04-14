@@ -36,7 +36,7 @@ const ProQualificationSection: FC<ProQualificationSectionProps> = ({
               tabIndex={0}
               aria-label={item.title}
             >
-              <div className="flex h-[118px] shrink-0 items-center rounded-md bg-[#F3F4F6] p-6">
+              <div className="flex h-[118px] shrink-0 items-end rounded-md bg-[#F3F4F6] !p-[16px]">
                 <h3 className="text-[18px] leading-[28px] tracking-normal font-medium text-text-default">
                   {item.title}
                 </h3>

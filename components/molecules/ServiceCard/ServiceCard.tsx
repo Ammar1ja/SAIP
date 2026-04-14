@@ -418,7 +418,7 @@ const ServiceCard = ({
                   {item.icon}
                 </div>
                 <div className="min-w-0">
-                  <div className="line-clamp-1 break-words text-[18px] font-medium leading-[28px] tracking-[0] text-text-default">
+                  <div className="line-clamp-1 break-words text-[18px] font-medium leading-[28px] tracking-[0] text-[#1F2A37]">
                     {item.label}
                   </div>
                   {renderTrainingValue(item.value)}
@@ -489,7 +489,9 @@ const ServiceCard = ({
         );
       }
 
-      return <div className="text-[#384250] text-sm leading-5 break-words">{item.value}</div>;
+      return (
+        <div className="text-[#384250] text-sm leading-5 break-words mt-[7px]">{item.value}</div>
+      );
     };
 
     const categoryValues = Array.isArray(categoryDetail?.value)
@@ -511,7 +513,7 @@ const ServiceCard = ({
     return (
       <div
         className={twMerge(
-          'box-border flex w-full max-w-none flex-col overflow-hidden rounded-xl border border-border-natural-primary bg-[#F9FAFB] p-6',
+          'box-border flex w-full max-w-none flex-col overflow-hidden rounded-xl border border-border-natural-primary bg-[#F9FAFB] p-6 ',
           hasActionButtons
             ? 'min-h-[196px] h-auto shrink-0'
             : fillsParent
@@ -544,7 +546,9 @@ const ServiceCard = ({
                     {item.icon}
                   </div>
                   <div className="min-w-0">
-                    <div className="text-sm font-medium leading-5 text-[#079455]">{item.label}</div>
+                    <div className="text-[16px] font-medium leading-5 text-[#1F2A37]">
+                      {item.label}
+                    </div>
                     {renderDetailValue(item)}
                   </div>
                 </div>
@@ -556,7 +560,7 @@ const ServiceCard = ({
                   {categoryDetail.icon}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="mb-1.5 text-sm font-medium leading-5 text-[#079455]">
+                  <div className="mb-1.5 text-[16px] font-medium leading-5 text-[#1F2A37]">
                     {categoryDetail.label}
                   </div>
                   <div className="flex flex-wrap gap-1.5">

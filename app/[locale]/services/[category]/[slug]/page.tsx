@@ -9,6 +9,7 @@ import FeedbackSection from '@/components/organisms/FeedbackSection';
 import { ROUTES } from '@/lib/routes';
 import { getServiceDetailBySlug } from '@/lib/drupal/services/service-detail-universal.service';
 import ServiceDetailClient from './ServiceDetailClient';
+import LeadingIcon from '@/assets/images/leading_icon.svg';
 
 export default async function UniversalServiceDetailPage({
   params,
@@ -131,6 +132,7 @@ export default async function UniversalServiceDetailPage({
       ? serviceData.labels
       : [serviceData.category];
 
+  const isRtl = locale === 'ar' ? true : false;
   return (
     <main className="min-h-screen pb-20">
       {/* Hero Section */}
@@ -147,7 +149,12 @@ export default async function UniversalServiceDetailPage({
           href={ROUTES.SERVICES.SERVICE_DIRECTORY}
           className="inline-flex items-center gap-2 mt-6 px-4 py-2 border rounded-lg text-sm hover:bg-neutral-100 transition"
         >
-          ← {t('goBackToServices')}
+          <LeadingIcon
+            width={16}
+            height={16}
+            className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+          />{' '}
+          {t('goBackToServices')}
         </Link>
         <div className="mb-6" />
         <h1 className="text-7xl font-medium mb-5">{serviceData.title}</h1>

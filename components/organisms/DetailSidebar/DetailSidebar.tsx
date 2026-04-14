@@ -42,7 +42,7 @@ const DetailSidebar: FC<DetailSidebarProps> = ({
       </ul>
       {faqHref && (
         <>
-          <hr className="my-6" />
+          <hr className="my-6 !bg-[#D2D6DB] !text-[#D2D6DB]" />
           <div className="mb-4">
             <div className="font-semibold mb-1">{faqTitle}</div>
             <a href={faqHref} className="text-primary-700 underline text-sm block">

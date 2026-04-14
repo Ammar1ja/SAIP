@@ -294,7 +294,7 @@ export function GeneralSecretariatDocumentsTable({
               {paginatedData.map((row) => (
                 <article
                   key={row.id}
-                  className="rounded-2xl border border-[#D2D6DB] bg-white p-4 space-y-4"
+                  className="rounded-2xl border border-[#D2D6DB] bg-white p-4 space-y-4 "
                 >
                   <div className="min-h-[118px] rounded-md bg-primary-50 p-4 flex items-end">
                     <h3 className="text-[18px] leading-[28px] font-medium text-[#161616] line-clamp-3">

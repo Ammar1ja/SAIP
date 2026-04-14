@@ -514,12 +514,12 @@ export const StatisticsReportsSection = ({
                       }
                     />
                     <Line
-                      type="monotone"
+                      type="linear" // Changed from "monotone" to make it sharp edges
                       dataKey="applications"
                       stroke="#25935f"
                       strokeWidth={3}
-                      dot={{ fill: '#25935f', strokeWidth: 2, r: 4 }}
-                      activeDot={{ r: 6, stroke: '#25935f', strokeWidth: 2 }}
+                      dot={false} // Removed the circles at each point
+                      activeDot={false} // Removed circles on hover
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -574,26 +574,25 @@ export const StatisticsReportsSection = ({
           >
             <div className="flex flex-col gap-6">
               <h4 className="text-[18px] leading-[24px] font-bold text-[#2a2a2a]">
-                {textContent.countryChart.title}
+                {textContent.chronologicalChart.title}
               </h4>
               <div className="h-[240px] md:h-[320px]">
-                <ResponsiveContainer width="100%" height="100%" className="">
-                  <BarChart
-                    data={filteredCountryData}
-                    margin={{ top: 5, right: 10, left: -30, bottom: 5 }}
-                    maxBarSize={80}
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={filteredChronologicalData}
+                    margin={{ top: 5, right: 20, left: -30, bottom: 0 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                     <XAxis
-                      dataKey="country"
-                      stroke="#6b7280"
-                      fontSize={12}
+                      dataKey="year"
+                      stroke="#384250" // Updated color
+                      fontSize={16} // Updated font size
                       tickLine={false}
                       axisLine={false}
                     />
                     <YAxis
-                      stroke="#6b7280"
-                      fontSize={12}
+                      stroke="#384250" // Updated color
+                      fontSize={16} // Updated font size
                       tickLine={false}
                       axisLine={false}
                       tickFormatter={(value) => `${value}`}
@@ -607,19 +606,22 @@ export const StatisticsReportsSection = ({
                       }}
                       labelStyle={{ fontWeight: 'bold', color: '#374151' }}
                       formatter={(value: number) => [
-                        `${value} ${textContent.countryChart.tooltip.applications}`,
-                        textContent.countryChart.tooltip.applications,
+                        `${value} ${textContent.chronologicalChart.tooltip.applications}`,
+                        textContent.chronologicalChart.tooltip.applications,
                       ]}
                       labelFormatter={(label) =>
-                        `${textContent.countryChart.tooltip.country}: ${label}`
+                        `${textContent.chronologicalChart.tooltip.year}: ${label}`
                       }
                     />
-                    <Bar dataKey="applications" radius={[4, 4, 0, 0]}>
-                      {countryData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Bar>
-                  </BarChart>
+                    <Line
+                      type="linear" // Sharp edges, no curves
+                      dataKey="applications"
+                      stroke="#384250" // Updated line color
+                      strokeWidth={3}
+                      dot={false} // No circles on the line
+                      activeDot={false} // No circles on hover
+                    />
+                  </LineChart>
                 </ResponsiveContainer>
               </div>
             </div>

@@ -10,6 +10,7 @@ import Button from '@/components/atoms/Button';
 import { DateSelect } from '@/components/molecules/Filters/DateSelect';
 import { submitExamRegistration, submitCourseRegistration } from '@/app/actions/webform';
 import { ROUTES } from '@/lib/routes';
+import LeadingIcon from '@/assets/images/leading_icon.svg';
 
 interface ExamRegistrationClientProps {
   type: 'exam' | 'course';
@@ -114,7 +115,7 @@ export default function ExamRegistrationClient({
   const inputClass =
     'w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500';
   const labelClass = 'block text-sm font-medium text-neutral-700 mb-2';
-
+  const isRtl = locale === 'ar' ? true : false;
   return (
     <main className="min-h-screen pb-20">
       <Section background="primary-50" padding="medium">
@@ -131,7 +132,12 @@ export default function ExamRegistrationClient({
           className="cursor-pointer mb-8 px-4 py-2 border rounded-lg text-sm hover:bg-neutral-100 transition"
           onClick={() => router.back()}
         >
-          ← Go back
+          <LeadingIcon
+            width={16}
+            height={16}
+            className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+          />{' '}
+          Go back
         </button>
         <Heading as="h1" size="h1" className="mb-4">
           {t.title}

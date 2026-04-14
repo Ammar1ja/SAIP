@@ -8,6 +8,8 @@ import RequirementsList from '../organisms/RequirementsList';
 import DetailSidebar from '../organisms/DetailSidebar';
 import { Clock, BadgeDollarSign, Users, MapPin } from 'lucide-react';
 import { ServiceDetailData } from '@/lib/drupal/services/service-universal.service';
+import { useLocale } from 'next-intl';
+import LeadingIcon from '@/assets/images/leading_icon.svg';
 
 const TABS = [
   { id: 'steps', label: 'Application steps' },
@@ -26,7 +28,7 @@ export default function ServiceDetailTemplate({
   tags,
 }: ServiceDetailTemplateProps) {
   const [activeTab, setActiveTab] = useState('steps');
-
+  const locale = useLocale();
   const defaultBreadcrumbs = [
     { label: 'Home', href: '/' },
     { label: 'Services', href: '/services/services-overview' },
@@ -34,7 +36,7 @@ export default function ServiceDetailTemplate({
   ];
 
   const defaultTags = ['Service', 'Protection'];
-
+  const isRtl = locale === 'ar' ? true : false;
   return (
     <main className="min-h-screen pb-20">
       <Section background="primary-50" padding="medium">
@@ -43,7 +45,12 @@ export default function ServiceDetailTemplate({
           className="cursor-pointer mb-8 px-4 py-2 border rounded-lg text-sm hover:bg-neutral-100 transition"
           onClick={() => window.history.back()}
         >
-          ← Go back to Services
+          <LeadingIcon
+            width={16}
+            height={16}
+            className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+          />{' '}
+          Go back to Services
         </button>
         <div className="mb-14" />
         <h1 className="text-5xl font-bold mb-2">{data.title}</h1>

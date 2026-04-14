@@ -11,7 +11,8 @@ import CommentsAndSuggestionsSection from '@/components/organisms/CommentsAndSug
 import FeedbackSection from '@/components/organisms/FeedbackSection';
 import { Clock, BadgeDollarSign, Users, MapPin } from 'lucide-react';
 import { ROUTES } from '@/lib/routes';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import LeadingIcon from '@/assets/images/leading_icon.svg';
 
 export interface ServiceDetailData {
   id: string;
@@ -68,6 +69,7 @@ export default function ServiceDetailTemplate({
   const t = useTranslations('serviceDetail');
   const tSidebar = useTranslations('serviceDetail.sidebar');
   const tCommons = useTranslations('common');
+  const locale = useLocale();
 
   // Normalize requirements format
   const normalizedRequirements = Array.isArray(serviceData.requirements)
@@ -75,7 +77,7 @@ export default function ServiceDetailTemplate({
       ? serviceData.requirements
       : serviceData.requirements
     : [];
-
+  const isRtl = locale === 'ar' ? true : false;
   return (
     <main className="min-h-screen pb-20">
       <Section background="primary-50" padding="medium">
@@ -85,7 +87,12 @@ export default function ServiceDetailTemplate({
           className="cursor-pointer mb-8 px-4 py-2 border rounded-lg text-sm hover:bg-neutral-100 transition"
           onClick={() => window.history.back()}
         >
-          ← Go back to Services
+          <LeadingIcon
+            width={16}
+            height={16}
+            className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+          />{' '}
+          Go back to Services
         </button>
 
         <div className="mb-14" />

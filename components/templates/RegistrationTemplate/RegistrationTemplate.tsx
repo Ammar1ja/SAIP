@@ -4,6 +4,7 @@ import Section from '@/components/atoms/Section';
 import TimelineSteps from '@/components/organisms/TimelineSteps';
 import RequirementsList from '@/components/organisms/RequirementsList';
 import ServiceInfoSidebar from '@/components/organisms/ServiceInfoSidebar';
+import LeadingIcon from '@/assets/images/leading_icon.svg';
 
 const TABS = [
   { id: 'steps', label: 'Application steps' },
@@ -11,6 +12,7 @@ const TABS = [
 ];
 
 import { useState } from 'react';
+import { useLocale } from 'next-intl';
 
 const RegistrationTemplate = ({
   title,
@@ -23,6 +25,8 @@ const RegistrationTemplate = ({
   backHref,
 }: RegistrationTemplateProps) => {
   const [activeTab, setActiveTab] = useState('steps');
+  const locale = useLocale();
+  const isRtl = locale === 'ar' ? true : false;
   return (
     <main className="min-h-screen pb-20">
       <Section background="primary-50" padding="medium">
@@ -32,7 +36,12 @@ const RegistrationTemplate = ({
             href={backHref}
             className="mb-8 px-4 py-2 border rounded-lg text-sm hover:bg-neutral-100 transition inline-block"
           >
-            ← Go back to Services
+            <LeadingIcon
+              width={16}
+              height={16}
+              className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+            />{' '}
+            Go back to Services
           </a>
         )}
         <div className="mb-14" />

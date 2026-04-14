@@ -19,7 +19,7 @@ export interface ExpandableTabProps {
   buttonLabel2?: string;
   buttonHref2?: string;
   buttonAriaLabel2?: string;
-  variant?: 'default' | 'bordered';
+  variant?: 'default' | 'bordered' | 'minimal';
   isFirst?: boolean;
   isLast?: boolean;
 }

@@ -8,24 +8,24 @@ import { useDirection } from '@/context/DirectionContext';
 import { useIsMobile } from '@/hooks/useIsMobile';
 
 const variantClasses = {
-  default: 'text-primary-600',
+  default: 'text-[#384250]',
   hero: 'text-white',
-  subpage: 'text-gray-900',
-  services: 'text-[#1b8354]',
+  subpage: 'text-[#384250]',
+  services: 'text-[#1B8354]',
 };
 
 const currentItemClasses = {
   default: 'text-neutral-400 underline',
   hero: 'text-white/50 underline',
   subpage: 'text-neutral-400 underline',
-  services: 'text-[#9da4ae] underline',
+  services: 'text-[#1B8354] underline',
 };
 
 const nonLinkItemClasses = {
-  default: 'text-primary-600',
+  default: 'text-[#384250]',
   hero: 'text-white',
-  subpage: 'text-gray-900',
-  services: 'text-[#1b8354]',
+  subpage: 'text-[#384250]',
+  services: 'text-[#1B8354]',
 };
 
 export function Breadcrumbs({ items, className = '', variant = 'default' }: BreadcrumbsProps) {
@@ -114,7 +114,7 @@ export function Breadcrumbs({ items, className = '', variant = 'default' }: Brea
               variant === 'subpage'
                 ? 'hover:text-gray-700'
                 : variant === 'services'
-                  ? 'hover:text-primary-700'
+                  ? 'hover:text-[#384250]'
                   : 'hover:text-primary',
             )}
           >

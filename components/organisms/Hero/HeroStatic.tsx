@@ -259,6 +259,7 @@ export const HeroStatic = ({
                   titleSizes({ size: titleSize, weight: titleWeight }),
                   titleColorClasses,
                   titleClassName,
+                  '!text-[48px]',
                 )}
                 style={titleStyle}
               >

@@ -75,7 +75,7 @@ const EducationProjectsSection: FC<EducationProjectsSectionProps> = ({
   const cardRenderer = (project: EducationProject, index: number) => (
     <article
       key={project.id}
-      className="flex h-[318px] min-h-[318px] max-h-[318px] w-full max-w-[410px] flex-col justify-self-center gap-6 overflow-hidden rounded-lg border border-[#D2D6DB] bg-white p-6 shadow-none focus-within:ring-2 focus-within:ring-primary-500 md:max-w-none md:justify-self-stretch"
+      className="flex !h-[318px] min-h-[318px]  w-full max-w-[410px] flex-col justify-self-center gap-6 overflow-hidden rounded-lg border border-[#D2D6DB] bg-white p-6 shadow-none focus-within:ring-2 focus-within:ring-primary-500 md:max-w-none md:justify-self-stretch "
       tabIndex={0}
       aria-label={project.title}
     >

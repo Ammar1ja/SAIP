@@ -39,7 +39,7 @@ export const iconWrapper = cva('', {
   variants: {
     variant: {
       default: '',
-      highlight: 'w-12 h-12 rounded-md bg-success-700 text-white flex items-center justify-center',
+      highlight: 'w-12 h-12 rounded-md bg-[#079455] text-white flex items-center justify-center',
       pillar: 'absolute top-0 w-full h-full z-10',
     },
   },

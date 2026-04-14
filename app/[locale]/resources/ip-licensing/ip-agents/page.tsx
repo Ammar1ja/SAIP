@@ -29,6 +29,7 @@ export const generateMetadata: GenerateMetadata = async ({ params }) => {
 
 export default async function IpAgentsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+
   const data = await getIPAgentsPageData(locale);
   const messages = (await getMessages({ locale })) as any;
 

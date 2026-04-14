@@ -155,7 +155,7 @@ export function SupervisoryUnitContent({ data }: SupervisoryUnitContentProps) {
       )}
 
       {data.objectives.items.length > 0 && (
-        <div id="objectives" className="w-full bg-primary-25">
+        <div id="objectives" className="w-full bg-[#F7FDF9] h-[612px]">
           <div className="max-w-screen-xl mx-auto px-4 md:px-8 py-20">
             <h2 className="text-[48px] leading-[60px] tracking-[-0.96px] font-medium text-[#161616] mb-12 max-w-[720px]">
               {data.objectives.heading}
@@ -183,11 +183,11 @@ export function SupervisoryUnitContent({ data }: SupervisoryUnitContentProps) {
                 </Button>
               </div>
             )}
-            <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[56px]">
               {data.objectives.items.map((objective: ObjectiveItem) => (
                 <div
                   key={objective.id}
-                  className="h-[144px] border-l border-l-success-700 pl-4 rtl:border-l-0 rtl:pl-0 rtl:border-r rtl:border-r-success-700 rtl:pr-4 py-6"
+                  className="h-[144px] border-l border-l-[#1B8354] pl-4 rtl:border-l-0 rtl:pl-0 rtl:border-r rtl:border-r-success-700 rtl:pr-4 py-6"
                 >
                   <p className="text-base leading-6 text-[#1f2a37]">{objective.text}</p>
                 </div>
@@ -207,7 +207,7 @@ export function SupervisoryUnitContent({ data }: SupervisoryUnitContentProps) {
               {currentAssociations.map((association: CivilAssociation) => (
                 <div
                   key={association.id}
-                  className="bg-white rounded-2xl border border-[#d2d6db] p-4 flex flex-col gap-6 h-full"
+                  className="bg-white rounded-2xl border border-[#d2d6db] p-[24px] flex flex-col gap-6 h-[282px]"
                 >
                   <div className="flex flex-col gap-2 text-[#1f2a37]">
                     <h3 className="text-[18px] leading-[28px] font-medium">{association.title}</h3>
@@ -216,9 +216,9 @@ export function SupervisoryUnitContent({ data }: SupervisoryUnitContentProps) {
                     </p>
                   </div>
 
-                  <div className="bg-[#f9fafb] rounded-lg p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-[#F9FAFB] rounded-lg p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-sm bg-success-700 flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 rounded-sm bg-[#079455] flex items-center justify-center shrink-0">
                         <EmailFigmaIcon className="w-4 h-4 text-white" />
                       </div>
                       <div className="min-w-0 flex flex-col gap-0.5">
@@ -238,7 +238,7 @@ export function SupervisoryUnitContent({ data }: SupervisoryUnitContentProps) {
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-sm bg-success-700 flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 rounded-sm bg-[#079455] flex items-center justify-center shrink-0">
                         <LocationFigmaIcon className="w-4 h-4 text-white" />
                       </div>
                       <div className="min-w-0 flex flex-col gap-0.5">

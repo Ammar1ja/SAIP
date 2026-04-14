@@ -74,7 +74,7 @@ const IpAgentsSection: FC<IpAgentsSectionProps> = ({ agents, translations }) => 
   };
 
   const cardRenderer = (agent: IpAgent) => (
-    <div key={agent.id} className="h-[196px] min-h-[196px] w-full min-w-0 shrink-0">
+    <div key={agent.id} className="h-[326px] min-h-[196px] w-full min-w-0 shrink-0">
       <ServiceCard
         title={agent.name}
         variant="detailed"

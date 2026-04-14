@@ -14,13 +14,13 @@ import {
   COPYRIGHT_COMPLAINT_SIDEBAR,
 } from './CopyrightComplaint.data';
 import { IP_INFRINGEMENT_SERVICES } from '../IpInfringementServices.data';
-
+import { useTranslations, useLocale } from 'next-intl';
+import LeadingIcon from '@/assets/images/leading_icon.svg';
 const TABS = [
   { id: 'steps', label: 'Application steps' },
   { id: 'requirements', label: 'Requirements' },
 ];
 
-import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { ROUTES } from '@/lib/routes';
 
@@ -29,7 +29,8 @@ const CopyrightComplaintPage = () => {
   const tBreadcrumbs = useTranslations('breadcrumbs');
   const tSidebar = useTranslations('serviceDetail.sidebar');
   const t = useTranslations('serviceDetail');
-
+  const locale = useLocale();
+  const isRtl = locale === 'ar' ? true : false;
   return (
     <main className="min-h-screen pb-20">
       <Section background="primary-50" padding="medium">
@@ -48,7 +49,12 @@ const CopyrightComplaintPage = () => {
           href={ROUTES.SERVICES.SERVICE_DIRECTORY}
           className="inline-flex items-center gap-2 mb-8 px-4 py-2 border rounded-lg text-sm hover:bg-neutral-100 transition"
         >
-          ← {t('goBackToServices')}
+          <LeadingIcon
+            width={16}
+            height={16}
+            className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+          />{' '}
+          {t('goBackToServices')}
         </Link>
         <div className="mb-14" />
         <h1 className="text-5xl font-bold mb-2">Complaint of copyright infringement</h1>

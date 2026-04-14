@@ -44,7 +44,7 @@ export default async function VideoDetailPage({
         </nav>
 
         {/* Video Content */}
-        <article className="bg-white rounded-lg shadow-sm p-6 lg:p-8">
+        <article className="bg-white rounded-lg shadow-sm p-6 lg:p-8 ">
           <h1 className="text-3xl sm:text-4xl font-bold mb-4">{video.title}</h1>
 
           {/* Publication Date */}

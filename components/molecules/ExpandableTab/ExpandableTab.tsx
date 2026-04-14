@@ -50,12 +50,18 @@ export const ExpandableTab = ({
   }, []);
 
   return (
-    <div className={twMerge(expandableTabStyles({ variant, isExpanded }), className)}>
+    <div
+      className={twMerge(
+        expandableTabStyles({ variant, isExpanded }),
+        className,
+        variant === 'minimal' ? '!shadow-none' : 'border-t border-t-[#D2D6DB]',
+      )}
+    >
       <div
         className={twMerge(
           headerStyles(),
-          variant === 'bordered'
-            ? 'bg-transparent hover:bg-transparent px-4 py-4'
+          variant === 'bordered' || variant === 'minimal'
+            ? 'bg-transparent hover:bg-transparent px-4 py-4 !shadow-none border-t !border-t-[#D2D6DB]'
             : 'bg-neutral-100 hover:bg-neutral-200 px-6 py-4',
         )}
         role="button"
@@ -63,14 +69,16 @@ export const ExpandableTab = ({
       >
         <h3 className={titleStyles({ isExpanded })}>{title}</h3>
         <button className={buttonStyles()}>
-          <span
-            className={twMerge(
-              'text-sm font-medium hidden md:inline',
-              variant === 'bordered' && 'hidden',
-            )}
-          >
-            {isExpanded ? t('hide') : t('showMore')}
-          </span>
+          {variant !== 'minimal' && (
+            <span
+              className={twMerge(
+                'text-sm font-medium hidden md:inline',
+                variant === 'bordered' ? 'hidden' : '',
+              )}
+            >
+              {isExpanded ? t('hide') : t('showMore')}
+            </span>
+          )}
           <ChevronIcon
             className={twMerge(
               'w-4 h-4',

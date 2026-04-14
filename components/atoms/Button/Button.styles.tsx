@@ -34,7 +34,7 @@ const intentStyles = {
     'border-border-natural-primary',
   ],
   neutral: [
-    'bg-gray-950',
+    'bg-[#0D121C]',
     'text-white',
     'hover:bg-gray-800',
     'focus-visible:ring-text-default',

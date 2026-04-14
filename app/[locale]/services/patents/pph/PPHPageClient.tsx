@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import Breadcrumbs from '@/components/molecules/Breadcrumbs';
 import Section from '@/components/atoms/Section';
@@ -14,6 +14,7 @@ import DetailSidebar from '@/components/organisms/DetailSidebar';
 import { Clock, BadgeDollarSign, Users, MapPin } from 'lucide-react';
 import type { PPHServiceDetail } from '@/lib/drupal/services/service-detail-pph.service';
 import { ROUTES } from '@/lib/routes';
+import LeadingIcon from '@/assets/images/leading_icon.svg';
 
 interface PPHPageClientProps {
   data: PPHServiceDetail;
@@ -25,12 +26,12 @@ export default function PPHPageClient({ data, relatedServices }: PPHPageClientPr
   const t = useTranslations('serviceDetail');
   const tSidebar = useTranslations('serviceDetail.sidebar');
   const tBreadcrumbs = useTranslations('breadcrumbs');
-
+  const locale = useLocale();
   const TABS = [
     { id: 'steps', label: t('applicationSteps') },
     { id: 'requirements', label: t('requirements') },
   ];
-
+  const isRtl = locale === 'ar' ? true : false;
   return (
     <main className="min-h-screen pb-20">
       <Section background="primary-50" padding="medium">
@@ -49,7 +50,12 @@ export default function PPHPageClient({ data, relatedServices }: PPHPageClientPr
           href={ROUTES.SERVICES.SERVICE_DIRECTORY}
           className="inline-flex items-center gap-2 mb-8 px-4 py-2 border rounded-lg text-sm hover:bg-neutral-100 transition"
         >
-          ← {t('goBackToServices')}
+          <LeadingIcon
+            width={16}
+            height={16}
+            className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+          />{' '}
+          {t('goBackToServices')}
         </Link>
         <div className="mb-14" />
         <h1 className="text-5xl font-bold mb-2">{data.title}</h1>

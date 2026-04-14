@@ -10,6 +10,8 @@ import Label from '@/components/atoms/Label/Label';
 import { ExpandableTab } from '@/components/molecules/ExpandableTab/ExpandableTab';
 import { EducationProjectData } from '@/lib/drupal/services/ip-academy.service';
 import { ROUTES } from '@/lib/routes';
+import LeadingIcon from '@/assets/images/leading_icon.svg';
+import { useLocale } from 'next-intl';
 
 interface EducationProjectDetailsClientProps {
   project: EducationProjectData;
@@ -40,7 +42,8 @@ export default function EducationProjectDetailsClient({
 }: EducationProjectDetailsClientProps) {
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [openDetail, setOpenDetail] = useState<string | null>(null);
-
+  const locale = useLocale();
+  const isRtl = locale === 'ar' ? true : false;
   return (
     <main className="min-h-screen pb-20">
       <Section background="primary-50" padding="medium">
@@ -63,7 +66,12 @@ export default function EducationProjectDetailsClient({
             className="cursor-pointer mb-8 px-4 py-2 border rounded-lg text-sm hover:bg-neutral-100 transition"
             onClick={() => window.history.back()}
           >
-            ← {t.goBack}
+            <LeadingIcon
+              width={16}
+              height={16}
+              className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+            />{' '}
+            {t.goBack}
           </button>
           <Heading as="h1" size="h1" className="mb-2 max-w-[66.666%]">
             {project.title}
@@ -92,7 +100,7 @@ export default function EducationProjectDetailsClient({
         {project.partners && project.partners.length > 0 && (
           <InfoBlock
             title={
-              <Heading as="h4" size="h4">
+              <Heading as="h4" size="h4" className="!text-[24px] !font-medium">
                 {t.partners}
               </Heading>
             }

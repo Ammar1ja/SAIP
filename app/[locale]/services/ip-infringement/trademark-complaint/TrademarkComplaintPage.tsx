@@ -19,10 +19,10 @@ const TABS = [
   { id: 'requirements', label: 'Requirements' },
 ];
 
-import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { ROUTES } from '@/lib/routes';
-
+import { useTranslations, useLocale } from 'next-intl';
+import LeadingIcon from '@/assets/images/leading_icon.svg';
 const WatchFigmaIcon = ({ className = '' }: { className?: string }) => (
   <svg
     viewBox="0 0 13.2192 20"
@@ -95,7 +95,8 @@ const TrademarkComplaintPage = () => {
   const tBreadcrumbs = useTranslations('breadcrumbs');
   const tSidebar = useTranslations('serviceDetail.sidebar');
   const t = useTranslations('serviceDetail');
-
+  const locale = useLocale();
+  const isRtl = locale === 'ar' ? true : false;
   const sidebarItems = [
     {
       icon: <WatchFigmaIcon className="w-6 h-6 text-[#1B8354]" />,
@@ -137,7 +138,12 @@ const TrademarkComplaintPage = () => {
           href={ROUTES.SERVICES.SERVICE_DIRECTORY}
           className="inline-flex items-center gap-2 mb-8 px-4 py-2 border rounded-lg text-sm hover:bg-neutral-100 transition"
         >
-          ← {t('goBackToServices')}
+          <LeadingIcon
+            width={16}
+            height={16}
+            className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+          />{' '}
+          {t('goBackToServices')}
         </Link>
         <div className="mb-14" />
         <h1 className="text-5xl font-bold mb-2">Complaint of trademark infringement</h1>

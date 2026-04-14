@@ -25,8 +25,14 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import CommentsAndSuggestionsSection from '@/components/organisms/CommentsAndSuggestionsSection';
 import FeedbackSection from '@/components/organisms/FeedbackSection';
 import { ROUTES } from '@/lib/routes';
-import { useTranslations } from 'next-intl';
-
+import { useTranslations, useLocale } from 'next-intl';
+import LeadingIcon from '@/assets/images/leading_icon.svg';
+import Calendar from '@/assets/images/calendar.svg';
+import Leading from '@/assets/images/leading_icon.svg';
+import Location from '@/assets/images/location.svg';
+import Riyal from '@/assets/images/Riyal.svg';
+import User from '@/assets/images/user.svg';
+import Watch from '@/assets/images/watch.svg';
 interface QualificationDetailsClientProps {
   qualification: QualificationData;
   relatedQualifications?: QualificationData[];
@@ -76,6 +82,7 @@ export default function QualificationDetailsClient({
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const tCommons = useTranslations('common');
+  const locale = useLocale();
 
   const updateCarouselState = useCallback(() => {
     if (!carouselRef.current) return;
@@ -103,7 +110,7 @@ export default function QualificationDetailsClient({
       });
     }
   };
-
+  const isRtl = locale === 'ar' ? true : false;
   return (
     <main className="min-h-screen pb-0">
       <Section background="primary-25" padding="large">
@@ -125,7 +132,12 @@ export default function QualificationDetailsClient({
           className="mb-8 inline-flex h-8 cursor-pointer items-center rounded-sm border border-[#D2D6DB] px-3 text-sm leading-5 font-medium text-[#161616] transition hover:bg-neutral-100"
           onClick={() => window.history.back()}
         >
-          ← {t.goBack}
+          <LeadingIcon
+            width={16}
+            height={16}
+            className={`${isRtl ? 'rotate-180 mt-1 ' : 'rotate-0 mb-1 '}`}
+          />
+          {t.goBack}
         </button>
         <Heading
           as="h1"
@@ -151,12 +163,12 @@ export default function QualificationDetailsClient({
           <DetailSidebar
             items={[
               {
-                icon: <AddNoteIcon className="w-6 h-6" />,
+                icon: <Calendar className="w-6 h-6" />,
                 label: t.sidebar.startDate,
                 value: qualification.startDate,
               },
               {
-                icon: <CirclePlusIcon className="w-6 h-6" />,
+                icon: <Watch className="w-6 h-6" />,
                 label: t.sidebar.duration,
                 value: qualification.duration,
               },
@@ -166,7 +178,7 @@ export default function QualificationDetailsClient({
                 value: qualification.fees,
               },
               {
-                icon: <UsersIcon className="w-6 h-6" />,
+                icon: <User className="w-6 h-6" />,
                 label: t.sidebar.language,
                 value: qualification.language,
               },
@@ -181,7 +193,7 @@ export default function QualificationDetailsClient({
                 value: qualification.passingScore,
               },
               {
-                icon: <LocationPinIcon className="w-6 h-6" />,
+                icon: <Location className="w-6 h-6" />,
                 label: t.sidebar.location,
                 value: qualification.location,
               },
@@ -282,13 +294,16 @@ export default function QualificationDetailsClient({
         {qualification.chapters.length > 0 && (
           <InfoBlock title={t.chaptersEvaluation} className="mt-12 p-0">
             <div className="space-y-3 py-6">
-              {qualification.chapters.map((ch) => (
+              {qualification.chapters.map((ch, index) => (
                 <ExpandableTab
+                  variant="minimal"
                   key={ch.id}
                   title={
                     <div>
-                      <span className="text-sm text-neutral-500 font-medium">{ch.title}</span>
-                      <div className="text-lg font-medium text-neutral-900">{ch.subtitle}</div>
+                      {/* <span className="text-sm text-neutral-500 font-medium">{ch.title}</span> */}
+                      <div className="text-lg font-medium text-neutral-900">
+                        {index + 1}. {ch.subtitle}
+                      </div>
                     </div>
                   }
                   description={ch.description}

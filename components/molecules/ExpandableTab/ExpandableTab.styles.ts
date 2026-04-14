@@ -5,6 +5,7 @@ export const expandableTabStyles = cva(['w-full transition-all duration-200'], {
     variant: {
       default: 'bg-white border border-neutral-200 rounded-lg overflow-hidden',
       bordered: 'border-t border-neutral-200 bg-transparent',
+      minimal: 'bg-transparent',
     },
     isExpanded: {
       true: '',
@@ -38,6 +39,7 @@ export const contentStyles = cva(['overflow-hidden transition-all duration-200']
     variant: {
       default: 'bg-white',
       bordered: 'bg-transparent',
+      minimal: 'bg-transparent',
     },
     isExpanded: {
       true: 'grid-rows-[1fr]',

@@ -33,7 +33,7 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
     rounded === 'full' && 'rounded-md',
   );
 
-  const finalClassName = twMerge(roundedClasses, className);
+  const finalClassName = twMerge(roundedClasses, className, '!rounded-[8px] !h-[40px]');
 
   return (
     <Button
