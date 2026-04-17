@@ -23,11 +23,11 @@ export const CommentsAndSuggestionsSection: React.FC<CommentsAndSuggestionsSecti
   const displayButtonHref = buttonHref || '/contact-us/contact-and-support';
 
   return (
-    <div className="bg-white border border-[#D2D6DB] rounded-2xl p-6 md:p-10 flex flex-col gap-6">
-      <div className="h-14 w-14 rounded-xl bg-success-600 flex items-center justify-center">
+    <div className="bg-white border border-[#D2D6DB] rounded-2xl !p-[24px] md:p-10 flex flex-col gap-6 h-auto md:h-[244px]">
+      <div className="h-[48px] w-[48px] rounded-[8px] bg-[#079455] flex items-center justify-center">
         <Headphones className="h-7 w-7 text-white" aria-hidden="true" />
       </div>
-      <div className="space-y-2 text-text-display">
+      <div className="space-y-1 text-text-display">
         <h2 className="text-[18px] leading-[28px] font-medium">{displayTitle}</h2>
         <p className="text-[16px] leading-[24px] text-text-primary-paragraph">
           {displayDescription}

@@ -176,12 +176,12 @@ const Footer: FC<FooterProps> = ({
           >
             <div
               className={twMerge(
-                'flex flex-wrap justify-center gap-4 text-white/90',
+                'flex flex-wrap justify-center gap-4 text-white/90 !text-[14px]',
                 isRtl ? 'lg:justify-end' : 'lg:justify-start',
               )}
             >
               {legalLinksData.map(({ label, href }) => (
-                <Link key={label} href={href} className="underline">
+                <Link key={label} href={href} className="underline !text-[14px]">
                   {label}
                 </Link>
               ))}

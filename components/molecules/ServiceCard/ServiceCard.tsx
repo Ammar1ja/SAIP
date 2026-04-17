@@ -699,7 +699,7 @@ const ServiceCard = ({
         )}
       >
         <div className="flex h-[242px] flex-col gap-4">
-          <div className="bg-neutral-100 rounded-md p-4 h-[118px] flex items-end">
+          <div className="bg-[#F3F4F6] rounded-md p-4 h-[118px] flex items-end">
             <h3 className="text-[18px] leading-[28px] font-medium text-[#161616] line-clamp-3">
               {title}
             </h3>
@@ -729,8 +729,8 @@ const ServiceCard = ({
               download={shouldDownload}
               onClick={primaryButtonOnClick || onClick}
               intent="primary"
-              size="md"
-              className="inline-flex w-full md:w-fit h-10 px-4 text-base font-medium"
+              size="sm"
+              className="inline-flex w-full md:w-fit px-4 text-base font-medium"
               ariaLabel={
                 typeof translatedPrimaryLabel === 'string'
                   ? translatedPrimaryLabel

@@ -11,12 +11,10 @@ interface PageParams {
 export default async function IPLicensingRegistrationPage({ params }: PageParams) {
   const { locale } = await params;
 
-  // ✅ Fetch from Drupal (with intelligent fallback)
   const [licensingData, relatedServices] = await Promise.all([
     getIPLicensingServiceDetail(locale),
     fetchRelatedIPLicensingServices(locale),
   ]);
 
-  // ✅ Pass Drupal data to client component
   return <RegistrationPageClient data={licensingData} relatedServices={relatedServices} />;
 }

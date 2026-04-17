@@ -25,7 +25,7 @@ const DetailSidebar: FC<DetailSidebarProps> = ({
   return (
     <aside
       className={twMerge(
-        'bg-white rounded-2xl shadow p-6 border border-neutral-200 mb-6 w-full max-w-full',
+        'bg-white rounded-2xl shadow p-6 border border-neutral-200 mb-6 w-full !xl:w-[411px] h-full  max-w-full',
         className,
       )}
     >
