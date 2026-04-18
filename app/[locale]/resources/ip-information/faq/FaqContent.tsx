@@ -4,12 +4,12 @@ import Section from '@/components/atoms/Section';
 import { Filters } from '@/components/molecules/Filters';
 import { MobileFilters } from '@/components/molecules/MobileFilters';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import ExpandableTabGroup from '@/components/molecules/ExpandableTabGroup';
 import GlossaryTabs from '@/components/molecules/GlossaryTabs/GlossaryTabs';
 import { useTranslations } from 'next-intl';
 import LayoutWrapper from '@/components/atoms/LayoutWrapper';
-
+import { useSearchParams } from 'next/navigation';
 type FilterValues = {
   search?: string;
   category?: string | string[];
@@ -35,6 +35,8 @@ interface FaqContentProps {
 
 export function FaqContent({ categories }: FaqContentProps) {
   const t = useTranslations('common.filters');
+  const searchParams = useSearchParams();
+  const faqType = searchParams.get('faq_type');
   const visibleCategories = useMemo(
     () =>
       categories.filter((category) => {
@@ -53,7 +55,16 @@ export function FaqContent({ categories }: FaqContentProps) {
   const categoryQuestions =
     visibleCategories.find((cat) => cat.id === activeCategory)?.questions || [];
   const searchTerm = filterValues.search?.toLowerCase().trim() || '';
+  useEffect(() => {
+    if (faqType) {
+      setActiveCategory(faqType);
 
+      setFilterValues((prev) => ({
+        ...prev,
+        category: faqType,
+      }));
+    }
+  }, [faqType]);
   const selectedServiceTypes = Array.isArray(filterValues.serviceType)
     ? filterValues.serviceType
     : filterValues.serviceType
@@ -260,7 +271,10 @@ export function FaqContent({ categories }: FaqContentProps) {
     (Array.isArray(filterValues.serviceType)
       ? filterValues.serviceType.length > 0
       : Boolean(filterValues.serviceType));
-
+  // console.log(
+  //   'category ids:',
+  //   categories.map((c) => c.id)
+  // );
   return (
     <>
       <div className="bg-white -mt-20 px-4">

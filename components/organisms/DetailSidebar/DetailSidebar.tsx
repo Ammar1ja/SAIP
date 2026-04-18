@@ -25,7 +25,7 @@ const DetailSidebar: FC<DetailSidebarProps> = ({
   return (
     <aside
       className={twMerge(
-        'bg-white rounded-2xl shadow p-6 border border-neutral-200 mb-6 w-full !xl:w-[411px] h-fit md:h-[528px]  max-w-full',
+        'bg-white rounded-2xl shadow p-[40px] border border-neutral-200 mb-6 w-full !xl:w-[411px] h-fit md:h-[528px]  max-w-full',
         className,
       )}
     >
@@ -42,7 +42,7 @@ const DetailSidebar: FC<DetailSidebarProps> = ({
       </ul>
       {faqHref && (
         <>
-          <hr className="my-6 !bg-[#D2D6DB] !text-[#D2D6DB]" />
+          <hr className="my-6 !bg-[#D2D6DB] !text-[#D2D6DB] h-[1px]" />
           <div className="mb-4">
             <div className="font-semibold mb-1">{faqTitle}</div>
             <a href={faqHref} className="text-primary-700 underline text-sm block">
@@ -51,7 +51,7 @@ const DetailSidebar: FC<DetailSidebarProps> = ({
           </div>
         </>
       )}
-      <hr className="my-6 !bg-[#D2D6DB] !text-[#D2D6DB]" />
+      <hr className="my-6 !bg-[#D2D6DB] !text-[#D2D6DB] h-[1px]" />
 
       {primaryButtonLabel && primaryButtonHref && (
         <div className="mt-2 w-full">

@@ -44,7 +44,7 @@ export const AccessibilityTools = React.forwardRef<HTMLDivElement, Accessibility
             onClick={toggleContrast}
             className={twMerge(
               accessibilityButton(),
-              highContrast && 'bg-white/20 ring-2 ring-white/50',
+              highContrast && 'bg-white/20 ring-2 ring-white/50 !rounded-[4px]',
             )}
             aria-label={t('highContrast')}
             aria-pressed={highContrast}
@@ -63,7 +63,7 @@ export const AccessibilityTools = React.forwardRef<HTMLDivElement, Accessibility
             onClick={toggleFontSize}
             className={twMerge(
               accessibilityButton(),
-              largeFontSize && 'bg-white/20 ring-2 ring-white/50',
+              largeFontSize && 'bg-white/20 ring-2 ring-white/50 !rounded-[4px]',
             )}
             aria-label={t('fontSize')}
             aria-pressed={largeFontSize}

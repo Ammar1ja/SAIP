@@ -17,7 +17,7 @@ export const accessibilityButton = cva(
     'w-8',
     'h-8',
     'cursor-pointer',
-    'rounded-md',
+    'rounded-[4px]',
     'border',
     'border-white/30',
     'flex',

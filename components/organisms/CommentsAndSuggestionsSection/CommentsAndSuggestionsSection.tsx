@@ -39,7 +39,7 @@ export const CommentsAndSuggestionsSection: React.FC<CommentsAndSuggestionsSecti
           size="md"
           onClick={() => router.push(displayButtonHref)}
           ariaLabel={displayButtonLabel}
-          className="mt-2 w-full md:w-auto md:min-w-[160px]"
+          className="mt-2 w-full md:w-auto md:min-w-[111px]"
         >
           {displayButtonLabel}
         </Button>
