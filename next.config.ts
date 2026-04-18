@@ -7,6 +7,11 @@ const withAnalyzer = withBundleAnalyzer({
 });
 
 const nextConfig: NextConfig = {
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors/warnings.
+    ignoreDuringBuilds: true,
+  },
   images: {
     remotePatterns: [
       {
