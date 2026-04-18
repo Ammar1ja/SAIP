@@ -56,7 +56,7 @@ export default function RegistrationPageClient({
         />
         <Link
           href={ROUTES.SERVICES.SERVICE_DIRECTORY}
-          className="inline-flex items-center gap-2 mb-8 px-4 py-2 border rounded-lg text-sm hover:bg-neutral-100 transition"
+          className="inline-flex items-center gap-2 mb-8 px-4 py-2 border border-[#D2D6DB] rounded-[4px] h-[32px] text-sm hover:bg-neutral-100 transition bg-[#F7FDF9]"
         >
           <img
             src={LeadingIcon.src}
@@ -67,11 +67,11 @@ export default function RegistrationPageClient({
         </Link>
         <div className="mb-14" />
         <h1 className="text-5xl font-bold mb-2">{data.title}</h1>
-        <div className="flex gap-2 mb-4">
-          <span className="inline-block bg-primary-100 text-primary-800 rounded-full px-3 py-1 text-xs font-semibold">
+        <div className="flex gap-2 mb-4 my-[16px]">
+          <span className="inline-block bg-[#F9FAFB] text-[#1F2A37] border border-[#E5E7EB] rounded-full px-3 py-1 text-xs font-semibold">
             IP licensing
           </span>
-          <span className="inline-block bg-primary-100 text-primary-800 rounded-full px-3 py-1 text-xs font-semibold">
+          <span className="inline-block bg-[#F9FAFB] text-[#1F2A37] border border-[#E5E7EB] rounded-full px-3 py-1 text-xs font-semibold">
             IP Enablement
           </span>
         </div>
@@ -80,26 +80,26 @@ export default function RegistrationPageClient({
       <Section background="white" padding="default">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-[24px]">
           {/* Mobile Sidebar */}
-          <div className="block lg:hidden w-full max-w-full rounded-xl shadow mb-8 px-4 mt-4">
+          <div className="block lg:hidden w-full max-w-full rounded-xl xl:shadow mb-8 px-4 mt-4">
             <DetailSidebar
               items={[
                 {
-                  icon: <Clock className="w-6 h-6" />,
+                  icon: <img src={Watch.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('executionTime'),
                   value: data.executionTime,
                 },
                 {
-                  icon: <BadgeDollarSign className="w-6 h-6" />,
+                  icon: <img src={Riyal.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('serviceFee'),
                   value: data.serviceFee,
                 },
                 {
-                  icon: <Users className="w-6 h-6" />,
+                  icon: <img src={User.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('targetGroup'),
                   value: data.targetGroup,
                 },
                 {
-                  icon: <MapPin className="w-6 h-6" />,
+                  icon: <img src={Location.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('serviceChannel'),
                   value: data.serviceChannel,
                 },
@@ -130,7 +130,7 @@ export default function RegistrationPageClient({
                   >
                     {tab.label}
                     <div
-                      className={`z-50 absolute bottom-[-3px] w-full h-[3px] bg-[#1B8354] !rounded-full ${activeTab === tab.id ? 'bg-[#1B8354]' : 'bg-transparent'}`}
+                      className={`z-30 absolute bottom-[-3px] w-full h-[3px] bg-[#1B8354] !rounded-full ${activeTab === tab.id ? 'bg-[#1B8354]' : 'bg-transparent'}`}
                     ></div>
                   </button>
                   <div

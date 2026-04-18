@@ -65,11 +65,11 @@ const RegistrationTemplate = ({
             <ServiceInfoSidebar {...sidebarData} />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex gap-8 border-b border-neutral-200 mb-8">
+            <div className="flex gap-8 border-b !border-b-[3px] border-neutral-200 mb-8">
               {TABS.map((tab) => (
                 <button
                   key={tab.id}
-                  className={`py-2 px-1 text-lg font-medium border-b-2 transition focus:outline-none ${activeTab === tab.id ? 'border-primary-700 text-primary-900' : 'border-transparent text-neutral-500 hover:text-primary-700'}`}
+                  className={`py-2 px-1 text-lg font-medium !border-b-[2px] transition focus:outline-none ${activeTab === tab.id ? 'border-primary-700 text-primary-900' : 'border-transparent text-neutral-500 hover:text-primary-700'}`}
                   onClick={() => setActiveTab(tab.id)}
                   aria-selected={activeTab === tab.id}
                   role="tab"

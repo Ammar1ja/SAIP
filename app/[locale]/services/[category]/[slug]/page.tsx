@@ -147,13 +147,13 @@ export default async function UniversalServiceDetailPage({
         />
         <Link
           href={ROUTES.SERVICES.SERVICE_DIRECTORY}
-          className="inline-flex items-center gap-2 mt-6 px-4 py-2 border rounded-lg text-sm hover:bg-neutral-100 transition"
+          className="inline-flex items-center gap-2 mb-8 px-4 py-2 border border-[#D2D6DB] rounded-[4px] h-[32px] text-sm hover:bg-neutral-100 transition bg-[#F7FDF9]"
         >
           <img
-    src={LeadingIcon.src}
-    alt=""
-    className={`w-4 h-4 object-contain ${isRtl ? 'rotate-180 ml-2' : 'rotate-0 mr-2'}`}
-  />{' '}
+            src={LeadingIcon.src}
+            alt=""
+            className={`w-4 h-4 object-contain ${isRtl ? 'rotate-180 ml-2' : 'rotate-0 mr-2'}`}
+          />{' '}
           {t('goBackToServices')}
         </Link>
         <div className="mb-6" />

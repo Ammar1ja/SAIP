@@ -177,6 +177,7 @@ const IPJourneySection = ({
         ? 'text-[18px] text-neutral-700 leading-[28px] pl-1'
         : 'text-base text-neutral-700 leading-6 pl-1';
     const lines = description.split('\n').filter((line) => line.trim());
+
     const result: React.JSX.Element[] = [];
     let currentList: string[] = [];
     let currentListType: 'bullet' | 'numbered' | null = null;

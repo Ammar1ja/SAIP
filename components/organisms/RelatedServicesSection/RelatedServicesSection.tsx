@@ -11,7 +11,7 @@ const RelatedServicesSection: React.FC<RelatedServicesSectionProps> = ({
   title,
   description,
   services,
-  cardWidth = 628,
+  cardWidth = 410,
 }) => {
   const t = useTranslations('serviceDetail');
 
@@ -36,7 +36,12 @@ const RelatedServicesSection: React.FC<RelatedServicesSectionProps> = ({
               style={{ width: cardWidth, maxWidth: cardWidth }}
               tabIndex={-1}
             >
-              <ServiceCard {...service} variant={service.variant || 'services'} />
+              <ServiceCard
+                className={'w-full md:w-[410px] h-fit md:h-[358px] '}
+                {...service}
+                variant={service.variant || 'services'}
+                primaryButtonLabel={'View details'}
+              />
             </div>
           ))
         : null}

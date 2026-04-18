@@ -15,6 +15,5 @@ export default async function IPLicensingRegistrationPage({ params }: PageParams
     getIPLicensingServiceDetail(locale),
     fetchRelatedIPLicensingServices(locale),
   ]);
-
   return <RegistrationPageClient data={licensingData} relatedServices={relatedServices} />;
 }

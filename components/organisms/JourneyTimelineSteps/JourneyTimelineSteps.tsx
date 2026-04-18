@@ -9,14 +9,14 @@ interface JourneyTimelineStepsProps {
     icon?: string;
   }>;
 }
-
+const ICONS_NAMES = ['user', 'user-plus', 'clipboard-plus', 'key-round', 'send', 'check-circle'];
 const ICONS: Record<string, React.ReactNode> = {
-  user: <User className="w-5 h-5 text-white" aria-hidden="true" />,
-  'user-plus': <UserPlus className="w-5 h-5 text-white" aria-hidden="true" />,
-  'clipboard-plus': <ClipboardPlus className="w-5 h-5 text-white" aria-hidden="true" />,
-  'key-round': <KeyRound className="w-5 h-5 text-white" aria-hidden="true" />,
-  send: <Send className="w-5 h-5 text-white" aria-hidden="true" />,
-  'check-circle': <CheckCircle2 className="w-5 h-5 text-white" aria-hidden="true" />,
+  user: <User className="w-5 h-5 text-white" />,
+  'user-plus': <UserPlus className="w-5 h-5 text-white" />,
+  'clipboard-plus': <ClipboardPlus className="w-5 h-5 text-white" />,
+  'key-round': <KeyRound className="w-5 h-5 text-white" />,
+  send: <Send className="w-5 h-5 text-white" />,
+  'check-circle': <CheckCircle2 className="w-5 h-5 text-white" />,
 };
 
 const JourneyTimelineSteps = ({ items }: JourneyTimelineStepsProps) => {
@@ -45,7 +45,7 @@ const JourneyTimelineSteps = ({ items }: JourneyTimelineStepsProps) => {
                 {item.icon && ICONS[item.icon] ? (
                   ICONS[item.icon]
                 ) : (
-                  <CheckCircle2 className="w-5 h-5 text-white" aria-hidden="true" />
+                  <CheckCircle2 className="w-5 h-5 text-white" />
                 )}
               </span>
             </div>
@@ -55,11 +55,7 @@ const JourneyTimelineSteps = ({ items }: JourneyTimelineStepsProps) => {
               <div className="rounded-lg bg-neutral-50 p-5 border-l-4 border-primary-400">
                 <div className="flex items-start gap-3 sm:hidden mb-3">
                   <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary-600 shadow flex-shrink-0">
-                    {item.icon && ICONS[item.icon] ? (
-                      ICONS[item.icon]
-                    ) : (
-                      <CheckCircle2 className="w-4 h-4 text-white" aria-hidden="true" />
-                    )}
+                    {item.icon && ICONS[item.icon] ? ICONS[item.icon] : ICONS[ICONS_NAMES[idx]]}
                   </span>
                   <h4 className="text-lg font-semibold text-neutral-900 flex-1">{item.title}</h4>
                 </div>

@@ -29,7 +29,7 @@ const StepCard = ({ number, title, details }: StepCardProps) => {
       aria-expanded={open}
     >
       <div
-        className="flex items-center justify-between px-8 py-5 cursor-pointer bg-neutral-50  rounded-t-xl"
+        className="flex items-center justify-between px-8 py-5 cursor-pointer rounded-t-xl"
         onClick={() => setOpen((v) => !v)}
       >
         <div className="rtl:text-right">
