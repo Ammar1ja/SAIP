@@ -2,15 +2,16 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { twMerge } from 'tailwind-merge';
 
 const newsArticleCardPublishData = cva(
-  ['text-text-secondary-paragraph', 'text-[12px]', 'leading-[18px]', 'font-normal'],
+  ['text-text-secondary-paragraph', 'text-[14px]', 'leading-[18px]', 'font-normal'],
   {
     variants: {},
     defaultVariants: {},
   },
 );
 
-export interface NewsArticleCardPublishDataProps
-  extends VariantProps<typeof newsArticleCardPublishData> {
+export interface NewsArticleCardPublishDataProps extends VariantProps<
+  typeof newsArticleCardPublishData
+> {
   className?: string;
   children: string;
 }

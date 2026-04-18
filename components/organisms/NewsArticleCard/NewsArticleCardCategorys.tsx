@@ -9,8 +9,9 @@ const newsArticleCardCategorys = cva(
   },
 );
 
-export interface NewsArticleCardCategorysProps
-  extends VariantProps<typeof newsArticleCardCategorys> {
+export interface NewsArticleCardCategorysProps extends VariantProps<
+  typeof newsArticleCardCategorys
+> {
   className?: string;
   categories: {
     id: string;
@@ -27,7 +28,7 @@ export const NewsArticleCardCategorys = ({
       {categories?.map((category, index) => (
         <span
           key={`${category.id}-${category.name}-${index}`}
-          className="inline-flex h-6 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#F9FAFB] px-2 py-0 text-[12px] leading-[18px] font-medium text-[#1F2A37]"
+          className="inline-flex h-6 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#F9FAFB] px-2 py-0 text-[14px] leading-[18px] font-medium text-[#1F2A37]"
         >
           {category.name}
         </span>

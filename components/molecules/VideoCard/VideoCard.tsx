@@ -241,7 +241,7 @@ export const VideoCard = ({
   const wrapperClass = twMerge(
     variant === 'featured'
       ? 'bg-white rounded-2xl border border-neutral-200 overflow-hidden w-full flex flex-col lg:flex-row gap-4 p-6'
-      : 'bg-white rounded-2xl border border-neutral-200 overflow-hidden w-full p-6 flex flex-col gap-4',
+      : 'bg-white rounded-2xl border border-neutral-200 overflow-hidden w-full p-6 flex flex-col gap-4 h-[410px]',
     onClick && 'cursor-pointer',
     className,
   );

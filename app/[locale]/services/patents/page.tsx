@@ -24,14 +24,15 @@ export default async function PatentsPage({ params }: { params: Promise<{ locale
   const [messages, data, [newsItems, articleItems, videoItems]] = await Promise.all([
     getMessages({ locale }),
     useExternalStats
-      ? getPatentsPageDataExternalApi(locale, { includeJourney: false })
-      : getPatentsPageData(locale, { includeJourney: false }),
+      ? getPatentsPageDataExternalApi(locale, { includeJourney: true })
+      : getPatentsPageData(locale, { includeJourney: true }),
     Promise.all([
       fetchNewsByCategory('Patents', locale),
       fetchArticlesByCategory('Patents', locale),
       fetchVideosByCategory('Patents', locale),
     ]),
   ]);
+
   const t = messages.breadcrumbs as Record<string, string>;
 
   // Navigation items built from Drupal data

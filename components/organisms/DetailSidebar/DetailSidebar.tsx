@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl';
 import Button from '@/components/atoms/Button';
 import { DetailSidebarProps } from './DetailSidebar.types';
 import { twMerge } from 'tailwind-merge';
-
+import goSaip from '@/assets/images/go_saip_icon.png';
 const DetailSidebar: FC<DetailSidebarProps> = ({
   items,
   faqHref,
@@ -25,7 +25,7 @@ const DetailSidebar: FC<DetailSidebarProps> = ({
   return (
     <aside
       className={twMerge(
-        'bg-white rounded-2xl shadow p-6 border border-neutral-200 mb-6 w-full max-w-full',
+        'bg-white rounded-2xl shadow p-6 border border-neutral-200 mb-6 w-full !xl:w-[411px] h-fit md:h-[528px]  max-w-full',
         className,
       )}
     >
@@ -51,16 +51,21 @@ const DetailSidebar: FC<DetailSidebarProps> = ({
           </div>
         </>
       )}
+      <hr className="my-6 !bg-[#D2D6DB] !text-[#D2D6DB]" />
+
       {primaryButtonLabel && primaryButtonHref && (
         <div className="mt-2 w-full">
           <Button
             href={primaryButtonHref}
             intent="primary"
             size="lg"
-            className="w-full"
+            className="w-full !h-[40px]"
             ariaLabel={primaryButtonAriaLabel || primaryButtonLabel}
           >
-            {primaryButtonLabel}
+            <div className="flex flex-row gap-[4px] items-center">
+              <img src={goSaip.src} alt="go_to_saip_icon" className="w-[24px] h-[24px]" />
+              <span className="!text-[16px]">{primaryButtonLabel}</span>
+            </div>
           </Button>
           {primaryButtonHelperText && (
             <p className="mt-4 text-[16px] leading-[24px] text-[#384250]">
@@ -75,7 +80,7 @@ const DetailSidebar: FC<DetailSidebarProps> = ({
           intent="secondary"
           outline
           size="lg"
-          className="w-full mt-3"
+          className="w-full mt-3 !h-[40px]"
           ariaLabel={secondaryButtonAriaLabel || secondaryButtonLabel}
         >
           {secondaryButtonLabel}

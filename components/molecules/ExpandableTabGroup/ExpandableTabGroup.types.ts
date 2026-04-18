@@ -25,5 +25,5 @@ export interface ExpandableTabGroupProps {
   onToggle?: (id: string) => void;
   className?: string;
   showFeedback?: boolean;
-  variant?: 'default' | 'bordered';
+  variant?: 'default' | 'bordered' | 'minimal';
 }

@@ -314,7 +314,7 @@ const IPMediaSection = ({
                 </Button>
               </div>
             )}
-            <span className="mb-6 inline-block rounded-[4px] border border-[#4d5761] px-3 py-1 text-sm font-normal text-text-default">
+            <span className="mb-6 inline-block rounded-full border border-[#4D5761] px-[12px] py-[4px] text-sm font-normal text-[#1F2A37] font-medium !h-[32px]">
               {finalBadgeLabel}
             </span>
             <div className="w-full mb-6 lg:mb-8">

@@ -63,7 +63,7 @@ export default function EducationProjectDetailsClient({
             ]}
           />
           <button
-            className="cursor-pointer mb-8 px-4 py-2 border rounded-lg text-sm hover:bg-neutral-100 transition"
+            className="cursor-pointer mb-[44px] px-3 h-8 border border-[#d2d6db] rounded-[4px] text-sm font-medium text-[#161616] hover:bg-neutral-100 transition inline-flex items-center gap-2"
             onClick={() => window.history.back()}
           >
             <img
@@ -73,14 +73,19 @@ export default function EducationProjectDetailsClient({
             />{' '}
             {t.goBack}
           </button>
-          <Heading as="h1" size="h1" className="mb-2 max-w-[66.666%]">
+
+          <Heading
+            as="h1"
+            size="h1"
+            className="mb-[16px] max-w-[66.666%] !text-[48px] !xl:text-[72px] max-w-[945px]"
+          >
             {project.title}
           </Heading>
           <div className="flex gap-2 mb-4">
-            <Label size="sm" className="mb-0" variant="success">
+            <Label size="sm" className="mb-0" variant="default">
               {t.labels.ipAcademy}
             </Label>
-            <Label size="sm" className="mb-0" variant="success">
+            <Label size="sm" className="mb-0" variant="default">
               {t.labels.ipEnablement}
             </Label>
           </div>
@@ -145,6 +150,7 @@ export default function EducationProjectDetailsClient({
                   title={
                     <div className="text-lg font-medium text-neutral-900">{section.title}</div>
                   }
+                  variant="minimal"
                   description={section.content}
                   isExpanded={openSection === section.id}
                   onToggle={() => setOpenSection(openSection === section.id ? null : section.id)}
@@ -183,6 +189,7 @@ export default function EducationProjectDetailsClient({
               {project.projectDetails.map((detail) => (
                 <ExpandableTab
                   key={detail.id}
+                  variant={'minimal'}
                   title={<div className="text-lg font-medium text-neutral-900">{detail.title}</div>}
                   description={detail.content}
                   isExpanded={openDetail === detail.id}

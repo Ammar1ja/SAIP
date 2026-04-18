@@ -25,18 +25,17 @@ const StepCard = ({ number, title, details }: StepCardProps) => {
   const toggleLabel = open ? t('toggle.hide') : t('toggle.show');
   return (
     <div
-      className={twMerge(
-        'bg-white rounded-xl border border-neutral-200 mb-8 overflow-hidden shadow-sm',
-      )}
+      className={twMerge('bg-white border-t border-[#D2D6DB] mb-8 overflow-hidden')}
       aria-expanded={open}
     >
       <div
-        className="flex items-center justify-between px-8 py-5 cursor-pointer bg-neutral-50 border-b border-neutral-200 rounded-t-xl"
+        className="flex items-center justify-between px-8 py-5 cursor-pointer rounded-t-xl"
         onClick={() => setOpen((v) => !v)}
       >
         <div className="rtl:text-right">
-          <span className="text-sm text-neutral-500 mr-2 rtl:mr-0 rtl:ml-2">{stepLabel}</span>
-          <span className="font-bold text-lg text-neutral-900">{title}</span>
+          <span className="font-medium text-[16px] text-[#161616]">
+            {number + '.'} {title}
+          </span>
         </div>
         <button
           aria-label={toggleLabel}
@@ -45,7 +44,7 @@ const StepCard = ({ number, title, details }: StepCardProps) => {
         >
           <span className="sr-only">{toggleLabel}</span>
           <ChevronUp
-            className={twMerge('w-5 h-5 transition-transform', open ? 'rotate-180' : '')}
+            className={twMerge('w-5 h-5 transition-transform text-black', open ? 'rotate-180' : '')}
             aria-hidden="true"
           />
         </button>
@@ -55,7 +54,11 @@ const StepCard = ({ number, title, details }: StepCardProps) => {
           <ul className="list-disc pl-6 rtl:pl-0 rtl:pr-6 rtl:text-right text-base text-neutral-800 space-y-2">
             {details.map((item, idx) => {
               if (typeof item === 'string') {
-                return <li key={idx}>{item}</li>;
+                return (
+                  <li className="text-[#384250] text-[16px]" key={idx}>
+                    {item}
+                  </li>
+                );
               }
 
               if (item.variant === 'button') {

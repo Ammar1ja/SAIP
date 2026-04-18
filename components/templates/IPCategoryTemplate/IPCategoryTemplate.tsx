@@ -97,11 +97,13 @@ const IPCategoryTemplate = ({
       setIsJourneyLoading(true);
       setJourneyLoadFailed(false);
       const response = await fetch(journeyEndpoint);
+
       if (!response.ok) {
         setJourneyLoadFailed(true);
         return;
       }
       const data = await response.json();
+
       if (data?.journey && Object.keys(data.journey.sections || {}).length > 0) {
         setLazyJourney((prev) => prev || data.journey);
       } else {

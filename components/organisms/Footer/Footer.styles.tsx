@@ -26,7 +26,7 @@ export const bottomBar = cva([
   'gap-4',
 ]);
 
-export const bottomText = cva(['text-xs', 'space-y-1']);
+export const bottomText = cva(['space-y-1']);
 
 export const iconButton = cva([
   'w-8',

@@ -9,7 +9,10 @@ import DetailSidebar from '@/components/organisms/DetailSidebar';
 import RelatedServicesSection from '@/components/organisms/RelatedServicesSection';
 import CommentsAndSuggestionsSection from '@/components/organisms/CommentsAndSuggestionsSection';
 import FeedbackSection from '@/components/organisms/FeedbackSection';
-import { Clock, BadgeDollarSign, Users, MapPin } from 'lucide-react';
+import Location from '@/assets/images/location.png';
+import Riyal from '@/assets/images/Riyal.png';
+import User from '@/assets/images/user.png';
+import Watch from '@/assets/images/watch.png';
 import { ROUTES } from '@/lib/routes';
 import { useTranslations, useLocale } from 'next-intl';
 import LeadingIcon from '@/assets/images/leading_icon.png';
@@ -88,10 +91,10 @@ export default function ServiceDetailTemplate({
           onClick={() => window.history.back()}
         >
           <img
-    src={LeadingIcon.src}
-    alt=""
-    className={`w-4 h-4 object-contain ${isRtl ? 'rotate-180 ml-2' : 'rotate-0 mr-2'}`}
-  />{' '}
+            src={LeadingIcon.src}
+            alt=""
+            className={`w-4 h-4 object-contain ${isRtl ? 'rotate-180 ml-2' : 'rotate-0 mr-2'}`}
+          />{' '}
           Go back to Services
         </button>
 
@@ -101,7 +104,7 @@ export default function ServiceDetailTemplate({
 
         {(category || serviceData.category) && (
           <div className="flex gap-2 mb-4">
-            <span className="inline-block bg-primary-100 text-primary-800 rounded-full px-3 py-1 text-xs font-semibold">
+            <span className="inline-block bg-[#F9FAFB] text-[#1F2A37] border border-[#E5E7EB] rounded-full px-3 py-1 text-xs font-semibold">
               {category || serviceData.category}
             </span>
           </div>
@@ -113,26 +116,26 @@ export default function ServiceDetailTemplate({
       <Section background="white" padding="default">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
           {/* Mobile Sidebar */}
-          <div className="block lg:hidden w-full max-w-full rounded-xl shadow mb-8 px-4 mt-4">
+          <div className="block lg:hidden w-full max-w-full rounded-xl xl:shadow mb-8 px-4 mt-4">
             <DetailSidebar
               items={[
                 {
-                  icon: <Clock className="w-6 h-6" />,
+                  icon: <img src={Watch.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('executionTime'),
                   value: serviceData.executionTime,
                 },
                 {
-                  icon: <BadgeDollarSign className="w-6 h-6" />,
+                  icon: <img src={Riyal.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('serviceFee'),
                   value: serviceData.serviceFee,
                 },
                 {
-                  icon: <Users className="w-6 h-6" />,
+                  icon: <img src={User.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('targetGroup'),
                   value: serviceData.targetGroup,
                 },
                 {
-                  icon: <MapPin className="w-6 h-6" />,
+                  icon: <img src={Location.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('serviceChannel'),
                   value: serviceData.serviceChannel,
                 },
@@ -144,11 +147,11 @@ export default function ServiceDetailTemplate({
 
           {/* Main Content */}
           <div className="flex-1 min-w-0">
-            <div className="flex gap-8 border-b border-neutral-200 mb-8">
+            <div className="flex gap-8 border-b !border-b-[3px] border-neutral-200 mb-8">
               {TABS.map((tab) => (
                 <button
                   key={tab.id}
-                  className={`cursor-pointer py-2 px-1 text-lg font-medium border-b-2 transition focus:outline-none ${
+                  className={`relative cursor-pointer py-2 px-1 text-lg font-medium  transition focus:outline-none ${
                     activeTab === tab.id
                       ? 'border-primary-700 text-primary-900'
                       : 'border-transparent text-neutral-500 hover:text-primary-700'
@@ -158,6 +161,9 @@ export default function ServiceDetailTemplate({
                   role="tab"
                 >
                   {tab.label}
+                  <div
+                    className={`z-30 absolute bottom-[-3px] w-full h-[3px] bg-[#1B8354] !rounded-full ${activeTab === tab.id ? 'bg-[#1B8354]' : 'bg-transparent'}`}
+                  ></div>
                 </button>
               ))}
             </div>
@@ -176,22 +182,22 @@ export default function ServiceDetailTemplate({
             <DetailSidebar
               items={[
                 {
-                  icon: <Clock className="w-6 h-6" />,
+                  icon: <img src={Watch.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('executionTime'),
                   value: serviceData.executionTime,
                 },
                 {
-                  icon: <BadgeDollarSign className="w-6 h-6" />,
+                  icon: <img src={Riyal.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('serviceFee'),
                   value: serviceData.serviceFee,
                 },
                 {
-                  icon: <Users className="w-6 h-6" />,
+                  icon: <img src={User.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('targetGroup'),
                   value: serviceData.targetGroup,
                 },
                 {
-                  icon: <MapPin className="w-6 h-6" />,
+                  icon: <img src={Location.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('serviceChannel'),
                   value: serviceData.serviceChannel,
                 },

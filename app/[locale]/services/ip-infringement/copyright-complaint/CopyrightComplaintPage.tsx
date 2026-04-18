@@ -7,7 +7,10 @@ import TimelineSteps from '@/components/organisms/TimelineSteps';
 import RequirementsList from '@/components/organisms/RequirementsList';
 import RelatedServicesSection from '@/components/organisms/RelatedServicesSection';
 import DetailSidebar from '@/components/organisms/DetailSidebar';
-import { Clock, BadgeDollarSign, Users, MapPin } from 'lucide-react';
+import Location from '@/assets/images/location.png';
+import Riyal from '@/assets/images/Riyal.png';
+import User from '@/assets/images/user.png';
+import Watch from '@/assets/images/watch.png';
 import {
   COPYRIGHT_COMPLAINT_STEPS,
   COPYRIGHT_COMPLAINT_REQUIREMENTS,
@@ -47,22 +50,22 @@ const CopyrightComplaintPage = () => {
         />
         <Link
           href={ROUTES.SERVICES.SERVICE_DIRECTORY}
-          className="inline-flex items-center gap-2 mb-8 px-4 py-2 border rounded-lg text-sm hover:bg-neutral-100 transition"
+          className="inline-flex items-center gap-2 mb-8 px-4 py-2 border border-[#D2D6DB] rounded-[4px] h-[32px] text-sm hover:bg-neutral-100 transition bg-[#F7FDF9]"
         >
           <img
-    src={LeadingIcon.src}
-    alt=""
-    className={`w-4 h-4 object-contain ${isRtl ? 'rotate-180 ml-2' : 'rotate-0 mr-2'}`}
-  />{' '}
+            src={LeadingIcon.src}
+            alt=""
+            className={`w-4 h-4 object-contain ${isRtl ? 'rotate-180 ml-2' : 'rotate-0 mr-2'}`}
+          />{' '}
           {t('goBackToServices')}
         </Link>
         <div className="mb-14" />
         <h1 className="text-5xl font-bold mb-2">Complaint of copyright infringement</h1>
         <div className="flex gap-2 mb-4">
-          <span className="inline-block bg-primary-100 text-primary-800 rounded-full px-3 py-1 text-xs font-semibold">
+          <span className="inline-block bg-[#F9FAFB] text-[#1F2A37] border border-[#E5E7EB] rounded-full px-3 py-1 text-xs font-semibold">
             IP Infringement
           </span>
-          <span className="inline-block bg-primary-100 text-primary-800 rounded-full px-3 py-1 text-xs font-semibold">
+          <span className="inline-block bg-[#F9FAFB] text-[#1F2A37] border border-[#E5E7EB] rounded-full px-3 py-1 text-xs font-semibold">
             Enforcement
           </span>
         </div>
@@ -73,26 +76,26 @@ const CopyrightComplaintPage = () => {
       </Section>
       <Section background="white" padding="default">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
-          <div className="block lg:hidden w-full max-w-full rounded-xl shadow mb-8 px-4 mt-4">
+          <div className="block lg:hidden w-full max-w-full rounded-xl xl:shadow mb-8 px-4 mt-4">
             <DetailSidebar
               items={[
                 {
-                  icon: <Clock className="w-6 h-6" />,
+                  icon: <img src={Watch.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('executionTime'),
                   value: COPYRIGHT_COMPLAINT_SIDEBAR.executionTime,
                 },
                 {
-                  icon: <BadgeDollarSign className="w-6 h-6" />,
+                  icon: <img src={Riyal.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('serviceFee'),
                   value: COPYRIGHT_COMPLAINT_SIDEBAR.serviceFee,
                 },
                 {
-                  icon: <Users className="w-6 h-6" />,
+                  icon: <img src={User.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('targetGroup'),
                   value: COPYRIGHT_COMPLAINT_SIDEBAR.targetGroup,
                 },
                 {
-                  icon: <MapPin className="w-6 h-6" />,
+                  icon: <img src={Location.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('serviceChannel'),
                   value: COPYRIGHT_COMPLAINT_SIDEBAR.serviceChannel,
                 },
@@ -105,16 +108,19 @@ const CopyrightComplaintPage = () => {
             />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex gap-8 border-b border-neutral-200 mb-8">
+            <div className="flex gap-8 border-b !border-b-[3px] border-neutral-200 mb-8">
               {TABS.map((tab) => (
                 <button
                   key={tab.id}
-                  className={`cursor-pointer py-2 px-1 text-lg font-medium border-b-2 transition focus:outline-none ${activeTab === tab.id ? 'border-primary-700 text-primary-900' : 'border-transparent text-neutral-500 hover:text-primary-700'}`}
+                  className={`relative cursor-pointer py-2 px-1 text-lg font-medium  transition focus:outline-none ${activeTab === tab.id ? 'border-primary-700 text-primary-900' : 'border-transparent text-neutral-500 hover:text-primary-700'}`}
                   onClick={() => setActiveTab(tab.id)}
                   aria-selected={activeTab === tab.id}
                   role="tab"
                 >
                   {tab.label}
+                  <div
+                    className={`z-30 absolute bottom-[-3px] w-full h-[3px] bg-[#1B8354] !rounded-full ${activeTab === tab.id ? 'bg-[#1B8354]' : 'bg-transparent'}`}
+                  ></div>
                 </button>
               ))}
             </div>
@@ -127,22 +133,22 @@ const CopyrightComplaintPage = () => {
             <DetailSidebar
               items={[
                 {
-                  icon: <Clock className="w-6 h-6" />,
+                  icon: <img src={Watch.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('executionTime'),
                   value: COPYRIGHT_COMPLAINT_SIDEBAR.executionTime,
                 },
                 {
-                  icon: <BadgeDollarSign className="w-6 h-6" />,
+                  icon: <img src={Riyal.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('serviceFee'),
                   value: COPYRIGHT_COMPLAINT_SIDEBAR.serviceFee,
                 },
                 {
-                  icon: <Users className="w-6 h-6" />,
+                  icon: <img src={User.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('targetGroup'),
                   value: COPYRIGHT_COMPLAINT_SIDEBAR.targetGroup,
                 },
                 {
-                  icon: <MapPin className="w-6 h-6" />,
+                  icon: <img src={Location.src} alt="" className="w-6 h-6 object-contain" />,
                   label: tSidebar('serviceChannel'),
                   value: COPYRIGHT_COMPLAINT_SIDEBAR.serviceChannel,
                 },

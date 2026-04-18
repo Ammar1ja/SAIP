@@ -331,7 +331,9 @@
       "steps": {
         "1": {
           "title": "Log in",
-          "details": ["Login to the SAIP platform, select Services, and click on Patent Service."]
+          "details": [
+            "Login to the SAIP platform, select Services, and click on Patent Service."
+          ]
         },
         "2": {
           "title": "Select PCT application",
@@ -937,7 +939,10 @@
       "appointmentBooking": "Appointment booking platform",
       "location": "SAIP location",
       "socialMedia": "Social media",
-      "availability": ["Sun - Thu", "8:00 AM - 4:00 PM"]
+      "availability": [
+        "Sun - Thu",
+        "8:00 AM - 4:00 PM"
+      ]
     },
     "contactCards": {
       "goToBeneficiarySupport": "Go to Beneficiary support",
@@ -1218,7 +1223,9 @@
           {
             "title": "Industrial Design Registration Guide",
             "description": "Learn how to register your industrial designs and protect their visual appearance",
-            "labels": ["Designs"],
+            "labels": [
+              "Designs"
+            ],
             "publicationDate": "04.08.2024",
             "primaryButtonLabel": "Download file",
             "primaryButtonHref": "/files/design-registration.pdf",
@@ -1229,7 +1236,9 @@
           {
             "title": "Design Protection Guide",
             "description": "Guidelines for protecting the visual features of industrial designs",
-            "labels": ["Designs"],
+            "labels": [
+              "Designs"
+            ],
             "publicationDate": "04.08.2024",
             "primaryButtonLabel": "Download file",
             "primaryButtonHref": "/files/design-protection.pdf",
@@ -1240,7 +1249,9 @@
           {
             "title": "International Design Registration",
             "description": "Understanding international design registration through the Hague System",
-            "labels": ["Designs"],
+            "labels": [
+              "Designs"
+            ],
             "publicationDate": "04.08.2024",
             "primaryButtonLabel": "Download file",
             "primaryButtonHref": "/files/international-design.pdf",
@@ -1255,38 +1266,89 @@
             "value": 2156,
             "chartType": "line",
             "chartData": [
-              { "value": 500 },
-              { "value": 800 },
-              { "value": 1100 },
-              { "value": 1400 },
-              { "value": 1700 },
-              { "value": 2000 },
-              { "value": 2156 }
+              {
+                "value": 500
+              },
+              {
+                "value": 800
+              },
+              {
+                "value": 1100
+              },
+              {
+                "value": 1400
+              },
+              {
+                "value": 1700
+              },
+              {
+                "value": 2000
+              },
+              {
+                "value": 2156
+              }
             ],
-            "trend": { "value": "92%", "direction": "up", "description": "vs last month" }
+            "trend": {
+              "value": "92%",
+              "direction": "up",
+              "description": "vs last month"
+            }
           },
           {
             "label": "Number of registered designs in 2023",
             "value": 1987,
             "chartType": "line",
             "chartData": [
-              { "value": 450 },
-              { "value": 700 },
-              { "value": 950 },
-              { "value": 1200 },
-              { "value": 1450 },
-              { "value": 1700 },
-              { "value": 1987 }
+              {
+                "value": 450
+              },
+              {
+                "value": 700
+              },
+              {
+                "value": 950
+              },
+              {
+                "value": 1200
+              },
+              {
+                "value": 1450
+              },
+              {
+                "value": 1700
+              },
+              {
+                "value": 1987
+              }
             ],
-            "trend": { "value": "87%", "direction": "up", "description": "vs last month" }
+            "trend": {
+              "value": "87%",
+              "direction": "up",
+              "description": "vs last month"
+            }
           },
           {
             "label": "Design category distribution",
             "chartType": "pie",
             "breakdown": [
-              { "label": "Product Design", "value": 52.3, "displayValue": "52.3%", "color": "#388A5A" },
-              { "label": "Textile Design", "value": 28.9, "displayValue": "28.9%", "color": "#1C6846" },
-              { "label": "Other", "value": 18.8, "displayValue": "18.8%", "color": "#0D4D2E" }
+              {
+                "label": "Product Design",
+                "value": 52.3,
+                "displayValue": "52.3%",
+                "color": "#388A5A"
+              },
+              {
+                "label": "Textile Design",
+                "value": 28.9,
+                "displayValue": "28.9%",
+                "color": "#1C6846"
+              },
+              {
+                "label": "Other",
+                "value": 18.8,
+                "displayValue": "18.8%",
+                "color": "#0D4D2E"
+              }
             ]
           }
         ],
@@ -1337,19 +1399,36 @@
             "id": "guidance",
             "label": "Guidance",
             "subItems": [
-              { "id": "design-checklist", "label": "Design Checklist" },
-              { "id": "ip-clinics", "label": "IP Clinics" },
-              { "id": "ip-search-engine", "label": "IP Search Engine" }
+              {
+                "id": "design-checklist",
+                "label": "Design Checklist"
+              },
+              {
+                "id": "ip-clinics",
+                "label": "IP Clinics"
+              },
+              {
+                "id": "ip-search-engine",
+                "label": "IP Search Engine"
+              }
             ]
           },
-          { "id": "protection", "label": "Protection" },
-          { "id": "management", "label": "Management" }
+          {
+            "id": "protection",
+            "label": "Protection"
+          },
+          {
+            "id": "management",
+            "label": "Management"
+          }
         ],
         "services": [
           {
             "title": "Design Application Service",
             "description": "Submit applications for protection of industrial designs that are new and have individual character.",
-            "labels": ["Protection"],
+            "labels": [
+              "Protection"
+            ],
             "href": "/services/designs/application",
             "primaryButtonLabel": "View details",
             "primaryButtonHref": "/services/designs/application"
@@ -1357,7 +1436,9 @@
           {
             "title": "Design Certificate Renewal",
             "description": "Renew your design protection certificate to maintain exclusive rights over your registered design.",
-            "labels": ["Management"],
+            "labels": [
+              "Management"
+            ],
             "href": "/services/designs/renewal",
             "primaryButtonLabel": "View details",
             "primaryButtonHref": "/services/designs/renewal"
@@ -1365,7 +1446,9 @@
           {
             "title": "Design Search",
             "description": "Search existing design registrations to ensure your design is novel and doesn't infringe on existing rights.",
-            "labels": ["Guidance"],
+            "labels": [
+              "Guidance"
+            ],
             "href": "/services/designs/search",
             "primaryButtonLabel": "View details",
             "primaryButtonHref": "/services/designs/search"
@@ -2036,5 +2119,6 @@
       "badgeLabel": "{category}",
       "noDataYet": "No data yet – coming soon!"
     }
-  }
+  },
+  "req_for_ent": "Requirements for entry"
 }

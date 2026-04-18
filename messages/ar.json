@@ -306,7 +306,9 @@
       "steps": {
         "1": {
           "title": "تسجيل الدخول",
-          "details": ["قم بتسجيل الدخول إلى منصة الهيئة، واختر الخدمات، وانقر على خدمة البراءات."]
+          "details": [
+            "قم بتسجيل الدخول إلى منصة الهيئة، واختر الخدمات، وانقر على خدمة البراءات."
+          ]
         },
         "2": {
           "title": "اختيار طلب PCT",
@@ -333,7 +335,10 @@
         },
         "5": {
           "title": "دفع الرسوم والحصول على التأكيد",
-          "details": ["ادفع رسوم تقديم PCT المطلوبة.", "احصل على رقم طلبك الدولي وتاريخ التقديم."]
+          "details": [
+            "ادفع رسوم تقديم PCT المطلوبة.",
+            "احصل على رقم طلبك الدولي وتاريخ التقديم."
+          ]
         }
       },
       "requirements": [
@@ -449,7 +454,11 @@
           "ipSystems": {
             "title": "أنظمة الملكية الفكرية",
             "intro": "تنظم أنظمة الملكية الفكرية مجموعة واسعة من الأنشطة، بما في ذلك:",
-            "items": ["التعبير الفني", "التصنيع الدوائي", "وتطوير البرمجيات"],
+            "items": [
+              "التعبير الفني",
+              "التصنيع الدوائي",
+              "وتطوير البرمجيات"
+            ],
             "summary": "هذه الأنشطة هي مؤشرات على الجهود غير الملموسة (غير المادية) والابتكار الفكري والإبداع البشري."
           },
           "conclusion": "لذلك، تحكم حقوق الملكية الفكرية إنشاء واستخدام واستثمار الجهد العقلي الإبداعي.",
@@ -930,7 +939,10 @@
       "appointmentBooking": "منصة حجز المواعيد",
       "location": "موقع الهيئة",
       "socialMedia": "وسائل التواصل الاجتماعي",
-      "availability": ["الأحد - الخميس", "8:00 صباحاً - 4:00 مساءً"]
+      "availability": [
+        "الأحد - الخميس",
+        "8:00 صباحاً - 4:00 مساءً"
+      ]
     },
     "contactCards": {
       "goToBeneficiarySupport": "الذهاب إلى دعم المستفيدين",
@@ -1209,7 +1221,9 @@
           {
             "title": "دليل تسجيل التصميم الصناعي",
             "description": "تعرّف على كيفية تسجيل تصاميمك الصناعية وحماية مظهرها البصري",
-            "labels": ["تصاميم"],
+            "labels": [
+              "تصاميم"
+            ],
             "publicationDate": "04.08.2024",
             "primaryButtonLabel": "تنزيل الملف",
             "primaryButtonHref": "/files/design-registration.pdf",
@@ -1220,7 +1234,9 @@
           {
             "title": "دليل حماية التصاميم",
             "description": "إرشادات لحماية الخصائص البصرية للتصاميم الصناعية",
-            "labels": ["تصاميم"],
+            "labels": [
+              "تصاميم"
+            ],
             "publicationDate": "04.08.2024",
             "primaryButtonLabel": "تنزيل الملف",
             "primaryButtonHref": "/files/design-protection.pdf",
@@ -1231,7 +1247,9 @@
           {
             "title": "التسجيل الدولي للتصاميم",
             "description": "فهم تسجيل التصاميم دولياً عبر نظام لاهاي",
-            "labels": ["تصاميم"],
+            "labels": [
+              "تصاميم"
+            ],
             "publicationDate": "04.08.2024",
             "primaryButtonLabel": "تنزيل الملف",
             "primaryButtonHref": "/files/international-design.pdf",
@@ -1246,38 +1264,89 @@
             "value": 2156,
             "chartType": "line",
             "chartData": [
-              { "value": 500 },
-              { "value": 800 },
-              { "value": 1100 },
-              { "value": 1400 },
-              { "value": 1700 },
-              { "value": 2000 },
-              { "value": 2156 }
+              {
+                "value": 500
+              },
+              {
+                "value": 800
+              },
+              {
+                "value": 1100
+              },
+              {
+                "value": 1400
+              },
+              {
+                "value": 1700
+              },
+              {
+                "value": 2000
+              },
+              {
+                "value": 2156
+              }
             ],
-            "trend": { "value": "92%", "direction": "up", "description": "مقارنة بالشهر الماضي" }
+            "trend": {
+              "value": "92%",
+              "direction": "up",
+              "description": "مقارنة بالشهر الماضي"
+            }
           },
           {
             "label": "عدد التصاميم المسجلة في 2023",
             "value": 1987,
             "chartType": "line",
             "chartData": [
-              { "value": 450 },
-              { "value": 700 },
-              { "value": 950 },
-              { "value": 1200 },
-              { "value": 1450 },
-              { "value": 1700 },
-              { "value": 1987 }
+              {
+                "value": 450
+              },
+              {
+                "value": 700
+              },
+              {
+                "value": 950
+              },
+              {
+                "value": 1200
+              },
+              {
+                "value": 1450
+              },
+              {
+                "value": 1700
+              },
+              {
+                "value": 1987
+              }
             ],
-            "trend": { "value": "87%", "direction": "up", "description": "مقارنة بالشهر الماضي" }
+            "trend": {
+              "value": "87%",
+              "direction": "up",
+              "description": "مقارنة بالشهر الماضي"
+            }
           },
           {
             "label": "توزيع فئات التصاميم",
             "chartType": "pie",
             "breakdown": [
-              { "label": "تصميم المنتجات", "value": 52.3, "displayValue": "52.3%", "color": "#388A5A" },
-              { "label": "تصميم الأقمشة", "value": 28.9, "displayValue": "28.9%", "color": "#1C6846" },
-              { "label": "أخرى", "value": 18.8, "displayValue": "18.8%", "color": "#0D4D2E" }
+              {
+                "label": "تصميم المنتجات",
+                "value": 52.3,
+                "displayValue": "52.3%",
+                "color": "#388A5A"
+              },
+              {
+                "label": "تصميم الأقمشة",
+                "value": 28.9,
+                "displayValue": "28.9%",
+                "color": "#1C6846"
+              },
+              {
+                "label": "أخرى",
+                "value": 18.8,
+                "displayValue": "18.8%",
+                "color": "#0D4D2E"
+              }
             ]
           }
         ],
@@ -1328,19 +1397,36 @@
             "id": "guidance",
             "label": "الإرشاد",
             "subItems": [
-              { "id": "design-checklist", "label": "قائمة تحقق التصميم" },
-              { "id": "ip-clinics", "label": "عيادات الملكية الفكرية" },
-              { "id": "ip-search-engine", "label": "محرك البحث للملكية الفكرية" }
+              {
+                "id": "design-checklist",
+                "label": "قائمة تحقق التصميم"
+              },
+              {
+                "id": "ip-clinics",
+                "label": "عيادات الملكية الفكرية"
+              },
+              {
+                "id": "ip-search-engine",
+                "label": "محرك البحث للملكية الفكرية"
+              }
             ]
           },
-          { "id": "protection", "label": "الحماية" },
-          { "id": "management", "label": "الإدارة" }
+          {
+            "id": "protection",
+            "label": "الحماية"
+          },
+          {
+            "id": "management",
+            "label": "الإدارة"
+          }
         ],
         "services": [
           {
             "title": "خدمة طلب تصميم",
             "description": "قدّم طلبات لحماية التصاميم الصناعية الجديدة ذات الطابع الفردي.",
-            "labels": ["الحماية"],
+            "labels": [
+              "الحماية"
+            ],
             "href": "/services/designs/application",
             "primaryButtonLabel": "عرض التفاصيل",
             "primaryButtonHref": "/services/designs/application"
@@ -1348,7 +1434,9 @@
           {
             "title": "تجديد شهادة التصميم",
             "description": "جدّد شهادة حماية التصميم للحفاظ على حقوقك الحصرية في التصميم المسجل.",
-            "labels": ["الإدارة"],
+            "labels": [
+              "الإدارة"
+            ],
             "href": "/services/designs/renewal",
             "primaryButtonLabel": "عرض التفاصيل",
             "primaryButtonHref": "/services/designs/renewal"
@@ -1356,7 +1444,9 @@
           {
             "title": "بحث التصاميم",
             "description": "ابحث عن التصاميم المسجلة للتأكد من حداثة تصميمك وعدم تعارضه مع حقوق قائمة.",
-            "labels": ["الإرشاد"],
+            "labels": [
+              "الإرشاد"
+            ],
             "href": "/services/designs/search",
             "primaryButtonLabel": "عرض التفاصيل",
             "primaryButtonHref": "/services/designs/search"
@@ -2027,5 +2117,6 @@
       "badgeLabel": "{category}",
       "noDataYet": "لا توجد بيانات حتى الآن - قريباً!"
     }
-  }
+  },
+  "req_for_ent": "شروط الالتحاق"
 }

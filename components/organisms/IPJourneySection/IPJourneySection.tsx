@@ -171,12 +171,13 @@ const IPJourneySection = ({
     const paragraphClass =
       typography === 'guidance'
         ? 'text-[18px] text-neutral-700 leading-[28px] mb-2'
-        : 'text-base text-neutral-700 leading-6 mb-2';
+        : 'text-base text-[#161616] font-normal mb-2 !w-full';
     const listItemClass =
       typography === 'guidance'
         ? 'text-[18px] text-neutral-700 leading-[28px] pl-1'
         : 'text-base text-neutral-700 leading-6 pl-1';
     const lines = description.split('\n').filter((line) => line.trim());
+
     const result: React.JSX.Element[] = [];
     let currentList: string[] = [];
     let currentListType: 'bullet' | 'numbered' | null = null;
@@ -215,7 +216,7 @@ const IPJourneySection = ({
           const content = trimmed.substring(colonIndex + 1).trim();
           result.push(
             <p key={`p-${idx}`} className={paragraphClass}>
-              <strong className="font-semibold">{heading}:</strong> {content}
+              {heading}: {content}
             </p>,
           );
         } else {
@@ -417,8 +418,8 @@ const IPJourneySection = ({
             }`}`}
           >
             {!isMobile && (
-              <div className="flex flex-row justify-between items-start">
-                <h3 className="mb-0 text-2xl font-medium leading-8 tracking-normal text-text-default">
+              <div className="flex flex-row justify-between items-start w-auto lg:w-[628px]">
+                <h3 className="mb-0 !text-[24px] font-medium  tracking-normal text-[#161616]">
                   {section.title}
                 </h3>
                 {isButtonVisible && (

@@ -6,8 +6,10 @@ import Section from '@/components/atoms/Section';
 import TimelineSteps from '@/components/organisms/TimelineSteps';
 import RequirementsList from '@/components/organisms/RequirementsList';
 import DetailSidebar from '@/components/organisms/DetailSidebar';
-import { Clock, BadgeDollarSign, Users, MapPin } from 'lucide-react';
-
+import Location from '@/assets/images/location.png';
+import Riyal from '@/assets/images/Riyal.png';
+import User from '@/assets/images/user.png';
+import Watch from '@/assets/images/watch.png';
 interface ServiceDetailClientProps {
   steps: Array<{
     number: number;
@@ -48,22 +50,22 @@ export default function ServiceDetailClient({
   // Generate sidebar items using CLIENT translations
   const sidebarItems = [
     {
-      icon: <Clock className="w-6 h-6" />,
+      icon: <img src={Watch.src} alt="" className="w-6 h-6 object-contain" />,
       label: tSidebar('executionTime'),
       value: sidebarData.executionTime,
     },
     {
-      icon: <BadgeDollarSign className="w-6 h-6" />,
+      icon: <img src={Riyal.src} alt="" className="w-6 h-6 object-contain" />,
       label: tSidebar('serviceFee'),
       value: sidebarData.serviceFee,
     },
     {
-      icon: <Users className="w-6 h-6" />,
+      icon: <img src={User.src} alt="" className="w-6 h-6 object-contain" />,
       label: tSidebar('targetGroup'),
       value: sidebarData.targetGroup,
     },
     {
-      icon: <MapPin className="w-6 h-6" />,
+      icon: <img src={Location.src} alt="" className="w-6 h-6 object-contain" />,
       label: tSidebar('serviceChannel'),
       value: sidebarData.serviceChannel,
     },
@@ -78,7 +80,7 @@ export default function ServiceDetailClient({
     <Section background="white" padding="default">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
         {/* Mobile Sidebar */}
-        <div className="block lg:hidden w-full max-w-full rounded-xl shadow mb-8 px-4 mt-4">
+        <div className="block lg:hidden w-full max-w-full rounded-xl xl:shadow mb-8 px-4 mt-4">
           <DetailSidebar
             items={sidebarItems}
             faqHref={faqHref}
@@ -94,11 +96,11 @@ export default function ServiceDetailClient({
 
         {/* Main Content with Tabs */}
         <div className="flex-1 min-w-0">
-          <div className="flex gap-8 border-b border-neutral-200 mb-8">
+          <div className="flex gap-8 border-b !border-b-[3px] border-neutral-200 mb-8">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                className={`cursor-pointer py-2 px-1 text-lg font-medium border-b-2 transition focus:outline-none ${
+                className={`relative cursor-pointer py-2 px-1 text-lg font-medium  transition focus:outline-none ${
                   activeTab === tab.id
                     ? 'border-primary-700 text-primary-900'
                     : 'border-transparent text-neutral-500 hover:text-primary-700'
@@ -108,6 +110,9 @@ export default function ServiceDetailClient({
                 role="tab"
               >
                 {tab.label}
+                <div
+                  className={`z-30 absolute bottom-[-3px] w-full h-[3px] bg-[#1B8354] !rounded-full ${activeTab === tab.id ? 'bg-[#1B8354]' : 'bg-transparent'}`}
+                ></div>
               </button>
             ))}
           </div>

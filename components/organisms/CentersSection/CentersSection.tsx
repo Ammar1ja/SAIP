@@ -39,8 +39,15 @@ const filterCenters = (
     // Location filter
     const locationMatch =
       !filterValues.location ||
-      filterValues.location === 'all' ||
-      center.location === filterValues.location;
+      filterValues.location.length === 0 ||
+      filterValues.location.includes('all') ||
+      filterValues.location.includes(center.location);
+
+    return matchesSearch && locationMatch;
+    // const locationMatch =
+    //   !filterValues.location ||
+    //   filterValues.location === 'all' ||
+    //   center.location === filterValues.location;
 
     return matchesSearch && locationMatch;
   });
@@ -138,6 +145,7 @@ export const CentersListSection = () => {
       type: 'select' as const,
       placeholder: tCommon('select'),
       options: LOCATION_OPTIONS,
+      multiselect: true,
     },
     {
       id: 'sort',

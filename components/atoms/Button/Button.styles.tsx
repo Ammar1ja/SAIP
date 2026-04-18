@@ -52,7 +52,7 @@ const intentStyles = {
 };
 
 const sizeStyles = {
-  sm: ['h-8', 'px-3', 'text-sm', 'gap-1.5'],
+  sm: ['py-[8px]', 'px-[16px]', 'text-sm', 'gap-1.5'],
   md: ['h-10', 'px-4', 'text-base', 'gap-2'],
   lg: ['h-12', 'px-6', 'text-lg', 'gap-2.5'],
   /** 40px fixed, radius-sm; padding/gap/icon tuned to Figma hug ~226×40 (not px-6+gap-2.5+20px icon → ~245px) */
