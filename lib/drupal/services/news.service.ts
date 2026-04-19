@@ -54,6 +54,7 @@ export async function fetchNewsCategories(
     for (const vocab of vocabularies) {
       const langFilter = locale ? `&filter[langcode][value]=${locale}` : '';
       const endpoint = `/taxonomy_term/${vocab}?sort=weight,name${langFilter}`;
+
       const response = await fetchDrupal(endpoint, {}, locale);
 
       if (response.data && Array.isArray(response.data)) {
@@ -108,6 +109,7 @@ export async function fetchNewsList(
 
     try {
       const response = await fetchDrupal<DrupalNode>(endpoint, {}, locale);
+      console.log('aaa', response);
 
       if (!response.data || (Array.isArray(response.data) && response.data.length === 0)) {
         // No more data, break the loop
@@ -115,6 +117,7 @@ export async function fetchNewsList(
       }
 
       const nodes = Array.isArray(response.data) ? response.data : [response.data];
+
       allNodes = [...allNodes, ...nodes];
 
       if (response.included) {
@@ -324,6 +327,7 @@ export async function getNewsListData(locale?: string, limit: number = 200): Pro
     }
 
     const data = transformNewsList(nodes, included);
+
     const categories = await categoriesPromise;
 
     return { ...data, categories };

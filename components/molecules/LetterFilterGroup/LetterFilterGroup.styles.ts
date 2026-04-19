@@ -9,7 +9,7 @@ export const searchColumn = cva('flex flex-col gap-6 lg:flex-row lg:items-end lg
 export const letterTitle = cva('text-sm font-normal text-[#161616]');
 
 export const letterList = cva(
-  'flex flex-nowrap items-center gap-2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden',
+  'flex flex-nowrap items-center gap-2 !overflow-x-auto scrollbar-thin [&:: -webkit - scrollbar]: h - 2 [&:: -webkit - scrollbar - track]: bg - gray - 100 [&:: -webkit - scrollbar - thumb]: rounded - full [&:: -webkit - scrollbar - thumb]: bg - gray - 300 hover: [&:: -webkit - scrollbar - thumb]: bg - gray - 400',
 );
 
 export const clearFiltersButton = cva([

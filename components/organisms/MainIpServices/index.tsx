@@ -7,6 +7,7 @@ import Card from '@/components/molecules/Card';
 import ArrowWide from '@/public/icons/arrows/ArrowWide';
 import Button from '@/components/atoms/Button';
 import { ROUTES } from '@/lib/routes';
+import { useLocale } from 'next-intl';
 
 // Fallback data when Drupal API is unavailable
 const fallbackData = [
@@ -30,7 +31,7 @@ export interface MainIpServicesProps {
 export const MainIpServices = ({ heading, text, items }: MainIpServicesProps) => {
   // Use Drupal data if available, otherwise fallback
   const cards = items && items.length > 0 ? items : fallbackData;
-
+  const isRtl = useLocale() === 'ar';
   return (
     <Section
       background="neutral"
@@ -52,15 +53,16 @@ export const MainIpServices = ({ heading, text, items }: MainIpServicesProps) =>
               <span className="text-lg font-medium mb-8">
                 {item.title.includes('integrated circuits') ? 'Layout designs of IC' : item.title}
               </span>
-              <div className="mt-auto self-end">
+              <div className="mt-auto self-end w-full">
                 <Button
                   intent="secondary"
                   href={item.href}
                   ariaLabel={item.title}
-                  className="w-20 h-10 px-4 flex items-center justify-center shrink-0"
+                  className="w-[40px] md:w-20 h-[40px] md:h-10 px-4 flex items-center justify-center shrink-0"
                 >
                   <ArrowWide
-                    direction="right"
+                    direction={isRtl ? 'left' : 'right'}
+                    className={isRtl ? '!rotate-180' : 'rotate-0'}
                     size="smallWide"
                     background="natural"
                     shape="square"
