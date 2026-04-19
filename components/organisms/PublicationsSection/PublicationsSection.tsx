@@ -130,12 +130,12 @@ const PublicationsSection: React.FC<PublicationsSectionProps> = ({
           className="flex w-full gap-6 overflow-x-auto snap-x snap-mandatory py-1 items-stretch px-4 md:px-6 lg:px-8 mb-4 md:mb-0"
         >
           {cards.map((card, idx) => (
-            <div key={idx} className="w-[330px] sm:w-[410px] shrink-0 snap-start">
+            <div key={idx} className="w-[330px] sm:w-[410px] shrink-0 snap-start ">
               <ServiceCard
                 {...card}
                 labels={[]}
                 variant="report"
-                className="h-[294px] !min-h-[294px]"
+                className="h-[294px] !min-h-[294px] !overflow-hidden"
               />
             </div>
           ))}

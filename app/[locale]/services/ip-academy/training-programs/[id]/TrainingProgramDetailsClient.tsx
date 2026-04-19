@@ -248,23 +248,17 @@ export default function TrainingProgramDetailsClient({
                 value: program.duration,
               },
               {
-                icon: <RiyalFigmaIcon className="w-6 h-6 !text-white" />,
+                icon: <img src={Riyal.src} alt="" className="w-6 h-6 object-contain" />,
                 label: t.sidebar.fees,
                 value: program.fees,
               },
               {
-                icon: (
-                  <img
-                    src={'/icons/highlights/agent.svg'}
-                    alt=""
-                    className="w-6 h-6 object-contain"
-                  />
-                ),
+                icon: <img src={User.src} alt="" className="w-6 h-6 object-contain" />,
                 label: t.sidebar.language,
                 value: program.language,
               },
               {
-                icon: <LocationFigmaIcon className="w-6 h-6 !text-white" />,
+                icon: <img src={Location.src} alt="" className="w-6 h-6 object-contain" />,
                 label: t.sidebar.location,
                 value: program.location,
               },
