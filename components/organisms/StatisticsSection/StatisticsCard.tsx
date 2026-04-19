@@ -321,16 +321,16 @@ const StatisticsCard: React.FC<StatisticsCardType> = ({
                   <stop offset="100%" stopColor="#1B8354" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <YAxis domain={['dataMin - 100', 'dataMax + 100']} hide />
+              <YAxis domain={['auto', 'auto']} hide />
               <Area
-                type="monotone"
+                type="linear"
                 dataKey="value"
                 stroke="none"
                 fill={`url(#${gradientIdSafe})`}
                 isAnimationActive={false}
               />
               <Line
-                type="monotone"
+                type="linear"
                 dataKey="value"
                 stroke="#1B8354"
                 strokeWidth={2}

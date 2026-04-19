@@ -264,7 +264,7 @@ export const HeroStatic = ({
                   titleSizes({ size: titleSize, weight: titleWeight }),
                   titleColorClasses,
                   titleClassName,
-                  '!text-[48px]',
+                  '!text-[36px] !md:text-[48px]',
                 )}
                 style={titleStyle}
               >
@@ -349,7 +349,7 @@ export const HeroStatic = ({
           <>
             <div
               className={twMerge(
-                'flex flex-col gap-[24px]',
+                'hidden md:flex flex-col gap-[24px]',
                 contentAlign === 'bottom' ? '' : 'absolute top-6 inset-x-0 px-0 md:px-8',
               )}
             >
@@ -393,6 +393,7 @@ export const HeroStatic = ({
                   titleSizes({ size: titleSize, weight: titleWeight }),
                   titleColorClasses,
                   titleClassName,
+                  '!text-[36px] !md:text-[48px]',
                 )}
                 style={titleStyle}
               >
@@ -402,7 +403,7 @@ export const HeroStatic = ({
               {variant === 'article' ? (
                 <div className="mt-2 flex flex-col gap-2">
                   {publicationDate && (
-                    <div className="text-sm text-gray-500">
+                    <div className="text-[18px] md:text-sm text-gray-500">
                       {t('publicationDate')}: {formatPublicationDate(publicationDate)}
                     </div>
                   )}
@@ -411,7 +412,7 @@ export const HeroStatic = ({
                       {categories.map((category) => (
                         <span
                           key={category.id}
-                          className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700 border border-[#E5E7EB]"
+                          className="rounded-full bg-gray-100 px-3 py-1 text-[16px] md:text-sm text-gray-700 border border-[#E5E7EB]"
                         >
                           {category.name}
                         </span>

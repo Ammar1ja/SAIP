@@ -32,7 +32,6 @@ export async function fetchDrupal<T = DrupalNode>(
 ): Promise<DrupalResponse<T>> {
   const DRUPAL_BASE_URL = getApiUrl();
   const url = buildDrupalUrl(DRUPAL_BASE_URL, drupalConfig.jsonApiPath, endpoint, locale);
-
   const method = (options.method || 'GET').toUpperCase();
   const requestOptions: RequestInit = {
     headers: {

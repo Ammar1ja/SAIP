@@ -20,7 +20,7 @@ const IPLicensingServiceCard = ({
       </div>
 
       <div className="w-full lg:w-[713px] lg:shrink-0">
-        <div className="grid w-full grid-cols-1 overflow-hidden rounded-lg border border-border-natural-primary bg-white shadow-none sm:h-[248px] sm:min-h-[248px] sm:grid-cols-2">
+        <div className="grid w-full grid-cols-1 overflow-hidden rounded-lg border border-border-natural-primary bg-white shadow-none h-fit sm:grid-cols-2">
           <div className="flex h-full min-h-0 flex-col items-center justify-center gap-4 bg-primary-25 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-md bg-green-700">
               <FileText className="w-6 h-6 text-white" />

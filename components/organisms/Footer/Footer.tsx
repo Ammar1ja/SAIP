@@ -125,7 +125,7 @@ const Footer: FC<FooterProps> = ({
 
           <div
             className={twMerge(
-              'w-full md:flex-1 md:min-w-[180px] lg:w-[193.33px] lg:min-w-[193.33px] flex flex-col gap-8',
+              'flex-row md:flex-col w-full md:flex-1 md:min-w-[180px] lg:w-[193.33px] lg:min-w-[193.33px] flex  gap-8',
             )}
           >
             <div className={twMerge(linkGroup())}>
@@ -149,7 +149,7 @@ const Footer: FC<FooterProps> = ({
               <AccessibilityTools className="[&_button]:!w-8 [&_button]:!h-8 [&_button]:!min-w-8 [&_button]:!min-h-8 [&_button]:!max-w-8 [&_button]:!max-h-8" />
             </div>
 
-            <div className="w-full max-w-[220px]">
+            <div className="hidden md:block w-full max-w-[220px]">
               <Image
                 src="/images/dga.png"
                 alt="Digital Government Authority registration"
