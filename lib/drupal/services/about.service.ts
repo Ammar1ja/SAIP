@@ -287,7 +287,7 @@ export function transformAbout(
     title: attrs.field_ceo_title || 'CEO Speech',
     quote: extractText(attrs.field_ceo_quote) || 'Leadership quote from Drupal...',
     image: {
-      src: ceoImage.src || '/images/ceo-speech.jpg',
+      src: ceoImage.src || '/images/ceo-speech.png',
       alt: ceoImage.alt || 'CEO Image',
     },
     caption: attrs.field_ceo_caption || 'Dr. Abdulaziz Al-Swailem',
@@ -378,7 +378,7 @@ export function getAboutFallbackData(): AboutPageData {
       title: 'CEO Speech',
       quote: 'Leading innovation and protecting intellectual property for a prosperous future.',
       image: {
-        src: '/images/ceo-speech.jpg',
+        src: '/images/ceo-speech.png',
         alt: 'CEO of SAIP',
       },
       caption: 'Dr. Abdulaziz Al-Swailem',
