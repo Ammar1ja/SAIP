@@ -28,7 +28,10 @@ export function NewsArticleDetail({ article }: NewsArticleDetailProps) {
             <div className="px-0 md:px-[40px] xl:px-[108px]">
               {article.excerpt && (
                 <div className="mb-6">
-                  <p className="text-lg text-gray-700 leading-relaxed">{article.excerpt}</p>
+                  <div
+                    className="text-lg text-gray-700 leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: article.excerpt }}
+                  />
                 </div>
               )}
 
