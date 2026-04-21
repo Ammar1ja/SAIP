@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerDrupalBaseUrl } from '@/lib/drupal/config';
+import { getServerDrupalBaseUrl, getApiUrl } from '@/lib/drupal/config';
 
 /**
  * Proxy for downloading files from Drupal backend
@@ -78,8 +78,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid file path' }, { status: 403 });
     }
 
-    // Construct absolute URL using trusted backend URL
-    const backendBaseUrl = getServerDrupalBaseUrl();
+    // Construct absolute URL using trusted backend URL.
+    // Prefer the public URL (same as JSON:API fetches) unless DRUPAL_INTERNAL_URL
+    // is explicitly set — the in-cluster service fallback may not be reachable
+    // from this pod.
+    const internalOverride = process.env.DRUPAL_INTERNAL_URL?.trim();
+    const backendBaseUrl = internalOverride
+      ? getServerDrupalBaseUrl()
+      : getApiUrl().replace(/\/jsonapi\/?$/, '');
     const absoluteUrl = `${backendBaseUrl}${filePath}`;
 
     // SECURITY: Validate the constructed URL is from allowed host

@@ -438,6 +438,19 @@ export function getProxyUrl(url: string | undefined, action: 'download' | 'view'
     return url;
   }
 
+  // For 'view' action (images shown inline), skip the proxy and return the direct
+  // Drupal URL. The proxy is only strictly needed for downloads (to set
+  // Content-Disposition) and for HTTPS→HTTP mixed-content scenarios. When the
+  // Next.js pod can't reach Drupal server-side, the proxy returns 500 and
+  // images fail to render — bypassing it lets the browser fetch directly.
+  if (action === 'view') {
+    if (url.startsWith('http')) {
+      return url;
+    }
+    const base = getApiUrl().replace(/\/jsonapi\/?$/, '');
+    return `${base}${filePath}`;
+  }
+
   // SECURITY: Encode path to prevent injection attacks
   const encodedPath = encodeURIComponent(filePath);
   const proxyUrl = `/api/proxy-file?path=${encodedPath}&action=${action}`;

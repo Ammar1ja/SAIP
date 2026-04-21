@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerDrupalBaseUrl } from '@/lib/drupal/config';
+import { getServerDrupalBaseUrl, getApiUrl } from '@/lib/drupal/config';
 
 /**
  * POST /api/webform — Proxy for Drupal webform submissions with file uploads.
@@ -10,7 +10,13 @@ import { getServerDrupalBaseUrl } from '@/lib/drupal/config';
  */
 export async function POST(request: NextRequest) {
   try {
-    const backendUrl = getServerDrupalBaseUrl();
+    // Prefer the public Drupal URL (same one used by JSON:API fetches, which
+    // are known to be reachable from the pod). getServerDrupalBaseUrl may
+    // return an in-cluster service name that isn't resolvable from this pod.
+    const internalOverride = process.env.DRUPAL_INTERNAL_URL?.trim();
+    const backendUrl = internalOverride
+      ? getServerDrupalBaseUrl()
+      : getApiUrl().replace(/\/jsonapi\/?$/, '');
     // Use /en/ prefix to avoid Drupal's language negotiation redirect.
     const endpoint = `${backendUrl}/en/api/saip/webform-submit`;
 
