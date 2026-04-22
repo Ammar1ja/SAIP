@@ -142,6 +142,7 @@ export default function DigitalGuideCategoryClient({
         data={tabsData}
         label={drupalData.label}
         icon={HomeIcon}
+        description={'description' in drupalData ? drupalData.description : undefined}
       />
     );
   }
