@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 import { getPatentsPageData } from '@/lib/drupal/services/patents.service';
 import { getTrademarksPageData } from '@/lib/drupal/services/trademarks.service';
 import { getCopyrightsPageData } from '@/lib/drupal/services/copyrights.service';
@@ -9,6 +10,12 @@ import { getTopographicDesignsPageData } from '@/lib/drupal/services/topographic
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
+  // Journey content is editorial and must reflect newly published sections
+  // immediately. fetchDrupal tags every Drupal GET with 'drupal:global', so
+  // invalidating it here forces fresh data without waiting for the data-cache
+  // window or a pod restart.
+  revalidateTag('drupal:global');
+
   const { searchParams } = new URL(request.url);
   const category = searchParams.get('category');
   const locale = searchParams.get('locale') || 'en';
