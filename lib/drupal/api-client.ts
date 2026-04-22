@@ -50,8 +50,9 @@ async function drupalFetch<T = DrupalNode>(
   // This ensures APACHE_SERVER_NAME and branch detection work correctly
   const DRUPAL_BASE_URL = getApiUrl();
 
-  // Add locale prefix for Drupal multilingual support
-  const localePrefix = locale && locale !== 'en' ? `/${locale}` : '';
+  // Drupal's multi-language config requires the language prefix in the path
+  // even for English; without it JSON:API returns 404 HTML.
+  const localePrefix = `/${(locale || 'en').toLowerCase()}`;
   const url = `${DRUPAL_BASE_URL}${localePrefix}${drupalConfig.jsonApiPath}${endpoint}`;
 
   try {
