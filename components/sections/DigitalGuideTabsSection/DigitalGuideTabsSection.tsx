@@ -41,6 +41,7 @@ function DigitalGuideTabsSection({
   defaultActiveTab,
   label,
   icon,
+  description,
 }: DigitalGuideTabsSectionProps) {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || defaultActiveTab);
@@ -118,7 +119,7 @@ function DigitalGuideTabsSection({
         onClose={closeAlert}
       />
       <div className="flex flex-col w-full h-full gap-8">
-        <DigitalGuideHeading title={title} icon={icon} label={label} />
+        <DigitalGuideHeading title={title} icon={icon} label={label} description={description} />
         <div className="box-border flex flex-col flex-1 overflow-hidden gap-6 p-6 rounded-lg border border-border-natural-secondary bg-white xl:h-[538px]">
           <Tabs
             tabs={tabs}

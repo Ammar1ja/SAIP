@@ -334,7 +334,8 @@ export async function getDigitalGuideSectionDataWithTabs(
 
     return {
       title: attrs.title || '',
-      description: attrs.field_description || '',
+      description:
+        attrs.field_description?.value || attrs.field_description?.processed || attrs.field_description || '',
       guideType: attrs.field_guide_type || guideType,
       tabs,
       checklistSteps,
