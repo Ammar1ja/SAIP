@@ -349,7 +349,7 @@ const IPJourneySection = ({
 
     if (level === 1) {
       return (
-        <div key={id} ref={sectionRefs[id]} id={id} className="ml-4 rtl:mr-4 mb-8">
+        <div key={id} ref={sectionRefs[id]} id={id} className="ml-4 rtl:mr-4 mb-8 scroll-mt-[120px]">
           <Heading
             size="custom"
             as="h1"
@@ -389,7 +389,7 @@ const IPJourneySection = ({
       // ✅ NEW: Handle 'header' display type - no card wrapper
       if (section.displayType === 'header') {
         return (
-          <div key={id} ref={sectionRefs[id]} id={id} className="mb-6">
+          <div key={id} ref={sectionRefs[id]} id={id} className="mb-6 scroll-mt-[120px]">
             <h3 className="text-[20px] leading-[30px] md:text-3xl md:leading-[38px] font-semibold mb-3 text-default">
               {section.title}
             </h3>
@@ -411,7 +411,7 @@ const IPJourneySection = ({
       }
 
       return (
-        <div key={id} ref={sectionRefs[id]} id={id} className="mb-6">
+        <div key={id} ref={sectionRefs[id]} id={id} className="mb-6 scroll-mt-[120px]">
           <div
             className={`rounded-2xl border border-neutral-200 p-6 bg-white flex flex-col gap-3 relative ${`box-border w-full xl:w-[954px] xl:min-w-[954px] xl:max-w-[954px] ${
               isCompactJourneyCard ? 'xl:h-[196px]' : ''
@@ -559,7 +559,7 @@ const IPJourneySection = ({
     // Level 3 and above - render with proper indentation and styling
     if (level === 3) {
       return (
-        <div key={id} ref={sectionRefs[id]} id={id} className="mb-4 ml-4">
+        <div key={id} ref={sectionRefs[id]} id={id} className="mb-4 ml-4 scroll-mt-[120px]">
           <div className="rounded-xl bg-neutral-50 p-5 border-l-4 border-primary-300">
             <h4 className="text-base font-semibold mb-2">{section.title}</h4>
             {section.items && section.items.length > 0 ? (
@@ -591,7 +591,7 @@ const IPJourneySection = ({
 
     // Level 4 and above - render with deeper indentation
     return (
-      <div key={id} ref={sectionRefs[id]} id={id} className="mb-3">
+      <div key={id} ref={sectionRefs[id]} id={id} className="mb-3 scroll-mt-[120px]">
         <div className="rounded-lg bg-neutral-100 p-4 border-l-2 border-neutral-300 ml-4">
           <h5 className="text-base font-semibold mb-1">{section.title}</h5>
           {section.items && section.items.length > 0 ? (
