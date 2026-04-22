@@ -745,19 +745,21 @@ export function transformPatentsPage(
     : journeySectionsData
       ? 1
       : 0;
-  console.log('[patents] journey-diag', {
-    locale,
-    nodeLangcode,
-    nodeUuid: (node as any).id,
-    relationshipCount: journeyRelCount,
-    rawIncludedCount: included.length,
-    rawIncludedJourneyCount: includedJourneyCount,
-    filteredIncludedCount: filteredIncluded.length,
-    effectiveIncludedCount: effectiveIncluded.length,
-    effectiveJourneyCount,
-    resolvedJourneyCount,
-    source: filteredIncluded.length > 0 ? 'filteredIncluded' : 'included',
-  });
+  console.log(
+    `[patents] journey-diag ${JSON.stringify({
+      locale,
+      nodeLangcode,
+      nodeUuid: (node as any).id,
+      relationshipCount: journeyRelCount,
+      rawIncludedCount: included.length,
+      rawIncludedJourneyCount: includedJourneyCount,
+      filteredIncludedCount: filteredIncluded.length,
+      effectiveIncludedCount: effectiveIncluded.length,
+      effectiveJourneyCount,
+      resolvedJourneyCount,
+      source: filteredIncluded.length > 0 ? 'filteredIncluded' : 'included',
+    })}`,
+  );
 
   // Collect all section IDs from Level 1 sections
   const level1SectionIds = Array.isArray(journeySectionsData)
@@ -838,13 +840,15 @@ export function transformPatentsPage(
   const { sections: journeySections, sectionIds } =
     buildJourneySectionsHierarchy(transformedSections);
 
-  console.log('[patents] transform-diag', {
-    allJourneySectionsCount: allJourneySections.length,
-    transformedSectionsCount: transformedSections.length,
-    transformedSectionIds: transformedSections.map((t) => t.id).slice(0, 30),
-    hierarchySectionIds: sectionIds.slice(0, 30),
-    hierarchySectionsCount: Object.keys(journeySections).length,
-  });
+  console.log(
+    `[patents] transform-diag ${JSON.stringify({
+      allJourneySectionsCount: allJourneySections.length,
+      transformedSectionsCount: transformedSections.length,
+      transformedSectionIds: transformedSections.map((t) => t.id).slice(0, 30),
+      hierarchySectionIds: sectionIds.slice(0, 30),
+      hierarchySectionsCount: Object.keys(journeySections).length,
+    })}`,
+  );
 
   // Get media tabs
   const mediaTabsData = node.relationships?.field_media_tabs
@@ -1890,12 +1894,14 @@ export async function getPatentsPageData(
     const listResponse = await fetchPatentsPage(locale || 'en');
     const nodes = listResponse.data;
 
-    console.log('[patents] fetch-list-diag', {
-      locale,
-      includeJourney,
-      nodesLength: Array.isArray(nodes) ? nodes.length : nodes ? 1 : 0,
-      firstNodeUuid: Array.isArray(nodes) ? nodes[0]?.id : (nodes as any)?.id,
-    });
+    console.log(
+      `[patents] fetch-list-diag ${JSON.stringify({
+        locale,
+        includeJourney,
+        nodesLength: Array.isArray(nodes) ? nodes.length : nodes ? 1 : 0,
+        firstNodeUuid: Array.isArray(nodes) ? nodes[0]?.id : (nodes as any)?.id,
+      })}`,
+    );
 
     if (nodes.length === 0) {
       console.log('[patents] taking fallback path: nodes.length === 0');
