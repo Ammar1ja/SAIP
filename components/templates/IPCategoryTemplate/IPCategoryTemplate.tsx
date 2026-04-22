@@ -48,6 +48,7 @@ const IPCategoryTemplate = ({
   const [lazyJourney, setLazyJourney] = useState<typeof journey | null>(null);
   const [isJourneyLoading, setIsJourneyLoading] = useState(false);
   const [journeyLoadFailed, setJourneyLoadFailed] = useState(false);
+  const isJourneyLoadingRef = useRef(false);
   const tabChangeStartedAtRef = useRef<number | null>(null);
   const hideLoaderTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const MIN_TAB_LOADER_MS = 180;
@@ -91,11 +92,12 @@ const IPCategoryTemplate = ({
   const loadJourney = useCallback(async () => {
     if (!journeyEndpoint) return;
     if (hasJourneyContent || Object.keys(lazyJourney?.sections || {}).length > 0) return;
-    if (isJourneyLoading) return;
+    if (isJourneyLoadingRef.current) return;
+    if (journeyLoadFailed) return;
 
+    isJourneyLoadingRef.current = true;
     try {
       setIsJourneyLoading(true);
-      setJourneyLoadFailed(false);
       const response = await fetch(journeyEndpoint);
 
       if (!response.ok) {
@@ -113,8 +115,9 @@ const IPCategoryTemplate = ({
       setJourneyLoadFailed(true);
     } finally {
       setIsJourneyLoading(false);
+      isJourneyLoadingRef.current = false;
     }
-  }, [journeyEndpoint, hasJourneyContent, lazyJourney, isJourneyLoading]);
+  }, [journeyEndpoint, hasJourneyContent, lazyJourney, journeyLoadFailed]);
 
   useEffect(() => {
     if (activeTab !== 'journey') return;
