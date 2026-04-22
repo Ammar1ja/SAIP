@@ -6,7 +6,7 @@ import { getDesignsPageData } from '@/lib/drupal/services/designs.service';
 import { getPlantVarietiesPageData } from '@/lib/drupal/services/plant-varieties.service';
 import { getTopographicDesignsPageData } from '@/lib/drupal/services/topographic-designs.service';
 
-export const revalidate = 300;
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -53,11 +53,23 @@ export async function GET(request: NextRequest) {
       { journey: data.journey },
       {
         headers: {
-          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
         },
       },
     );
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to load journey data' }, { status: 500 });
+    console.error('[ip-category-journey] failed to load:', {
+      category,
+      locale,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+    return NextResponse.json(
+      {
+        error: 'Failed to load journey data',
+        detail: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 },
+    );
   }
 }
