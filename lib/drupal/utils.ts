@@ -69,13 +69,9 @@ export async function fetchDrupal<T = DrupalNode>(
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error('[fetchDrupal] non-OK response', {
-      url,
-      status: response.status,
-      statusText: response.statusText,
-      locale: locale || '(none)',
-      bodyPreview: errorText.slice(0, 200),
-    });
+    console.error(
+      `[fetchDrupal] non-OK status=${response.status} locale=${locale || '(none)'} url=${url}`,
+    );
     throw new Error(`Drupal API error: ${response.status} ${response.statusText} - ${errorText}`);
   }
 
