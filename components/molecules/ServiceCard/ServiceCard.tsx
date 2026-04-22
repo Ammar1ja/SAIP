@@ -385,7 +385,7 @@ const ServiceCard = ({
     const renderTrainingValue = (value: string | string[]) => {
       if (Array.isArray(value)) {
         return (
-          <div className="flex items-center gap-2 text-[16px] leading-[24px] text-[#384250]">
+          <div className="flex items-center gap-2 text-[16px] leading-[24px] text-[#384250] ">
             <span>{value[0]}</span>
             <span className="w-px h-4 bg-[#d2d6db]" aria-hidden="true" />
             <span>{value[1]}</span>
@@ -393,7 +393,7 @@ const ServiceCard = ({
         );
       }
 
-      return <span className="break-words text-[16px] leading-[24px] text-[#384250]">{value}</span>;
+      return <span className="text-[16px] leading-[24px] text-[#384250]">{value}</span>;
     };
 
     return (
@@ -417,7 +417,7 @@ const ServiceCard = ({
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-[#079455] text-white">
                   {item.icon}
                 </div>
-                <div className="min-w-0">
+                <div className="min-w-0 truncate">
                   <div className="line-clamp-1 break-words text-[18px] font-medium leading-[28px] tracking-[0] text-[#1F2A37]">
                     {item.label}
                   </div>

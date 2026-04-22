@@ -334,7 +334,11 @@ export default function Header({ locale, navigationData }: HeaderProps) {
                     className="flex items-center gap-4"
                   >
                     <div className="flex-1">
-                      <div className="h-10 border border-[#9DA4AE] rounded-sm bg-white flex items-center px-2 gap-2">
+                      <div
+                        className="h-10 border border-[#9DA4AE] rounded-sm bg-white flex items-center px-2 gap-2 
+hover:border-[#676c72] 
+focus-within:border-[#9DA4AE] focus-within:border-b-black"
+                      >
                         <SearchIcon className="w-5 h-5 text-[#6C737F]" aria-hidden="true" />
                         <input
                           ref={inputRef}

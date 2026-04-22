@@ -551,7 +551,7 @@ export default function GlobalSearchPage() {
                         </button>
                         <div className={cn(!isTypeSectionOpen && 'hidden')}>
                           <div className="px-2">
-                            <div className="h-10 border border-[#9DA4AE] rounded-sm bg-white flex items-center px-2 gap-2">
+                            <div className="h-10 border border-[#9DA4AE] rounded-sm bg-white flex items-center px-2 gap-2 ">
                               <SearchIcon className="w-5 h-5 text-[#6C737F]" aria-hidden="true" />
                               <input
                                 type="search"
