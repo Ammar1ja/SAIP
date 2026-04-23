@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 import { getPatentsPageData } from '@/lib/drupal/services/patents.service';
 import { getTrademarksPageData } from '@/lib/drupal/services/trademarks.service';
 import { getCopyrightsPageData } from '@/lib/drupal/services/copyrights.service';
@@ -6,9 +7,15 @@ import { getDesignsPageData } from '@/lib/drupal/services/designs.service';
 import { getPlantVarietiesPageData } from '@/lib/drupal/services/plant-varieties.service';
 import { getTopographicDesignsPageData } from '@/lib/drupal/services/topographic-designs.service';
 
-export const revalidate = 300;
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
+  // Journey content is editorial and must reflect newly published sections
+  // immediately. fetchDrupal tags every Drupal GET with 'drupal:global', so
+  // invalidating it here forces fresh data without waiting for the data-cache
+  // window or a pod restart.
+  revalidateTag('drupal:global');
+
   const { searchParams } = new URL(request.url);
   const category = searchParams.get('category');
   const locale = searchParams.get('locale') || 'en';
@@ -53,11 +60,23 @@ export async function GET(request: NextRequest) {
       { journey: data.journey },
       {
         headers: {
-          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
         },
       },
     );
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to load journey data' }, { status: 500 });
+    console.error('[ip-category-journey] failed to load:', {
+      category,
+      locale,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+    return NextResponse.json(
+      {
+        error: 'Failed to load journey data',
+        detail: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 },
+    );
   }
 }

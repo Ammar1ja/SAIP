@@ -725,6 +725,38 @@ export function transformPatentsPage(
     ? getRelated(node.relationships, 'field_journey_sections', effectiveIncluded) || []
     : [];
 
+  // DIAGNOSTIC — temporary logging to track where journey data is lost on dev env.
+  // Remove once Patents journey is confirmed to render.
+  const journeyRelCount = Array.isArray(node.relationships?.field_journey_sections?.data)
+    ? (node.relationships?.field_journey_sections?.data as unknown[]).length
+    : node.relationships?.field_journey_sections?.data
+      ? 1
+      : 0;
+  const includedJourneyCount = included.filter((e) => e?.type === 'node--journey_section').length;
+  const effectiveJourneyCount = effectiveIncluded.filter(
+    (e) => e?.type === 'node--journey_section',
+  ).length;
+  const resolvedJourneyCount = Array.isArray(journeySectionsData)
+    ? journeySectionsData.length
+    : journeySectionsData
+      ? 1
+      : 0;
+  console.log(
+    `[patents] journey-diag ${JSON.stringify({
+      locale,
+      nodeLangcode,
+      nodeUuid: (node as any).id,
+      relationshipCount: journeyRelCount,
+      rawIncludedCount: included.length,
+      rawIncludedJourneyCount: includedJourneyCount,
+      filteredIncludedCount: filteredIncluded.length,
+      effectiveIncludedCount: effectiveIncluded.length,
+      effectiveJourneyCount,
+      resolvedJourneyCount,
+      source: filteredIncluded.length > 0 ? 'filteredIncluded' : 'included',
+    })}`,
+  );
+
   // Collect all section IDs from Level 1 sections
   const level1SectionIds = Array.isArray(journeySectionsData)
     ? journeySectionsData.map((section: DrupalIncludedEntity) => {
@@ -803,6 +835,16 @@ export function transformPatentsPage(
   // Build hierarchy using helper function (includes virtual sections for items)
   const { sections: journeySections, sectionIds } =
     buildJourneySectionsHierarchy(transformedSections);
+
+  console.log(
+    `[patents] transform-diag ${JSON.stringify({
+      allJourneySectionsCount: allJourneySections.length,
+      transformedSectionsCount: transformedSections.length,
+      transformedSectionIds: transformedSections.map((t) => t.id).slice(0, 30),
+      hierarchySectionIds: sectionIds.slice(0, 30),
+      hierarchySectionsCount: Object.keys(journeySections).length,
+    })}`,
+  );
 
   // Get media tabs
   const mediaTabsData = node.relationships?.field_media_tabs
@@ -1848,7 +1890,17 @@ export async function getPatentsPageData(
     const listResponse = await fetchPatentsPage(locale || 'en');
     const nodes = listResponse.data;
 
+    console.log(
+      `[patents] fetch-list-diag ${JSON.stringify({
+        locale,
+        includeJourney,
+        nodesLength: Array.isArray(nodes) ? nodes.length : nodes ? 1 : 0,
+        firstNodeUuid: Array.isArray(nodes) ? nodes[0]?.id : (nodes as any)?.id,
+      })}`,
+    );
+
     if (nodes.length === 0) {
+      console.log('[patents] taking fallback path: nodes.length === 0');
       return getPatentsFallbackData(locale);
     }
 
@@ -2015,7 +2067,11 @@ export async function getPatentsPageData(
     data.dataSource = 'drupal';
     return data;
   } catch (error) {
-    console.error('PATENTS: Using fallback data', error);
+    console.error('[patents] OUTER CATCH — taking fallback path', {
+      locale,
+      errorMessage: error instanceof Error ? error.message : String(error),
+      errorStack: error instanceof Error ? error.stack : undefined,
+    });
     return getPatentsFallbackData();
   }
 }
