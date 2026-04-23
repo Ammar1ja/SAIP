@@ -73,7 +73,6 @@ export const LanguageSwitcher = ({
       setOpen(false);
       return;
     }
-
     router.replace(getHrefWithParams(), { locale: code });
     // With localePrefix='never' the URL often stays identical.
     // Force refresh so server components re-render in the new locale.
