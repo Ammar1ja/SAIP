@@ -114,7 +114,7 @@ const IPCategoryTemplate = ({
     } finally {
       setIsJourneyLoading(false);
     }
-  }, [journeyEndpoint, hasJourneyContent, lazyJourney, isJourneyLoading]);
+  }, [journeyEndpoint]);
 
   useEffect(() => {
     if (activeTab !== 'journey') return;
