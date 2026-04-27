@@ -33,24 +33,28 @@ export async function GET(request: NextRequest) {
       | Awaited<ReturnType<typeof getPlantVarietiesPageData>>
       | Awaited<ReturnType<typeof getTopographicDesignsPageData>>;
 
+    // This route only returns data.journey, never data.overview.statistics —
+    // skip the statistics paragraph fallback to save one Drupal round-trip.
+    const fetchOptions = { includeJourney: true, includeStatistics: false };
+
     switch (category) {
       case 'patents':
-        data = await getPatentsPageData(locale, { includeJourney: true });
+        data = await getPatentsPageData(locale, fetchOptions);
         break;
       case 'trademarks':
-        data = await getTrademarksPageData(locale, { includeJourney: true });
+        data = await getTrademarksPageData(locale, fetchOptions);
         break;
       case 'copyrights':
-        data = await getCopyrightsPageData(locale, { includeJourney: true });
+        data = await getCopyrightsPageData(locale, fetchOptions);
         break;
       case 'designs':
-        data = await getDesignsPageData(locale, { includeJourney: true });
+        data = await getDesignsPageData(locale, fetchOptions);
         break;
       case 'plant-varieties':
-        data = await getPlantVarietiesPageData(locale, { includeJourney: true });
+        data = await getPlantVarietiesPageData(locale, fetchOptions);
         break;
       case 'topographic':
-        data = await getTopographicDesignsPageData(locale, { includeJourney: true });
+        data = await getTopographicDesignsPageData(locale, fetchOptions);
         break;
       default:
         return NextResponse.json({ error: 'Unsupported category' }, { status: 400 });

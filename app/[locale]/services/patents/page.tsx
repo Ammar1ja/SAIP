@@ -24,8 +24,8 @@ export default async function PatentsPage({ params }: { params: Promise<{ locale
   const [messages, data, [newsItems, articleItems, videoItems]] = await Promise.all([
     getMessages({ locale }),
     useExternalStats
-      ? getPatentsPageDataExternalApi(locale, { includeJourney: true })
-      : getPatentsPageData(locale, { includeJourney: true }),
+      ? getPatentsPageDataExternalApi(locale, { includeJourney: false })
+      : getPatentsPageData(locale, { includeJourney: false }),
     Promise.all([
       fetchNewsByCategory('Patents', locale),
       fetchArticlesByCategory('Patents', locale),
