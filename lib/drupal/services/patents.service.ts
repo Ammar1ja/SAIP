@@ -1981,6 +1981,14 @@ export async function getPatentsPageData(
               params.append('filter[parent-filter][condition][value][]', uuid);
             });
             params.set('include', journeyInclude);
+            // JSON:API defaults to 50 results per page. The same parent_section
+            // UUIDs are reused across all 6 IP categories (data anomaly from
+            // clone-patents-journey-to-ip-categories.php), so a 4-UUID IN filter
+            // can legitimately return 100+ rows. Without an explicit page limit
+            // Drupal silently truncates, dropping recently-created sections
+            // (e.g. editorial test data). The transformer filters by
+            // field_section_id later, so overshooting is safe.
+            params.set('page[limit]', '500');
 
             const batchResponse = await fetchDrupal<DrupalJourneySectionNode>(
               `/node/journey_section?${params.toString()}`,
@@ -2014,55 +2022,27 @@ export async function getPatentsPageData(
             return { sections, included: inc };
           };
 
-          let level2Sections: any[] = [];
-          let level2Included: any[] = [];
-          try {
-            const batched = await fetchChildrenBatched(level1Uuids);
-            level2Sections = batched.sections;
-            level2Included = batched.included;
-            // Safety fallback: if batched call returned nothing, the IN filter
-            // may have been rejected — retry with the original per-parent
-            // pattern so we never silently lose the journey tree.
-            if (level2Sections.length === 0) {
-              const fallback = await fetchChildrenPerParent(level1Uuids);
-              level2Sections = fallback.sections;
-              level2Included = fallback.included;
-            }
-          } catch (batchError) {
-            console.warn(
-              '[patents] L2 batched fetch failed, falling back to per-parent loop:',
-              batchError,
-            );
-            const fallback = await fetchChildrenPerParent(level1Uuids);
-            level2Sections = fallback.sections;
-            level2Included = fallback.included;
-          }
+          // We always use the per-parent loop for L2/L3 — Drupal's
+          // jsonapi.max_size is hard-capped at 50 on this install, and a
+          // single batched IN-filter across all 4 patents L1 UUIDs returns
+          // 100+ rows (the same parent_section UUIDs are reused across all
+          // 6 IP categories — see clone-patents-journey-to-ip-categories.php).
+          // The batched call would silently truncate at row 50 and drop
+          // recently-created sections like editorial test data.
+          // The fetchChildrenBatched helper is kept for the day max_size is
+          // raised or proper next-link pagination is added.
+          // Mark batched helper as intentionally retained for future use.
+          void fetchChildrenBatched;
+
+          const { sections: level2Sections, included: level2Included } =
+            await fetchChildrenPerParent(level1Uuids);
 
           if (level2Sections.length > 0) {
             included = [...included, ...level2Sections, ...level2Included];
 
-            // Same batched-with-fallback pattern for Level 3
             const level2Uuids = level2Sections.map((s: any) => s.id);
-            let level3Sections: any[] = [];
-            let level3Included: any[] = [];
-            try {
-              const batched = await fetchChildrenBatched(level2Uuids);
-              level3Sections = batched.sections;
-              level3Included = batched.included;
-              if (level3Sections.length === 0) {
-                const fallback = await fetchChildrenPerParent(level2Uuids);
-                level3Sections = fallback.sections;
-                level3Included = fallback.included;
-              }
-            } catch (batchError) {
-              console.warn(
-                '[patents] L3 batched fetch failed, falling back to per-parent loop:',
-                batchError,
-              );
-              const fallback = await fetchChildrenPerParent(level2Uuids);
-              level3Sections = fallback.sections;
-              level3Included = fallback.included;
-            }
+            const { sections: level3Sections, included: level3Included } =
+              await fetchChildrenPerParent(level2Uuids);
 
             if (level3Sections.length > 0) {
               included = [...included, ...level3Sections, ...level3Included];
