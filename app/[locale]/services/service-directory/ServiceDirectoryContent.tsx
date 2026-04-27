@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import FilterableCardsSection from '@/components/organisms/FilterableCardsSection';
 import ServiceCard from '@/components/molecules/ServiceCard';
 import { ServiceDirectoryData } from '@/lib/drupal/services/service-directory.service';
