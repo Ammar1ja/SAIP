@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   // immediately. fetchDrupal tags every Drupal GET with 'drupal:global', so
   // invalidating it here forces fresh data without waiting for the data-cache
   // window or a pod restart.
-  revalidateTag('drupal:global');
+  revalidateTag('drupal:global', 'default');
 
   const { searchParams } = new URL(request.url);
   const category = searchParams.get('category');
