@@ -817,9 +817,10 @@ export async function getDesignsFallbackData(locale?: string): Promise<DesignsDa
 
 export async function getDesignsPageData(
   locale?: string,
-  options?: { includeJourney?: boolean },
+  options?: { includeJourney?: boolean; includeStatistics?: boolean },
 ): Promise<DesignsData> {
   const includeJourney = options?.includeJourney ?? true;
+  const includeStatistics = options?.includeStatistics ?? true;
   try {
     // Step 1: Get UUID with the correct locale
     const listResponse = await fetchDesignsPage(locale || 'en');
@@ -880,8 +881,9 @@ export async function getDesignsPageData(
       };
     }
 
-    // Fetch statistics paragraphs separately only if relationship data is empty
-    if (data.overview.statistics.statistics.length === 0) {
+    // Fetch statistics paragraphs separately only if relationship data is empty.
+    // Skipped when caller doesn't need statistics (e.g. the journey API route).
+    if (includeStatistics && data.overview.statistics.statistics.length === 0) {
       const nodeNid = (node.attributes as any).drupal_internal__nid;
       try {
         const statsEndpoint = `/paragraph/statistics_item?filter[parent_id]=${nodeNid}&filter[parent_field_name]=field_statistics_items`;

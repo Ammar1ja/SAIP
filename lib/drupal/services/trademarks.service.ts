@@ -1241,9 +1241,10 @@ export async function getTrademarksFallbackData(locale?: string): Promise<Tradem
 
 export async function getTrademarksPageData(
   locale?: string,
-  options?: { includeJourney?: boolean },
+  options?: { includeJourney?: boolean; includeStatistics?: boolean },
 ): Promise<TrademarksData> {
   const includeJourney = options?.includeJourney ?? true;
+  const includeStatistics = options?.includeStatistics ?? true;
   try {
     // Step 1: Get the list of nodes to find the UUID with the correct locale
     const listResponse = await fetchTrademarksPage(locale || 'en');
@@ -1388,18 +1389,21 @@ export async function getTrademarksPageData(
     );
 
     // Fetch statistics paragraphs separately (entity_reference_revisions not included by JSON:API)
-    const nodeNid = (node.attributes as any).drupal_internal__nid;
-    try {
-      const statsEndpoint = `/paragraph/statistics_item?filter[parent_id]=${nodeNid}&filter[parent_field_name]=field_statistics_items`;
-      const statsResponse = await fetchDrupal<DrupalIncludedEntity>(statsEndpoint, {}, locale);
-      const matchingParagraphs = Array.isArray(statsResponse.data) ? statsResponse.data : [];
-      if (matchingParagraphs.length > 0) {
-        data.overview.statistics.statistics = matchingParagraphs.map((p: DrupalIncludedEntity) =>
-          transformStatisticsItem(p, []),
-        );
+    // Skipped when caller doesn't need statistics (e.g. the journey API route).
+    if (includeStatistics) {
+      const nodeNid = (node.attributes as any).drupal_internal__nid;
+      try {
+        const statsEndpoint = `/paragraph/statistics_item?filter[parent_id]=${nodeNid}&filter[parent_field_name]=field_statistics_items`;
+        const statsResponse = await fetchDrupal<DrupalIncludedEntity>(statsEndpoint, {}, locale);
+        const matchingParagraphs = Array.isArray(statsResponse.data) ? statsResponse.data : [];
+        if (matchingParagraphs.length > 0) {
+          data.overview.statistics.statistics = matchingParagraphs.map((p: DrupalIncludedEntity) =>
+            transformStatisticsItem(p, []),
+          );
+        }
+      } catch (_statsError) {
+        // Ignore statistics fallback errors and keep page rendering.
       }
-    } catch (_statsError) {
-      // Ignore statistics fallback errors and keep page rendering.
     }
 
     data.dataSource = 'drupal';

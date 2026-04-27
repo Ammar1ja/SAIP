@@ -1882,9 +1882,10 @@ export function getPatentsFallbackData(locale?: string): PatentsData {
 
 export async function getPatentsPageData(
   locale?: string,
-  options?: { includeJourney?: boolean },
+  options?: { includeJourney?: boolean; includeStatistics?: boolean },
 ): Promise<PatentsData> {
   const includeJourney = options?.includeJourney ?? true;
+  const includeStatistics = options?.includeStatistics ?? true;
   try {
     // Step 1: Get the list of nodes to find the UUID with the correct locale
     const listResponse = await fetchPatentsPage(locale || 'en');
@@ -1968,52 +1969,100 @@ export async function getPatentsPageData(
             'field_content_switcher_items',
           ].join(',');
 
-          // Fetch Level 2 sections (children of Level 1) directly
-          const level2Promises = level1Uuids.map((uuid) =>
-            fetchDrupal<DrupalJourneySectionNode>(
-              `/node/journey_section?filter[field_parent_section.id]=${uuid}&include=${journeyInclude}`,
+          // Fetch Level 2 sections in a single batched call using JSON:API IN
+          // filter (one round-trip instead of N). Falls back to per-parent
+          // fetches if the batch returns nothing — guards against any future
+          // JSON:API filter-syntax change in Drupal.
+          const fetchChildrenBatched = async (parentUuids: string[]) => {
+            const params = new URLSearchParams();
+            params.set('filter[parent-filter][condition][path]', 'field_parent_section.id');
+            params.set('filter[parent-filter][condition][operator]', 'IN');
+            parentUuids.forEach((uuid) => {
+              params.append('filter[parent-filter][condition][value][]', uuid);
+            });
+            params.set('include', journeyInclude);
+
+            const batchResponse = await fetchDrupal<DrupalJourneySectionNode>(
+              `/node/journey_section?${params.toString()}`,
               {},
               locale,
-            ),
-          );
-          const level2Responses = await Promise.all(level2Promises);
+            );
+            const sections = Array.isArray(batchResponse.data)
+              ? batchResponse.data
+              : [batchResponse.data].filter(Boolean);
+            const inc = batchResponse.included || [];
+            return { sections, included: inc };
+          };
 
-          const level2Sections: any[] = [];
-          const level2Included: any[] = [];
-
-          level2Responses.forEach((response) => {
-            const subs = Array.isArray(response.data)
-              ? response.data
-              : [response.data].filter(Boolean);
-            level2Sections.push(...subs);
-            if (response.included) level2Included.push(...response.included);
-          });
-
-          if (level2Sections.length > 0) {
-            // Add Level 2 sections to included
-            included = [...included, ...level2Sections, ...level2Included];
-
-            // Fetch Level 3 sections (children of Level 2)
-            const level2Uuids = level2Sections.map((s: any) => s.id);
-            const level3Promises = level2Uuids.map((uuid) =>
-              fetchDrupal<DrupalJourneySectionNode>(
-                `/node/journey_section?filter[field_parent_section.id]=${uuid}&include=${journeyInclude}`,
-                {},
-                locale,
+          const fetchChildrenPerParent = async (parentUuids: string[]) => {
+            const responses = await Promise.all(
+              parentUuids.map((uuid) =>
+                fetchDrupal<DrupalJourneySectionNode>(
+                  `/node/journey_section?filter[field_parent_section.id]=${uuid}&include=${journeyInclude}`,
+                  {},
+                  locale,
+                ),
               ),
             );
-            const level3Responses = await Promise.all(level3Promises);
-
-            const level3Sections: any[] = [];
-            const level3Included: any[] = [];
-
-            level3Responses.forEach((response) => {
-              const subs = Array.isArray(response.data)
-                ? response.data
-                : [response.data].filter(Boolean);
-              level3Sections.push(...subs);
-              if (response.included) level3Included.push(...response.included);
+            const sections: any[] = [];
+            const inc: any[] = [];
+            responses.forEach((r) => {
+              const subs = Array.isArray(r.data) ? r.data : [r.data].filter(Boolean);
+              sections.push(...subs);
+              if (r.included) inc.push(...r.included);
             });
+            return { sections, included: inc };
+          };
+
+          let level2Sections: any[] = [];
+          let level2Included: any[] = [];
+          try {
+            const batched = await fetchChildrenBatched(level1Uuids);
+            level2Sections = batched.sections;
+            level2Included = batched.included;
+            // Safety fallback: if batched call returned nothing, the IN filter
+            // may have been rejected — retry with the original per-parent
+            // pattern so we never silently lose the journey tree.
+            if (level2Sections.length === 0) {
+              const fallback = await fetchChildrenPerParent(level1Uuids);
+              level2Sections = fallback.sections;
+              level2Included = fallback.included;
+            }
+          } catch (batchError) {
+            console.warn(
+              '[patents] L2 batched fetch failed, falling back to per-parent loop:',
+              batchError,
+            );
+            const fallback = await fetchChildrenPerParent(level1Uuids);
+            level2Sections = fallback.sections;
+            level2Included = fallback.included;
+          }
+
+          if (level2Sections.length > 0) {
+            included = [...included, ...level2Sections, ...level2Included];
+
+            // Same batched-with-fallback pattern for Level 3
+            const level2Uuids = level2Sections.map((s: any) => s.id);
+            let level3Sections: any[] = [];
+            let level3Included: any[] = [];
+            try {
+              const batched = await fetchChildrenBatched(level2Uuids);
+              level3Sections = batched.sections;
+              level3Included = batched.included;
+              if (level3Sections.length === 0) {
+                const fallback = await fetchChildrenPerParent(level2Uuids);
+                level3Sections = fallback.sections;
+                level3Included = fallback.included;
+              }
+            } catch (batchError) {
+              console.warn(
+                '[patents] L3 batched fetch failed, falling back to per-parent loop:',
+                batchError,
+              );
+              const fallback = await fetchChildrenPerParent(level2Uuids);
+              level3Sections = fallback.sections;
+              level3Included = fallback.included;
+            }
 
             if (level3Sections.length > 0) {
               included = [...included, ...level3Sections, ...level3Included];
@@ -2029,7 +2078,8 @@ export async function getPatentsPageData(
     const data = transformPatentsPage(node, included, locale);
 
     // Step 3: Fetch statistics paragraphs only when relation include did not resolve any stats.
-    if (data.overview.statistics.statistics.length === 0) {
+    // Skipped when caller doesn't need statistics (e.g. the journey API route).
+    if (includeStatistics && data.overview.statistics.statistics.length === 0) {
       const nodeNid = (node.attributes as any).drupal_internal__nid;
       try {
         const statsEndpoint = `/paragraph/statistics_item?filter[parent_id]=${nodeNid}&filter[parent_field_name]=field_statistics_items`;
