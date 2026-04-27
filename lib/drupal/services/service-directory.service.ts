@@ -53,6 +53,17 @@ const KNOWN_SERVICE_ROUTES: Record<string, string> = {
 };
 
 /**
+ * Apply the locale prefix to an internal path exactly once.
+ * Strips any existing /ar or /en prefix before re-applying, so the result is
+ * idempotent regardless of what Drupal returns.
+ */
+function applyLocalePrefix(path: string, locale?: string): string {
+  if (!path.startsWith('/')) return path;
+  const stripped = path.replace(/^\/(ar|en)(?=\/|$)/, '') || '/';
+  return locale === 'ar' ? `/ar${stripped === '/' ? '' : stripped}` : stripped;
+}
+
+/**
  * Get the correct href for a service based on its title and category
  */
 // Map category names (EN/AR) to English URL slugs
@@ -89,8 +100,7 @@ function getServiceHref(
   // Check known routes first
   for (const [pattern, route] of Object.entries(KNOWN_SERVICE_ROUTES)) {
     if (titleLower.includes(pattern)) {
-      // Add locale prefix for Arabic
-      return locale === 'ar' ? `/ar${route}` : route;
+      return applyLocalePrefix(route, locale);
     }
   }
 
@@ -106,8 +116,7 @@ function getServiceHref(
       .replace(/^-|-$/g, '');
 
   const baseRoute = `/services/${categorySlug}/${serviceSlug}`;
-  // Add locale prefix for Arabic
-  return locale === 'ar' ? `/ar${baseRoute}` : baseRoute;
+  return applyLocalePrefix(baseRoute, locale);
 }
 
 function extractLinkUri(value: any): string | undefined {
@@ -416,9 +425,8 @@ export function transformServiceItem(
   if (!href) {
     // Use smart routing based on service title, category, and field_slug
     href = getServiceHref(attrs.title || '', category, locale, attrs.field_slug);
-  } else if (locale === 'ar' && href.startsWith('/') && !href.startsWith('/ar')) {
-    // Add locale prefix only for internal relative paths
-    href = `/ar${href}`;
+  } else if (href.startsWith('/')) {
+    href = applyLocalePrefix(href, locale);
   }
 
   return {
